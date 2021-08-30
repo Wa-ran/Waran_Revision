@@ -1,0 +1,42 @@
+export default {
+  request(method = "GET", address, route, head, data = null) {
+    let headers = head;
+    if (data && typeof data === "object" && !(data instanceof FormData)) {
+      // data = object to send
+      data = JSON.stringify(data);
+    } else {
+      // Si rien a envoyer, OU si FormData = on laisse le browser gérer le content-type
+      headers = { Authorization: head.Authorization };
+    }
+
+    return fetch(address + route, {
+      method,
+      headers,
+      body: data,
+    }).then(async (res) => {
+      if (res.status >= 400) {
+        let err = {};
+        let status = res.status;
+        let msg = {};
+
+        try {
+          msg = await res.json(); // Si le serveur ne renvoie qu'un statut sans corps, '.json' va fail
+        } catch (error) {
+          msg = res.statusText;
+        }
+
+        err["status"] = status;
+        err["msg"] = msg;
+
+        throw err;
+      } else if (res) {
+        try {
+          res = await res.json();
+          return res;
+        } catch (error) {
+          return res; // Si le serveur renvois un statut 2XX/3XX seul
+        }
+      }
+    });
+  },
+};
