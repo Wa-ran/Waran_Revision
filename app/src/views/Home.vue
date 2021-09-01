@@ -1,15 +1,25 @@
 <template>
-  <div id="home">
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-  </div>
+  <main id="home">
+    <header>Header</header>
+    <div id="prez">
+      <Card
+        v-for="card in cardsList"
+        :key="card.card_id"
+        :cardToRevise="card"
+      />
+      <Card />
+      <Card />
+
+      <Card />
+      <Card />
+      <Card />
+      <Card />
+      <Card />
+      <Card />
+      <Card />
+    </div>
+    <button id="submitCard" @click="this.submitCard">MAJ la carte</button>
+  </main>
 </template>
 
 <script>
@@ -21,17 +31,36 @@ export default {
   components: {
     Card,
   },
+  computed: {
+    cardList() {
+      return this.store.cardList;
+    },
+  },
+  methods: {
+    submitCard() {
+      return;
+    },
+  },
 };
 </script>
 
 <style lang="scss" scoped>
 #home {
   width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+#prez {
+  width: 100%;
+  min-height: 500px;
+  margin: 2rem 0;
 
   display: flex;
   justify-content: center;
-
-  padding-top: 15vh;
+  align-content: center;
 }
 .card {
   min-width: 300px;
@@ -43,5 +72,9 @@ export default {
   &:last-child {
     box-shadow: 0 0 15px 5px rgba(0, 0, 0, 0.5);
   }
+}
+#submitCard {
+  margin: auto;
+  margin-top: 2rem;
 }
 </style>

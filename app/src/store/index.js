@@ -20,6 +20,16 @@ export default createStore({
       tags: [],
     },
     cardsList: [],
+    defaultCard: {
+      card_id: "",
+      recto: "T'as lu le Texte du Jour ?",
+      verso: '""',
+      streak: 0,
+      next_revision: "",
+      user_id: "",
+      required_cards: [],
+      tags: [],
+    },
     form: {
       revisionAPI: null,
       submitPath: null,

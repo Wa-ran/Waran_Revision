@@ -16,10 +16,6 @@ html {
   background-color: rgb(49, 17, 75);
   color: rgb(245, 244, 210);
 
-  & * {
-    height: fit-content;
-    width: fit-content;
-  }
   & hr {
     background-color: rgb(245, 244, 210);
   }
@@ -27,8 +23,8 @@ html {
 body,
 #app,
 #view {
-  height: 100%;
   width: 100%;
+  height: 100%;
   margin: 0;
 }
 
