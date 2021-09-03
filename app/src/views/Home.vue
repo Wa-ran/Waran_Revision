@@ -1,6 +1,12 @@
 <template>
   <main id="home">
-    <header>Header</header>
+    <header>
+      <select name="user" id="User" @change="this.changeUser">
+        <option value="1">test</option>
+        <option value="2">Waran</option>
+      </select>
+      <label for="User">{{ actualUser }}</label>
+    </header>
     <div id="prez" :key="cardsList.length">
       <Card v-for="card in cardsList" :key="card.id" :cardToRevise="card" />
       <Card />
@@ -32,6 +38,9 @@ export default {
     cardsList() {
       return this.$store.state.cardsList;
     },
+    actualUser() {
+      return this.$store.state.user.id;
+    },
   },
   methods: {
     async createCard() {
@@ -43,9 +52,17 @@ export default {
     async submitCard() {
       await this.$store.dispatch("submitCard");
     },
+    changeUser(e) {
+      this.$store.dispatch("changeUser", e.target.value);
+    },
   },
   async created() {
     await this.$store.dispatch("getCardsToRevise");
+  },
+  watch: {
+    async actualUser() {
+      await this.$store.dispatch("getCardsToRevise");
+    },
   },
 };
 </script>

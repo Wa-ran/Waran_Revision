@@ -16,7 +16,7 @@ export default createStore({
       verso: "Donne nous plus de foi.",
       streak: 0,
       next_revision: "",
-      user_id: 2,
+      user_id: 1,
       required_cards: [],
       tags: [],
     },
@@ -34,12 +34,15 @@ export default createStore({
     },
     tagsList: [],
     user: {
-      id: 2,
+      id: 1,
       pseudo: "",
       token: "",
     },
   },
   mutations: {
+    changeUser(state, payload) {
+      state.user.id = payload;
+    },
     createCard(state) {
       state.cardsList.unshift(state.defaultCard);
     },
@@ -47,13 +50,15 @@ export default createStore({
       state.cardsList.shift();
     },
     handleResponse(state, payload) {
-      console.log(payload)
       let mutate = payload.mutate;
       delete payload.mutate;
       if (mutate == "card") {
         payload.next_revision = new Date(payload.next_revision);
         state.cardsList.unshift(payload);
       } else {
+        for (let item of payload) {
+          if (item.next_revision) item.next_revision = new Date(item.next_revision)
+        }
         if (Array.isArray(payload)) state[mutate] = payload
         else state[mutate].push(payload)
       }
@@ -75,6 +80,9 @@ export default createStore({
     },
   },
   actions: {
+    changeUser(context, payload) {
+      context.commit("changeUser", payload);
+    },
     createCard(context) {
       context.commit("createCard");
     },

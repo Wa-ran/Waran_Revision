@@ -14,8 +14,12 @@ exports.CardsToRevise = async (user) => {
   let resList = [];
   await dtbFct.selectCardsToRevise(user)
     .then((list) => {
+      if (!Array.isArray(list)) {
+        list = [list]
+      }
       for (card of list) {
         let newCard = cardFct.createObjCard(card);
+        newCard.parseToJS();
         resList.push(newCard);
       };
     })

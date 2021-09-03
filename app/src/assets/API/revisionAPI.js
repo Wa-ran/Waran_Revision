@@ -7,7 +7,7 @@ export default {
       body = JSON.stringify(body);
     }
     else if (method == "GET") {
-      route = route + "/" + JSON.stringify(body);
+      route = route + "/" + body;
       body = null;
     }
     else {
