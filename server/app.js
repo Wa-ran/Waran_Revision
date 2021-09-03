@@ -38,6 +38,6 @@ app.use('/images',
   express.static(path.join(__dirname, 'images')));
 
 // app.use('/user', user);
-app.use('/card', card);
+app.use('/OneCard', card);
 
 module.exports = app;

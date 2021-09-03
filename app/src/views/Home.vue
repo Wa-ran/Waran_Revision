@@ -1,24 +1,15 @@
 <template>
   <main id="home">
     <header>Header</header>
-    <div id="prez">
-      <Card
-        v-for="card in cardsList"
-        :key="card.card_id"
-        :cardToRevise="card"
-      />
-      <Card />
-      <Card />
-
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
+    <div id="prez" :key="cardsList.length">
+      <Card v-for="card in cardsList" :key="card.id" :cardToRevise="card" />
       <Card />
     </div>
-    <button id="submitCard" @click="this.submitCard">MAJ la carte</button>
+    <div>{{ cardsList }}</div>
+    <button v-if="cardsList" id="submitCard" @click="this.submitCard">
+      MAJ la carte
+    </button>
+    <button id="submitCard" @click="this.createCard">Nouvelle carte</button>
   </main>
 </template>
 
@@ -32,13 +23,16 @@ export default {
     Card,
   },
   computed: {
-    cardList() {
-      return this.store.cardList;
+    cardsList() {
+      return this.$store.state.cardsList;
     },
   },
   methods: {
-    submitCard() {
-      return;
+    async createCard() {
+      await this.$store.dispatch("createCard");
+    },
+    async submitCard() {
+      await this.$store.dispatch("submitCard");
     },
   },
 };

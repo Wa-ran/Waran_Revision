@@ -6,9 +6,9 @@ CREATE TABLE cards (
                 id SERIAL,
                 recto TEXT NOT NULL,
                 verso TEXT NOT NULL,
-                streak TINYINT,
+                streak TINYINT DEFAULT 0,
                 next_revision DATETIME DEFAULT now(),
-                user_id BIGINT UNSIGNED NOT NULL DEFAULT 1,
+                user_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
                 required_cards VARCHAR(20),
                 PRIMARY KEY (id)
 );
@@ -26,8 +26,11 @@ CREATE TABLE users (
                 PRIMARY KEY (id)
 );
 
-INSERT INTO users (id, pseudo, password)
-VALUES (0, 'test', 'test');
+INSERT INTO users (pseudo, password)
+VALUES ('test', 'test');
+
+INSERT INTO users (pseudo, password)
+VALUES ('Waran', '');
 
 CREATE INDEX user_idx_pseudo
  ON users (pseudo);

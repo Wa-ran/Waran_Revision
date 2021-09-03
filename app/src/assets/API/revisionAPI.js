@@ -1,12 +1,12 @@
 export default {
-  request(method = "GET", address, route, head, data = null) {
-    let headers = head;
+  request(method = "GET", address, route, headers, data = null) {
+    method = method.toUpperCase();
     if (data && typeof data === "object" && !(data instanceof FormData)) {
       // data = object to send
       data = JSON.stringify(data);
     } else {
       // Si rien a envoyer, OU si FormData = on laisse le browser gérer le content-type
-      headers = { Authorization: head.Authorization };
+      headers = { Authorization: headers.Authorization };
     }
 
     return fetch(address + route, {

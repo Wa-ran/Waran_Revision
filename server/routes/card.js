@@ -1,15 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('../middlewares/multer');
-const cardCtrl = require('../controllers/card');
+const ctrl = require('../controllers/card');
 
-router.get('/oneCard', cardCtrl.getOneCard);
-router.get('/allUserCards', cardCtrl.getAllUserCards);
+router.get('/', ctrl);
 
-router.post('/oneCard', cardCtrl.postOneCard);
+router.post('/', ctrl);
 
-router.put('/oneCard', cardCtrl.putOneCard);
+router.put('/', ctrl);
 
-router.delete('/oneCard', cardCtrl.deleteOneCard);
+router.delete('/', ctrl);
 
 module.exports = router;

@@ -9,29 +9,19 @@ export default createStore({
       msg: "",
       status: "",
     },
-    card: {
-      card_id: "",
-      recto: "",
-      verso: "",
-      streak: "",
-      next_revision: "",
-      user_id: "",
-      required_cards: [],
-      tags: [],
-    },
     cardsList: [],
     defaultCard: {
-      card_id: "",
-      recto: "T'as lu le Texte du Jour ?",
-      verso: '""',
+      id: "",
+      recto: "Luc 17:5",
+      verso: "Donne nous plus de foi.",
       streak: 0,
       next_revision: "",
-      user_id: "",
+      user_id: 2,
       required_cards: [],
       tags: [],
     },
     form: {
-      revisionAPI: null,
+      revisionRequest: null,
       submitPath: null,
     },
     headers: {
@@ -50,12 +40,22 @@ export default createStore({
     },
   },
   mutations: {
+    createCard(state) {
+      state.cardsList.unshift(state.defaultCard);
+    },
+    shiftCard(state) {
+      state.cardsList.shift();
+    },
     handleResponse(state, payload) {
-      // state.cardsList = payload.cardsList;
-      // state.tagsList = payload.tagsList;
-      // state.user = payload.user;
-      for (let res of payload) {
-        if (state[res]) state[res] = res;
+      console.log(payload);
+      if (payload.mutate == "card") {
+        delete payload.mutate;
+        state.cardsList.unshift(payload);
+      } else {
+        // Liste entière reçu
+        for (let value of Object.entries(payload)) {
+          state[payload.mutate] = value;
+        }
       }
     },
     isLoading(state, payload) {
@@ -67,6 +67,7 @@ export default createStore({
         state.error.msg = payload.msg ? payload.msg : "";
         state.error.status = payload.status ? payload.status : "";
       }
+      state.error.pending = false;
     },
     setSubmit(state, payload) {
       state.form.revisionAPI = payload.revisionAPI;
@@ -74,6 +75,19 @@ export default createStore({
     },
   },
   actions: {
+    createCard(context) {
+      context.commit("createCard");
+    },
+    submitCard(context) {
+      let newCard = { ...this.state.cardsList[0] };
+      context.commit("shiftCard");
+      this.dispatch("revisionRequest", {
+        method: "POST",
+        serverRoute: "/OneCard",
+        data: newCard,
+        mutate: "card",
+      });
+    },
     setLoading(context, payload) {
       context.commit("isLoading", payload);
     },
@@ -83,8 +97,7 @@ export default createStore({
     chooseSubmit(context, payload) {
       context.commit("setSubmit", payload);
     },
-    revisionAPI(context, req) {
-      // req = { method: ..., serverRoute: ..., data: ...}
+    revisionRequest(context, req) {
       if (!this.state.error.pending) {
         context.commit("isLoading", true);
         return revisionAPI
@@ -96,6 +109,7 @@ export default createStore({
             req.data
           )
           .then((res) => {
+            res["mutate"] = req.mutate;
             context.commit("handleResponse", res);
             context.commit("isLoading", false);
           })

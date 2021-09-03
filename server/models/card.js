@@ -1,4 +1,5 @@
 const dtb = require('../middlewares/dtb');
+const dateParser = require('../middlewares/dateParser');
 
 const HOURS_SUITE = {
   0: 8,
@@ -21,45 +22,98 @@ const HOURS_SUITE = {
 
 module.exports = class Card {
 
-  constructor(card_id, recto, verso, streak, user_id, next_revision = new Date().getTime(), required_cards = [], tags) {
-    this.card_id = Number.parseInt(card_id);
+  constructor(id, recto, verso, streak, user_id, next_revision, required_cards, tags) {
+    this.id = this.tryParseInt(id);
     this.recto = recto;
     this.verso = verso;
-    this.streak = Number.parseInt(streak);
-    this.user_id = Number.parseInt(user_id);
-    this.next_revision = next_revision;
-    this.required_cards = required_cards;
-    this.tags = tags;
+    this.streak = this.tryParseInt(streak);
+    this.user_id = this.tryParseInt(user_id);
+    this.next_revision = next_revision ? next_revision : new Date();
+    this.required_cards = this.tryJoin(required_cards);
+    this.tags = this.tryJoin(tags);
+  };
+
+  parseToJS() {
+    try {
+      this.next_revision = dateParser.toJS(this.next_revision);
+    } catch (error) {
+      // If error or already to JS
+      console.log(error);
+      return this
+    };
+    for (let [key, value] of Object.entries(this)) {
+      try {
+        if (value === '""' || value === null) {
+          this[key] = null
+        }
+        else if (!Number.isInteger(value) && value[0] == '"' && value[value.length] == '"') {
+          this[key] = value.substring(1, value.length - 1)
+        };
+      }
+      catch (error) {
+        console.log([key, value])
+        throw error
+      };
+    };
+    return this
+  };
+
+  parseToMySQL() {
+    // not null, string = "string"
+    try {
+      this.next_revision = dateParser.toMySQL(this.next_revision);
+    } catch (error) {
+      // If error or already to MySQL
+      console.log(error);
+      return this
+    };
+    for (let [key, value] of Object.entries(this)) {
+      try {
+        if (value === null) {
+          this[key] = '""'
+        }
+        else if (!Number.isInteger(value) && value[0] != '"' && value[value.length] != '"') {
+          this[key] = '"' + value + '"'
+        };
+      }
+      catch (error) {
+        console.log([key, value])
+        throw error
+      };
+    };
+    return this
+  };
+
+  tryJoin(array) {
+    try {
+      return array.join();
+    } catch (error) {
+      return null;
+    };
+  };
+
+  tryParseInt(val) {
+    return Number.isInteger(val) ? val : (isNaN(Number.parseInt(val)) ? null : Number.parseInt(val));
   };
 
   newStreak(win) {
     if (win) {
-      ++this.streak
+      ++this.streak;
     }
     else {
-      --this.streak
-    }
+      --this.streak;
+    };
   };
 
   calculNextRevision() {
     let number = HOURS_SUITE[this.streak];
-    return new Date().getTime() + number * hours
+    return new Date().getTime() + number * hours;
   };
 
-
-  dtbSelectCard = async () => {
-    await dtb.connect('SELECT * FROM cards WHERE id = ' + this.card_id + ';')
-  };
-
-  dtbCreateCard = () => {
-    dtb.connect('INSERT INTO cards (recto, verso, streak, next_revision, user_id, required_cards) values(' + this.recto + ', ' + this.verso + ', ' + this.streak + ', now(), ' + this.user_id + ', ' + this.required_cards + ');')
-  };
-
-  dtbUpdateCard = () => {
-    dtb.connect('UPDATE cards SET recto = ' + this.recto + ', verso = ' + this.verso + ', streak = ' + this.streak + ', next_revision = ' + this.next_revision + ', required_cards = ' + this.required_cards + ' WHERE id = ' + this.card_id + ';')
-  };
-
-  dtbDeleteCard = () => {
-    dtb.connect('DELETE FROM cards WHERE id = ' + this.card_id + ';')
+  async updateFromDtb() {
+    let dtbCard = await dtb.SelectCard();
+    for (let [key, value] of Object.entries(this)) {
+      this[key] = dtbCard[key]
+    };
   };
 }

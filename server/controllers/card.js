@@ -1,63 +1,16 @@
-const dtb = require('../middlewares/dtb');
 const cardFct = require('../middlewares/card');
-const Card = require('../models/card');
+const dtbFct = require('../middlewares/dtb');
 
-exports.getOneCard = (req, res, next) => {
-  let newCard = cardFct.createCard(req.card);
+module.exports = async (req, res, next) => {
+  let newCard = cardFct.createObjCard(req.body);
 
-  newCard.dtbSelectCard()
-    .then((newCard) => {
-      res.status(200).send(newCard)
-    })
-    .catch((error) => {
-      console.log(error);
-      res.status(500).json(error.custMsg)
-    })
-};
+  let fctName = req.baseUrl.slice(1);
+  let fct = req.method.toLowerCase() + fctName;
 
-exports.getAllUserCards = (req, res, next) => {
-  dtb.selectAllUserCards(req.user_id)
-    .then((cards) => {
-      res.status(200).send(cards)
-    })
-    .catch((error) => {
-      console.log(error);
-      res.status(500).json(error.custMsg)
-    })
-};
-
-exports.postOneCard = (req, res, next) => {
-  let newCard = cardFct.createCard(req.card);
-
-  newCard.dtbCreateCard()
-    .then((newCard) => {
-      this.getOneCard(newCard)
-    })
-    .catch((error) => {
-      console.log(error);
-      res.status(500).json(error.custMsg)
-    })
-};
-
-exports.putOneCard = (req, res, next) => {
-  let newCard = cardFct.createCard(req.card);
-
-  newCard.dtbUpdateCard()
-    .then((newCard) => {
-      res.status(200).send(newCard)
-    })
-    .catch((error) => {
-      console.log(error);
-      res.status(500).json(error.custMsg)
-    })
-};
-
-exports.deleteOneCard = (req, res, next) => {
-  let newCard = cardFct.createCard(req.card);
-
-  newCard.dtbDeleteCard()
-    .then((newCard) => {
-      res.status(200).send(newCard)
+  await cardFct[fct](newCard)
+    .then((card) => {
+      card.parseToJS();
+      res.send(card)
     })
     .catch((error) => {
       console.log(error);
