@@ -34,7 +34,7 @@ export default createStore({
     },
     tagsList: [],
     user: {
-      id: "",
+      id: 2,
       pseudo: "",
       token: "",
     },
@@ -47,15 +47,15 @@ export default createStore({
       state.cardsList.shift();
     },
     handleResponse(state, payload) {
-      console.log(payload);
-      if (payload.mutate == "card") {
-        delete payload.mutate;
+      console.log(payload)
+      let mutate = payload.mutate;
+      delete payload.mutate;
+      if (mutate == "card") {
+        payload.next_revision = new Date(payload.next_revision);
         state.cardsList.unshift(payload);
       } else {
-        // Liste entière reçu
-        for (let value of Object.entries(payload)) {
-          state[payload.mutate] = value;
-        }
+        if (Array.isArray(payload)) state[mutate] = payload
+        else state[mutate].push(payload)
       }
     },
     isLoading(state, payload) {
@@ -78,6 +78,9 @@ export default createStore({
     createCard(context) {
       context.commit("createCard");
     },
+    shiftCard(context) {
+      context.commit("shiftCard");
+    },
     submitCard(context) {
       let newCard = { ...this.state.cardsList[0] };
       context.commit("shiftCard");
@@ -86,6 +89,14 @@ export default createStore({
         serverRoute: "/OneCard",
         data: newCard,
         mutate: "card",
+      });
+    },
+    getCardsToRevise() {
+      this.dispatch("revisionRequest", {
+        method: "GET",
+        serverRoute: "/List/CardsToRevise",
+        data: this.state.user.id,
+        mutate: "cardsList",
       });
     },
     setLoading(context, payload) {

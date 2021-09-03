@@ -5,9 +5,15 @@
       <Card v-for="card in cardsList" :key="card.id" :cardToRevise="card" />
       <Card />
     </div>
-    <div>{{ cardsList }}</div>
-    <button v-if="cardsList" id="submitCard" @click="this.submitCard">
+    <button
+      v-if="cardsList.length > 0"
+      id="submitCard"
+      @click="this.submitCard"
+    >
       MAJ la carte
+    </button>
+    <button v-if="cardsList.length > 0" id="nextCard" @click="this.shiftCard">
+      Carte suivante
     </button>
     <button id="submitCard" @click="this.createCard">Nouvelle carte</button>
   </main>
@@ -31,9 +37,15 @@ export default {
     async createCard() {
       await this.$store.dispatch("createCard");
     },
+    async shiftCard() {
+      await this.$store.dispatch("shiftCard");
+    },
     async submitCard() {
       await this.$store.dispatch("submitCard");
     },
+  },
+  async created() {
+    await this.$store.dispatch("getCardsToRevise");
   },
 };
 </script>
@@ -41,7 +53,7 @@ export default {
 <style lang="scss" scoped>
 #home {
   width: 100%;
-  height: 100%;
+  min-height: 100%;
 
   display: flex;
   flex-direction: column;
@@ -67,7 +79,7 @@ export default {
     box-shadow: 0 0 15px 5px rgba(0, 0, 0, 0.5);
   }
 }
-#submitCard {
+button {
   margin: auto;
   margin-top: 2rem;
 }

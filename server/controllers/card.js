@@ -1,5 +1,4 @@
 const cardFct = require('../middlewares/card');
-const dtbFct = require('../middlewares/dtb');
 
 module.exports = async (req, res, next) => {
   let newCard = cardFct.createObjCard(req.body);

@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 
 // const user = require('./routes/user');
 const card = require('./routes/card');
+const list = require('./routes/list');
 const fs = require('fs');
 const path = require('path');
 
@@ -39,5 +40,6 @@ app.use('/images',
 
 // app.use('/user', user);
 app.use('/OneCard', card);
+app.use('/List', list);
 
 module.exports = app;

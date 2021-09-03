@@ -45,6 +45,7 @@ exports.postOneCard = async (reqCard) => {
 
 exports.putOneCard = async (reqCard) => {
   let resCard;
+  reqCard.calculNextRevision();
   await dtbFct.updateCard(reqCard)
     .then(() => {
       resCard = this.getOneCard(reqCard)

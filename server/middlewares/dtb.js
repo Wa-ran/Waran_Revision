@@ -18,14 +18,7 @@ exports.connect = async (fctRequest) => {
       session.startTransaction()
       try {
         await session.sql(fctRequest).execute((rows) => {
-          // return array or a single object
-          if (rows.length > 1) {
-            for (let uplet of rows) {
-              result.push(uplet)
-            }
-          } else {
-            result = rows[0]
-          }
+          result.push(rows[0]);
         });
         session.commit();
         session.close();
@@ -41,16 +34,17 @@ exports.connect = async (fctRequest) => {
       console.log(err)
       throw 'Problème avec la BDR.'
     });
+  if (result.length == 1) result = result[0];
   return result
 };
 
 exports.selectCard = async (card) => {
-  let id = Number.isInteger(card) ? card : card.id;
+  let id = Number.isInteger(parseInt(card)) ? card : card.id;
   return await this.connect("SELECT JSON_OBJECT('id', id, 'recto', recto, 'verso', verso, 'streak', streak, 'next_revision', next_revision, 'user_id', user_id, 'required_cards', required_cards) FROM cards WHERE id = " + id + ";");
 };
 
 exports.selectLastUserCard = async (user) => {
-  let id = Number.isInteger(user) ? user : user.id;
+  let id = Number.isInteger(parseInt(user)) ? user : user.id;
   return await this.connect("SELECT JSON_OBJECT('id', id, 'recto', recto, 'verso', verso, 'streak', streak, 'next_revision', next_revision, 'user_id', user_id, 'required_cards', required_cards) FROM cards WHERE user_id = " + id + " ORDER BY id DESC LIMIT 1;");
 };
 
@@ -65,23 +59,20 @@ exports.updateCard = async (card) => {
 };
 
 exports.deleteCard = async (card) => {
-  let id = Number.isInteger(card) ? card : card.id;
+  let id = Number.isInteger(parseInt(card)) ? card : card.id;
   return await this.connect('DELETE FROM cards WHERE id = ' + id + ';');
 };
 
-
-
-exports.selectAllUserCards = async (user) => {
-  let id = Number.isInteger(user) ? user : user.id;
-  return await this.connect('SELECT * FROM cards WHERE user_id = ' + id + ';')
+exports.selectCardsToRevise = async (user) => {
+  let id = Number.isInteger(parseInt(user)) ? user : user.id;
+  return await this.connect("SELECT JSON_OBJECT('id', id, 'recto', recto, 'verso', verso, 'streak', streak, 'next_revision', next_revision, 'user_id', user_id, 'required_cards', required_cards) FROM cards WHERE user_id = " + id + " AND next_revision < NOW();");
 };
 
-exports.fetchCardTags = async (session, card_id) => {
-  return session.sql('SELECT * FROM tags JOIN cards_tags ON tags_id WHERE cards_tags.card_id = ' + card_id + ';')
-    .execute()
+exports.selectCardTags = async (user) => {
+  let id = Number.isInteger(parseInt(user)) ? user : user.id;
+  return await this.connect("SELECT * FROM tags JOIN cards_tags ON tags.id JOIN cards ON cards_tags.card_id WHERE cards.id = " + id + ";");
 };
 
-exports.fetchCardRevision = async (session, card_id) => {
-  return session.sql('SELECT * FROM revisions WHERE card_id = ' + card_id + ';')
-    .execute()
+exports.selectAllTags = async () => {
+  return await this.connect("SELECT * FROM tags;");
 };

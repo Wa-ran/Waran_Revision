@@ -2,7 +2,7 @@ const dtb = require('../middlewares/dtb');
 const dateParser = require('../middlewares/dateParser');
 
 const HOURS_SUITE = {
-  0: 8,
+  0: 0,
   1: 8,
   2: 12,
   3: 24,
@@ -107,11 +107,11 @@ module.exports = class Card {
 
   calculNextRevision() {
     let number = HOURS_SUITE[this.streak];
-    return new Date().getTime() + number * hours;
+    this.next_revision = new Date(new Date().setTime(new Date().getTime() + number * 60 * 60 * 1000));
   };
 
   async updateFromDtb() {
-    let dtbCard = await dtb.SelectCard();
+    let dtbCard = await dtb.SelectCard(this);
     for (let [key, value] of Object.entries(this)) {
       this[key] = dtbCard[key]
     };
