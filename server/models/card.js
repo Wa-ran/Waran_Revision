@@ -110,6 +110,12 @@ module.exports = class Card {
     this.next_revision = new Date(new Date().setTime(new Date().getTime() + number * 60 * 60 * 1000));
   };
 
+  inverseRectoVerso() {
+    let recto = this.recto;
+    this.recto = this.verso;
+    this.verso = recto;
+  };
+
   async updateFromDtb() {
     let dtbCard = await dtb.SelectCard(this);
     for (let [key, value] of Object.entries(this)) {

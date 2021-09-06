@@ -1,0 +1,226 @@
+$dark_blue: #211a4c;
+$pink: #e84a5f;
+$violet: rgb(49, 17, 75);
+$white: rgb(245, 244, 210);
+
+$card_rad: 1rem;
+
+@for $i from 1 through 10 {
+  .flex-grow-#{$i} {
+    flex-grow: $i;
+  }
+};
+
+html {
+  font-family: "Roboto", sans-serif;
+
+  height: 100%;
+  width: 100%;
+
+  background-color: $violet;
+  color: $white;
+
+  & hr {
+    background-color: $white;
+  }
+}
+
+body,
+#app,
+#view {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+textarea {
+  width: 95%;
+  height: 100%;
+  flex-grow: 1;
+
+  border-radius: 0.5rem;
+
+  background-color: inherit;
+  color: inherit;
+
+  padding-top: 1rem;
+  text-align: center;
+}
+
+button {
+  margin: 0 1rem;
+  padding: 0.25rem 2rem;
+  z-index: 1000;
+  border: solid 1px $pink;
+  background-color: $violet;
+  color: $white;
+}
+
+.card {
+  border: solid 2px $pink;
+  border-radius: $card_rad;
+  background-color: $violet;
+
+  transform-style: preserve-3d;
+  & .recto,
+  & .verso {
+    position: absolute;
+    left: 1rem;
+    top: 1rem;
+    width: calc(100% - 2rem);
+    height: calc(100% - 2rem);
+
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+
+    display: flex;
+    flex-direction: column;
+    &>div {
+      width: 100%;
+      margin: 0;
+      background-color: rgba($color: $dark_blue, $alpha: 1);
+      border: solid 1px $pink;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-content: center;
+    }
+    & hr {
+      border: none;
+    }
+    & .flipCard {
+      position: absolute;
+      top: 0.25rem;
+      right: 0.25rem;
+      margin: 0;
+      padding: 0;
+      color: $white;
+      background-color: transparent;
+      border: none;
+    }
+  }
+  & .verso {
+    transform: rotateY(180deg);
+    & .response {
+      position: relative;
+      & .false, & .true {
+        width: 40%;
+      }
+      & .false {
+        position: absolute;
+        bottom: -0.25rem;
+        left: -1.25rem;
+      }
+      & .true {
+        position: absolute;
+        bottom: -0.25rem;
+        right: -1.25rem;
+      }
+    }
+  }
+  & .bottom {
+    & .calcRevision {
+      padding: 1rem 0;
+      font-style: italic;
+    }
+    & .modifyButton, & .validationButtons {
+      position: absolute;
+      bottom: -0.25rem;
+      left: -0.25rem;
+      margin: 0;
+      width: 60%;
+    }
+    & .validationButtons {
+      display: flex;
+      & button {
+        margin: 0;
+        padding: 0.25rem 1rem;
+        flex-grow: 1;
+      }
+    }
+    & .streak {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+    & .mini {
+      margin: 0.25rem;
+      margin-left: auto;
+      font-size: 0.75rem;
+    }    
+  }
+}
+
+css-doodle {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: $card_rad;
+  z-index: -1;
+
+  --rule: (
+    @grid: 35;
+    --deg: @p(45deg, -45deg, 135deg, -135deg);
+    --lg: linear-gradient(@var(--deg),#60569e 50%, transparent 0);
+    @nth(2n + 1) {
+      background:
+      @var(--lg) 0 0 / 100% 100%,
+      @var(--lg) 0 0 / 50% 50%;
+    }
+    @nth(2n) {
+    }
+  );
+  --rule1: (
+    :doodle {
+      @grid: 35;
+      background: #0a0c27;
+    };
+    --hue: calc(180 + 1.5 * @row * @col);
+    background: hsl(var(--hue), 50%, 70%);
+    margin: -.5px;
+    transition: @r(.5s) ease;
+    clip-path: polygon(@pick(
+      '0 0, 100% 0, 100% 100%',
+      '0 0, 100% 0, 0 100%',
+      '0 0, 100% 100%, 0 100%',
+      '100% 0, 100% 100%, 0 100%'
+    ));
+  );
+  --pattern-9: (
+    @grid: 1 / 100%;
+    background-color: $violet;
+    background-image: @doodle(
+      :doodle {
+        @grid: 1 / 10000px;
+        transform: scale(1.5) rotate(45deg);
+      }
+      background-size: 300px 300px;
+      background-image: @doodle(
+        @grid: 1 / 100%;
+        background: @doodle(
+          @grid: @r(8) / 100%;
+            background: @doodle(
+            @grid: @r(10) / 100%;
+            background: radial-gradient(
+              @stripe.@m2.@p(
+                @m10(#293462),
+                @m10(#211a4c), 
+                @m2(#b2ebf2), 
+                #e84a5f
+              )
+            );
+          );
+        );
+      );
+    );
+  );
+  --pattern-card-side: (
+    @grid: 45;
+    @size: 1px calc(141.4%);
+    transform: rotate(@r(±90deg));
+    background: #e84a5f;
+    opacity: calc(1.1 - 1 / 1000 * @index);
+  )
+}

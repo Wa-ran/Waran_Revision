@@ -46,6 +46,7 @@ exports.postOneCard = async (reqCard) => {
 exports.putOneCard = async (reqCard) => {
   let resCard;
   reqCard.calculNextRevision();
+  reqCard.inverseRectoVerso();
   await dtbFct.updateCard(reqCard)
     .then(() => {
       resCard = this.getOneCard(reqCard)

@@ -57,10 +57,11 @@ export default createStore({
         state.cardsList.unshift(payload);
       } else {
         for (let item of payload) {
-          if (item.next_revision) item.next_revision = new Date(item.next_revision)
+          if (item.next_revision)
+            item.next_revision = new Date(item.next_revision);
         }
-        if (Array.isArray(payload)) state[mutate] = payload
-        else state[mutate].push(payload)
+        if (Array.isArray(payload)) state[mutate] = payload;
+        else state[mutate].push(payload);
       }
     },
     isLoading(state, payload) {
@@ -97,6 +98,7 @@ export default createStore({
         serverRoute: "/OneCard",
         data: newCard,
         mutate: "card",
+        dontChargeDeck: true,
       });
     },
     getCardsToRevise() {
@@ -128,8 +130,10 @@ export default createStore({
             req.data
           )
           .then((res) => {
-            res["mutate"] = req.mutate;
-            context.commit("handleResponse", res);
+            if (!req.dontChargeDeck) {
+              res["mutate"] = req.mutate;
+              context.commit("handleResponse", res);
+            }
             context.commit("isLoading", false);
           })
           .catch((error) => {

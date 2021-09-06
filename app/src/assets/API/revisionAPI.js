@@ -5,12 +5,10 @@ export default {
     if (body && typeof body === "object" && !(body instanceof FormData)) {
       // body = object to send
       body = JSON.stringify(body);
-    }
-    else if (method == "GET") {
+    } else if (method == "GET") {
       route = route + "/" + body;
       body = null;
-    }
-    else {
+    } else {
       // Si rien a envoyer, OU si FormData = on laisse le browser gérer le content-type
       headers = { Authorization: headers.Authorization };
     }

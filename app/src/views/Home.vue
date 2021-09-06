@@ -7,21 +7,19 @@
       </select>
       <label for="User">{{ actualUser }}</label>
     </header>
-    <div id="prez" :key="cardsList.length">
+    <div id="deck" :key="cardsList.length">
       <Card v-for="card in cardsList" :key="card.id" :cardToRevise="card" />
       <Card />
     </div>
-    <button
-      v-if="cardsList.length > 0"
-      id="submitCard"
-      @click="this.submitCard"
-    >
-      MAJ la carte
-    </button>
-    <button v-if="cardsList.length > 0" id="nextCard" @click="this.shiftCard">
-      Carte suivante
-    </button>
-    <button id="submitCard" @click="this.createCard">Nouvelle carte</button>
+    <div class="manageDeck">
+      <button id="submitCard" @click="this.createCard">Nouvelle carte</button>
+      <button v-if="cardsList.length > 0" id="nextCard" @click="this.shiftCard">
+        Carte suivante
+      </button>
+      <button id="charegDeck" @click="this.chargeDeck">
+        Recherger le deck
+      </button>
+    </div>
   </main>
 </template>
 
@@ -43,25 +41,25 @@ export default {
     },
   },
   methods: {
+    async chargeDeck() {
+      await this.$store.dispatch("getCardsToRevise");
+    },
     async createCard() {
       await this.$store.dispatch("createCard");
     },
     async shiftCard() {
       await this.$store.dispatch("shiftCard");
     },
-    async submitCard() {
-      await this.$store.dispatch("submitCard");
-    },
     changeUser(e) {
       this.$store.dispatch("changeUser", e.target.value);
     },
   },
   async created() {
-    await this.$store.dispatch("getCardsToRevise");
+    await this.chargeDeck();
   },
   watch: {
     async actualUser() {
-      await this.$store.dispatch("getCardsToRevise");
+      await this.chargeDeck();
     },
   },
 };
@@ -76,7 +74,7 @@ export default {
   flex-direction: column;
   justify-content: center;
 }
-#prez {
+#deck {
   width: 100%;
   min-height: 500px;
   margin: 2rem 0;
@@ -99,5 +97,12 @@ export default {
 button {
   margin: auto;
   margin-top: 2rem;
+}
+.manageDeck {
+  margin: auto;
+  display: flex;
+  & button {
+    margin: 1rem;
+  }
 }
 </style>
