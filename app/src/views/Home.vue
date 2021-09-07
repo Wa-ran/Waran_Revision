@@ -17,7 +17,7 @@
         Carte suivante
       </button>
       <button id="charegDeck" @click="this.chargeDeck">
-        Recherger le deck
+        Recharger le deck
       </button>
     </div>
   </main>

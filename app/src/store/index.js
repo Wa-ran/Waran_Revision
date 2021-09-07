@@ -10,10 +10,11 @@ export default createStore({
       status: "",
     },
     cardsList: [],
+    currentCard: {},
     defaultCard: {
       id: "",
-      recto: "Luc 17:5",
-      verso: "Donne nous plus de foi.",
+      recto: "Texte du Jour ?",
+      verso: "",
       streak: 0,
       next_revision: "",
       user_id: 1,
@@ -42,6 +43,10 @@ export default createStore({
   mutations: {
     changeUser(state, payload) {
       state.user.id = payload;
+      state.defaultCard.user_id = payload;
+    },
+    chargeCard(state) {
+      state.currentCard = { ...state.cardsList[0] };
     },
     createCard(state) {
       state.cardsList.unshift(state.defaultCard);
@@ -84,6 +89,9 @@ export default createStore({
     changeUser(context, payload) {
       context.commit("changeUser", payload);
     },
+    chargeCard(context) {
+      context.commit("chargeCard");
+    },
     createCard(context) {
       context.commit("createCard");
     },
@@ -91,7 +99,7 @@ export default createStore({
       context.commit("shiftCard");
     },
     submitCard(context) {
-      let newCard = { ...this.state.cardsList[0] };
+      let newCard = this.state.currentCard;
       context.commit("shiftCard");
       this.dispatch("revisionRequest", {
         method: "POST",

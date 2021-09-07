@@ -34,15 +34,16 @@ body,
 }
 
 textarea {
+  font-family: "Roboto", sans-serif;
+  resize: none;
+
   width: 95%;
   height: 100%;
   flex-grow: 1;
 
-  border-radius: 0.5rem;
-
+  border: none;
   background-color: inherit;
   color: inherit;
-
   padding-top: 1rem;
   text-align: center;
 }
@@ -57,7 +58,7 @@ button {
 }
 
 .card {
-  border: solid 2px $pink;
+  border: solid 1px $pink;
   border-radius: $card_rad;
   background-color: $violet;
 
@@ -124,14 +125,12 @@ button {
       padding: 1rem 0;
       font-style: italic;
     }
-    & .modifyButton, & .validationButtons {
+    & .validationButtons {
       position: absolute;
       bottom: -0.25rem;
       left: -0.25rem;
       margin: 0;
       width: 60%;
-    }
-    & .validationButtons {
       display: flex;
       & button {
         margin: 0;
