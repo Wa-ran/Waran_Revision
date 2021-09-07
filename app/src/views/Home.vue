@@ -42,6 +42,7 @@ export default {
   },
   methods: {
     async chargeDeck() {
+      await this.shiftCard(); // permet de reload le deck (key change)
       await this.$store.dispatch("getCardsToRevise");
     },
     async createCard() {

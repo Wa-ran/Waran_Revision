@@ -10,7 +10,7 @@ export default createStore({
       status: "",
     },
     cardsList: [],
-    currentCard: {},
+    firstDeckCard: {},
     defaultCard: {
       id: "",
       recto: "Texte du Jour ?",
@@ -46,7 +46,7 @@ export default createStore({
       state.defaultCard.user_id = payload;
     },
     chargeCard(state) {
-      state.currentCard = { ...state.cardsList[0] };
+      state.firstDeckCard = { ...state.cardsList[0] };
     },
     createCard(state) {
       state.cardsList.unshift(state.defaultCard);
@@ -98,13 +98,12 @@ export default createStore({
     shiftCard(context) {
       context.commit("shiftCard");
     },
-    submitCard(context) {
-      let newCard = this.state.currentCard;
+    submitCard(context, actualcard) {
       context.commit("shiftCard");
       this.dispatch("revisionRequest", {
         method: "POST",
         serverRoute: "/OneCard",
-        data: newCard,
+        data: actualcard,
         mutate: "card",
         dontChargeDeck: true,
       });

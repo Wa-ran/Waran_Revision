@@ -53,7 +53,7 @@ button {
   padding: 0.25rem 2rem;
   z-index: 1000;
   border: solid 1px $pink;
-  background-color: $violet;
+  background-color: $dark_blue;
   color: $white;
 }
 
@@ -86,6 +86,10 @@ button {
       flex-direction: column;
       justify-content: center;
       align-content: center;
+    }
+    & .question, & .response {
+      width: auto;
+      padding: 1rem;
     }
     & hr {
       border: none;
