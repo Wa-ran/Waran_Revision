@@ -37,7 +37,7 @@ module.exports = class Card {
   parseToJS() {
     for (let [key, value] of Object.entries(this)) {
       try {
-        if (!Number.isInteger(value) && key != "next_revision" && 0 == 1) {
+        if (!Number.isInteger(value) && key != "next_revision") {
           this[key] = decrypt(value)
         };
       }
