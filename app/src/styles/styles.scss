@@ -55,6 +55,20 @@ button {
   border: solid 1px $pink;
   background-color: $dark_blue;
   color: $white;
+  &:hover, &:focus {
+    background-color: $pink;
+  }
+  &:active {
+    background-color: $violet;
+  }
+}
+.fa-icon {
+  &:hover svg, &:focus svg {
+    color: $pink;
+  }
+  &:active svg {
+    color: $violet;
+  }
 }
 
 .card {
@@ -94,7 +108,7 @@ button {
     & hr {
       border: none;
     }
-    & .flipCard {
+    & .flip-card {
       position: absolute;
       top: 0.25rem;
       right: 0.25rem;
@@ -125,11 +139,11 @@ button {
     }
   }
   & .bottom {
-    & .calcRevision {
+    & .calc-revision {
       padding: 1rem 0;
       font-style: italic;
     }
-    & .validationButtons {
+    & .validation-buttons {
       position: absolute;
       bottom: -0.25rem;
       left: -0.25rem;
@@ -140,6 +154,9 @@ button {
         margin: 0;
         padding: 0.25rem 1rem;
         flex-grow: 1;
+        &:first-child {
+          margin-right: -1px;
+        }
       }
     }
     & .streak {

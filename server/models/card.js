@@ -1,5 +1,6 @@
 const dtb = require('../middlewares/dtb');
 const dateParser = require('../middlewares/dateParser');
+const { encrypt, decrypt } = require('../middlewares/crypto');
 
 const HOURS_SUITE = {
   0: 0,
@@ -34,20 +35,10 @@ module.exports = class Card {
   };
 
   parseToJS() {
-    try {
-      this.next_revision = dateParser.toJS(this.next_revision);
-    } catch (error) {
-      // If error or already to JS
-      console.log(error);
-      return this
-    };
     for (let [key, value] of Object.entries(this)) {
       try {
-        if (value === '""' || value === null) {
-          this[key] = null
-        }
-        else if (!Number.isInteger(value) && value[0] == '"' && value[value.length] == '"') {
-          this[key] = value.substring(1, value.length - 1)
+        if (!Number.isInteger(value) && key != "next_revision" && 0 == 1) {
+          this[key] = decrypt(value)
         };
       }
       catch (error) {
@@ -55,25 +46,19 @@ module.exports = class Card {
         throw error
       };
     };
+    this.next_revision = dateParser.toJS(this.next_revision);
     return this
   };
 
   parseToMySQL() {
-    // not null, string = "string"
-    try {
-      this.next_revision = dateParser.toMySQL(this.next_revision);
-    } catch (error) {
-      // If error or already to MySQL
-      console.log(error);
-      return this
-    };
+    // not null, string = encryption
     for (let [key, value] of Object.entries(this)) {
       try {
         if (value === null) {
           this[key] = '""'
         }
-        else if (!Number.isInteger(value) && value[0] != '"' && value[value.length] != '"') {
-          this[key] = '"' + value + '"'
+        else if (!Number.isInteger(value) && key != "next_revision") {
+          this[key] = `"${encrypt(value)}"`
         };
       }
       catch (error) {
@@ -81,6 +66,7 @@ module.exports = class Card {
         throw error
       };
     };
+    this.next_revision = `"${dateParser.toMySQL(this.next_revision)}"`;
     return this
   };
 
@@ -96,17 +82,10 @@ module.exports = class Card {
     return Number.isInteger(val) ? val : (isNaN(Number.parseInt(val)) ? null : Number.parseInt(val));
   };
 
-  newStreak(win) {
-    if (win) {
-      ++this.streak;
-    }
-    else {
-      --this.streak;
-    };
-  };
-
   calculNextRevision() {
-    let number = HOURS_SUITE[this.streak];
+    let streak = this.streak;
+    if (streak > Object.values(HOURS_SUITE).length) streak = Object.values(HOURS_SUITE).length;
+    let number = HOURS_SUITE[streak];
     this.next_revision = new Date(new Date().setTime(new Date().getTime() + number * 60 * 60 * 1000));
   };
 
