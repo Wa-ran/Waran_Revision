@@ -8,7 +8,11 @@
       <label for="User">{{ actualUser }}</label>
     </header>
     <div id="deck" :key="cardsList.length">
-      <Card v-for="card in cardsList" :key="card.id" :cardToRevise="card" />
+      <Card
+        v-for="card in cardsList.slice(0, 10)"
+        :key="card.id"
+        :cardToRevise="card"
+      />
       <Card />
     </div>
     <div class="manageDeck">
