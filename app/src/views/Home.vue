@@ -8,16 +8,9 @@
       <label for="User">{{ actualUser }}</label>
     </header>
 
-    <div v-if="cardsList.length >= 2" id="deck" :key="cardsList.length">
-      <Card v-if="cardsList.length > 0" />
-      <div
-        v-for="card in cardsList.length - 1"
-        :key="card.id"
-        class="card"
-      ></div>
-    </div>
-    <div v-else id="deck">
+    <div id="deck" :key="cardsList.length">
       <Card />
+      <div v-for="card in cardsList.length" :key="card" class="card"></div>
     </div>
 
     <div class="manageDeck">
