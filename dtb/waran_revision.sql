@@ -10,6 +10,7 @@ CREATE TABLE cards (
                 next_revision DATETIME DEFAULT now(),
                 user_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
                 required_cards VARCHAR(20),
+                reverse BOOLEAN DEFAULT false,
                 PRIMARY KEY (id)
 );
 

@@ -7,14 +7,19 @@
       </select>
       <label for="User">{{ actualUser }}</label>
     </header>
-    <div id="deck" :key="cardsList.length">
-      <Card
-        v-for="card in cardsList.slice(0, 10)"
+
+    <div v-if="cardsList.length >= 2" id="deck" :key="cardsList.length">
+      <Card v-if="cardsList.length > 0" />
+      <div
+        v-for="card in cardsList.length - 1"
         :key="card.id"
-        :cardToRevise="card"
-      />
+        class="card"
+      ></div>
+    </div>
+    <div v-else id="deck">
       <Card />
     </div>
+
     <div class="manageDeck">
       <button id="submitCard" @click="this.createCard">Nouvelle carte</button>
       <button v-if="cardsList.length > 0" id="nextCard" @click="this.shiftCard">
@@ -50,13 +55,16 @@ export default {
       await this.$store.dispatch("getCardsToRevise");
     },
     async createCard() {
-      await this.$store.dispatch("createCard");
+      await this.$store.dispatch("mutateStore", { fct: "createCard" });
     },
     async shiftCard() {
-      await this.$store.dispatch("shiftCard");
+      await this.$store.dispatch("mutateStore", { fct: "shiftCard" });
     },
     changeUser(e) {
-      this.$store.dispatch("changeUser", e.target.value);
+      this.$store.dispatch("mutateStore", {
+        fct: "changeUser",
+        body: e.target.value,
+      });
     },
   },
   async created() {

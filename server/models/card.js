@@ -4,9 +4,9 @@ const { encrypt, decrypt } = require('../middlewares/crypto');
 
 const HOURS_SUITE = {
   0: 0,
-  1: 8,
+  1: 6,
   2: 12,
-  3: 24,
+  3: 22,
   4: 36,
   5: 60,
   6: 96,
@@ -23,7 +23,7 @@ const HOURS_SUITE = {
 
 module.exports = class Card {
 
-  constructor(id, recto, verso, streak, user_id, next_revision, required_cards, tags) {
+  constructor(id, recto, verso, streak, user_id, next_revision, required_cards, reverse, tags) {
     this.id = this.tryParseInt(id);
     this.recto = recto;
     this.verso = verso;
@@ -31,6 +31,7 @@ module.exports = class Card {
     this.user_id = this.tryParseInt(user_id);
     this.next_revision = next_revision ? next_revision : new Date();
     this.required_cards = this.tryJoin(required_cards);
+    this.reverse = reverse;
     this.tags = this.tryJoin(tags);
   };
 
@@ -57,7 +58,7 @@ module.exports = class Card {
         if (value === null) {
           this[key] = '""'
         }
-        else if (!Number.isInteger(value) && key != "next_revision") {
+        else if (!Number.isInteger(value) && key != "next_revision" && value !== true && value !== false) {
           this[key] = `"${encrypt(value)}"`
         };
       }
@@ -90,9 +91,11 @@ module.exports = class Card {
   };
 
   inverseRectoVerso() {
-    let recto = this.recto;
-    this.recto = this.verso;
-    this.verso = recto;
+    if (this.reverse) {
+      let recto = this.recto;
+      this.recto = this.verso;
+      this.verso = recto;
+    }
   };
 
   async updateFromDtb() {

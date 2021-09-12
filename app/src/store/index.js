@@ -11,6 +11,7 @@ export default createStore({
     },
     cardsList: [],
     firstDeckCard: {},
+    actualCard: {},
     defaultCard: {
       id: "",
       recto: "Texte du Jour ?",
@@ -19,6 +20,7 @@ export default createStore({
       next_revision: "",
       user_id: 1,
       required_cards: [],
+      reverse: true,
       tags: [],
     },
     form: {
@@ -45,7 +47,10 @@ export default createStore({
       state.user.id = payload;
       state.defaultCard.user_id = payload;
     },
-    chargeCard(state) {
+    buildActualCard(state, payload) {
+      state.actualCard = payload
+    },
+    chargeFirstCard(state) {
       state.firstDeckCard = { ...state.cardsList[0] };
     },
     createCard(state) {
@@ -86,24 +91,15 @@ export default createStore({
     },
   },
   actions: {
-    changeUser(context, payload) {
-      context.commit("changeUser", payload);
+    mutateStore(context, payload) {
+      context.commit(payload.fct, payload.body)
     },
-    chargeCard(context) {
-      context.commit("chargeCard");
-    },
-    createCard(context) {
-      context.commit("createCard");
-    },
-    shiftCard(context) {
-      context.commit("shiftCard");
-    },
-    submitCard(context, actualcard) {
+    submitCard(context) {
       context.commit("shiftCard");
       this.dispatch("revisionRequest", {
         method: "POST",
         serverRoute: "/OneCard",
-        data: actualcard,
+        data: this.state.actualcard,
         mutate: "card",
         dontChargeDeck: true,
       });
@@ -115,15 +111,6 @@ export default createStore({
         data: this.state.user.id,
         mutate: "cardsList",
       });
-    },
-    setLoading(context, payload) {
-      context.commit("isLoading", payload);
-    },
-    setError(context, payload) {
-      context.commit("triggError", { bool: payload });
-    },
-    chooseSubmit(context, payload) {
-      context.commit("setSubmit", payload);
     },
     revisionRequest(context, req) {
       if (!this.state.error.pending) {
