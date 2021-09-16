@@ -23,6 +23,17 @@ export default createStore({
       reverse: true,
       tags: [],
     },
+    newCard: {
+      id: "",
+      recto: "Une carte toute neuve !",
+      verso: "",
+      streak: 0,
+      next_revision: "",
+      user_id: 1,
+      required_cards: [],
+      reverse: true,
+      tags: [],
+    },
     form: {
       revisionRequest: null,
       submitPath: null,
@@ -57,7 +68,7 @@ export default createStore({
       state.firstDeckCard = { ...state.cardsList[0] };
     },
     createCard(state) {
-      state.cardsList.unshift(state.defaultCard);
+      state.cardsList.unshift(state.newCard);
     },
     shiftCard(state) {
       state.cardsList.shift();

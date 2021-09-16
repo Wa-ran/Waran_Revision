@@ -58,6 +58,9 @@ export default {
     };
   },
   computed: {
+    actualCard() {
+      return this.$store.state.actualCard.id;
+    },
     cardsList() {
       return this.$store.state.cardsList;
     },
@@ -76,6 +79,11 @@ export default {
   },
   async created() {
     await this.chargeDeck();
+  },
+  watch: {
+    actualCard() {
+      this.useCardEditor = false;
+    },
   },
 };
 </script>

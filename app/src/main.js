@@ -17,7 +17,15 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 import { CssDoodle } from "css-doodle";
 
-library.add(faShare, faBold, faItalic, faUnderline, faUndo, faStrikethrough, faTint);
+library.add(
+  faShare,
+  faBold,
+  faItalic,
+  faUnderline,
+  faUndo,
+  faStrikethrough,
+  faTint
+);
 
 const VueApp = createApp(App);
 VueApp.component("font-awesome-icon", FontAwesomeIcon);
