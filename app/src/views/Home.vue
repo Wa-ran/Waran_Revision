@@ -1,26 +1,40 @@
 <template>
   <main id="home">
-    <header>
-      <select name="user" id="User" @change="this.changeUser">
-        <option value="1">test</option>
-        <option value="2">Waran</option>
-      </select>
-      <label for="User">{{ actualUser }}</label>
-    </header>
+    <Header @userChange="this.chargeDeck" />
 
-    <div id="deck" :key="cardsList.length">
-      <Card />
-      <div v-for="card in cardsList.length" :key="card" class="card"></div>
-    </div>
+    <div class="home--main flex-grow-1">
+      <div></div>
 
-    <div class="manageDeck">
-      <button id="submitCard" @click="this.createCard">Nouvelle carte</button>
-      <button v-if="cardsList.length > 0" id="nextCard" @click="this.shiftCard">
-        Carte suivante
-      </button>
-      <button id="charegDeck" @click="this.chargeDeck">
-        Recharger le deck
-      </button>
+      <div class="revisionZone flex-grow-1">
+        <div id="deck" class="flex-grow-1" :key="cardsList.length">
+          <Card id="actualCard" @modifying="useCardEditor = $event" />
+          <div
+            v-for="card in cardsList.slice(0, 5)"
+            :key="card"
+            class="card"
+          ></div>
+        </div>
+
+        <div class="deckManager">
+          <button id="submitCard" @click="this.createCard">
+            Nouvelle carte
+          </button>
+          <button
+            v-if="cardsList.length > 0"
+            id="nextCard"
+            @click="this.shiftCard"
+          >
+            Carte suivante
+          </button>
+          <button id="charegDeck" @click="this.chargeDeck">
+            Recharger le deck
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <Editor id="cardEditor" v-if="useCardEditor" />
+      </div>
     </div>
   </main>
 </template>
@@ -28,18 +42,24 @@
 <script>
 // @ is an alias to /src
 import Card from "@/components/Card.vue";
+import Editor from "@/components/Editor.vue";
+import Header from "@/components/Header.vue";
 
 export default {
   name: "Home",
   components: {
     Card,
+    Editor,
+    Header,
+  },
+  data() {
+    return {
+      useCardEditor: false,
+    };
   },
   computed: {
     cardsList() {
       return this.$store.state.cardsList;
-    },
-    actualUser() {
-      return this.$store.state.user.id;
     },
   },
   methods: {
@@ -53,20 +73,9 @@ export default {
     async shiftCard() {
       await this.$store.dispatch("mutateStore", { fct: "shiftCard" });
     },
-    changeUser(e) {
-      this.$store.dispatch("mutateStore", {
-        fct: "changeUser",
-        body: e.target.value,
-      });
-    },
   },
   async created() {
     await this.chargeDeck();
-  },
-  watch: {
-    async actualUser() {
-      await this.chargeDeck();
-    },
   },
 };
 </script>
@@ -78,36 +87,39 @@ export default {
 
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  & > .home--main {
+    width: 100%;
+    display: flex;
+    & > div {
+      width: 100%;
+    }
+  }
 }
+
 #deck {
   width: 100%;
   min-height: 500px;
-  margin: 2rem 0;
+  margin: 1rem 0 2rem 0;
 
   display: flex;
   justify-content: center;
   align-content: center;
-}
-.card {
-  min-width: 300px;
-  min-height: 500px;
-  margin: auto;
 
-  position: absolute;
+  & .card {
+    min-width: 300px;
+    min-height: 500px;
+    margin: auto;
 
-  &:last-child {
-    box-shadow: 0 0 15px 5px rgba(0, 0, 0, 0.5);
+    position: absolute;
   }
 }
-button {
-  margin: auto;
-  margin-top: 2rem;
-}
-.manageDeck {
+
+.deckManager {
   margin: auto;
   display: flex;
+  justify-content: space-between;
   & button {
+    min-width: 25%;
     margin: 1rem;
   }
 }

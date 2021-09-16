@@ -4,12 +4,20 @@ import router from "./router";
 import store from "./store";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faShare } from "@fortawesome/free-solid-svg-icons";
+import {
+  faShare,
+  faBold,
+  faItalic,
+  faUnderline,
+  faUndo,
+  faStrikethrough,
+  faTint,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 import { CssDoodle } from "css-doodle";
 
-library.add(faShare);
+library.add(faShare, faBold, faItalic, faUnderline, faUndo, faStrikethrough, faTint);
 
 const VueApp = createApp(App);
 VueApp.component("font-awesome-icon", FontAwesomeIcon);

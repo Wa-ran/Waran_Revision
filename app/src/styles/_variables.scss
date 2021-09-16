@@ -1,0 +1,30 @@
+$dark_blue: #211a4c;
+$pink: #e84a5f;
+$violet: rgb(49, 17, 75);
+$white: rgb(245, 244, 210);
+
+$colors: (
+  'cust_pink' $pink,
+  'cust_violet' $violet,
+  'cust_white' $white,
+  'cust_red' red,
+  'cust_orange' orange,
+  'cust_yellow' yellow,
+  'cust_green' limegreen,
+  'cust_blue' dodgerblue,
+);
+
+$card_rad: 1rem;
+
+
+@each $name, $color in $colors {
+  .#{$name} {
+    color: $color !important;
+  };
+};
+
+@for $i from 1 through 10 {
+  .flex-grow-#{$i} {
+    flex-grow: $i;
+  }
+};

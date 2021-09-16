@@ -1,22 +1,9 @@
-$dark_blue: #211a4c;
-$pink: #e84a5f;
-$violet: rgb(49, 17, 75);
-$white: rgb(245, 244, 210);
-
-$card_rad: 1rem;
-
-@for $i from 1 through 10 {
-  .flex-grow-#{$i} {
-    flex-grow: $i;
-  }
-};
-
 html {
   font-family: "Roboto", sans-serif;
 
   height: 100%;
   width: 100%;
-
+  overflow: hidden;
   background-color: $violet;
   color: $white;
   word-wrap: break-word;
@@ -34,29 +21,27 @@ body,
   margin: 0;
 }
 
-textarea {
+textarea, div[contenteditable="true"] {
   font-family: "Roboto", sans-serif;
   resize: none;
 
-  width: 95%;
   height: 100%;
   flex-grow: 1;
 
   border: none;
   background-color: inherit;
   color: inherit;
-  padding-top: 1rem;
+  padding: 1rem;
   text-align: center;
 }
 
 button {
-  margin: 0 1rem;
-  padding: 0.25rem 2rem;
+  padding: 0.25rem 0.75rem;
   z-index: 1000;
   border: solid 1px $pink;
   background-color: $dark_blue;
   color: $white;
-  &:hover, &:focus {
+  &:hover {
     background-color: $pink;
   }
   &:active {
@@ -78,6 +63,9 @@ button {
   background-color: $violet;
 
   transform-style: preserve-3d;
+  &:last-child {
+    box-shadow: 0 0 15px 5px rgba(0, 0, 0, 0.5);
+  }
   & .recto,
   & .verso {
     position: absolute;
@@ -102,9 +90,10 @@ button {
       justify-content: center;
       align-content: center;
     }
-    & .question, & .response {
+    & .readingZone {
       width: auto;
       padding: 1rem;
+      padding-top: 0;
     }
     & hr {
       border: none;
@@ -122,20 +111,19 @@ button {
   }
   & .verso {
     transform: rotateY(180deg);
-    & .response {
+    & .readingZone {
       position: relative;
-      & .false, & .true {
-        width: 40%;
-      }
-      & .false {
-        position: absolute;
-        bottom: -0.25rem;
-        left: -1.25rem;
-      }
-      & .true {
-        position: absolute;
-        bottom: -0.25rem;
-        right: -1.25rem;
+    }
+    & .streakButtons {
+      position: absolute;
+      bottom: -0.5rem;
+      left: -2.5%;
+      width: 105%;
+      display: flex;
+      justify-content: space-between;
+      & button {
+        width: 30%;
+        word-wrap: normal;
       }
     }
   }
@@ -143,22 +131,6 @@ button {
     & .calc-revision {
       padding: 1rem 0;
       font-style: italic;
-    }
-    & .validation-buttons {
-      position: absolute;
-      bottom: -0.25rem;
-      left: -0.25rem;
-      margin: 0;
-      width: 60%;
-      display: flex;
-      & button {
-        margin: 0;
-        padding: 0.25rem 1rem;
-        flex-grow: 1;
-        &:first-child {
-          margin-right: -1px;
-        }
-      }
     }
     & .streak {
       display: flex;
@@ -173,13 +145,34 @@ button {
   }
 }
 
-css-doodle {
+.doubleButtons {
+  margin: 0;
+  display: flex;
+  justify-content: flex-start;
+  & button {
+    margin: 0;
+    padding: 0.25rem 1rem;
+    flex-grow: 1;
+    &:first-child {
+      margin-right: -1px;
+    }
+  }
+}
+
+.doodle {
   position: absolute;
   width: 100%;
   height: 100%;
   overflow: hidden;
   border-radius: $card_rad;
   z-index: -1;
+}
+css-doodle {
+  position: absolute;
+  width: 110%;
+  height: 110%;
+  top: -5%;
+  left: -5%;
 
   --rule: (
     @grid: 35;
@@ -238,10 +231,10 @@ css-doodle {
     );
   );
   --pattern-card-side: (
-    @grid: 45;
-    @size: 1px calc(141.4%);
+    @grid: 32;
+    @size: 1px calc(15px + 70%);
     transform: rotate(@r(±90deg));
     background: #e84a5f;
-    opacity: calc(1.1 - 1 / 1000 * @index);
+    opacity: calc(1 - 1 / 1000 * @index);
   )
 }

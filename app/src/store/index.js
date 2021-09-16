@@ -50,6 +50,9 @@ export default createStore({
     buildActualCard(state, payload) {
       state.actualCard = payload;
     },
+    changeActualCard(state, payload) {
+      state.actualCard[payload.face] = payload.change;
+    },
     chargeFirstCard(state) {
       state.firstDeckCard = { ...state.cardsList[0] };
     },

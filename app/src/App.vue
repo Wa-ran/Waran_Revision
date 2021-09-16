@@ -11,6 +11,6 @@ export default {
 </script>
 
 <style lang="scss">
-@import "~@/styles/styles.scss";
+@import "~@/styles/global.scss";
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap");
 </style>

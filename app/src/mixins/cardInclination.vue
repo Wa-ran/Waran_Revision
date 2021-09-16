@@ -2,7 +2,7 @@
 export default {
   name: "cardInclination",
   methods: {
-    flipCard(e) {
+    cardInclinationFlip(e) {
       let card = e.target;
       while (!card.classList.contains("card")) card = card.parentNode;
       card.classList.add("flip_anim");
@@ -16,23 +16,27 @@ export default {
     },
     cardInclination() {
       const deck = document.querySelectorAll(".card");
-      const last = deck[deck.length - 1];
+      // const last = document.querySelector("#actualCard");
 
       const cardMovement = (e) => {
-        const coordBox = last.getBoundingClientRect();
-        const centerPointX = coordBox.x + coordBox.width / 2;
-        const centerPointY = coordBox.y + coordBox.height / 2;
+        // const coordBox = last.getBoundingClientRect();
+        // const centerPointX = coordBox.x + coordBox.width / 2;
+        // const centerPointY = coordBox.y + coordBox.height / 2;
 
-        const maxRotation = 10;
+        const coordBox = document.body;
+        const centerPointX = coordBox.scrollWidth / 2;
+        const centerPointY = coordBox.scrollHeight / 2;
+
+        const maxRotation = 20;
 
         //Y rotation
-        const rotationFactorY = maxRotation / coordBox.width;
+        const rotationFactorY = maxRotation / coordBox.scrollWidth;
         let yRotation = Math.ceil(
           -1 * (e.screenX - centerPointX) * rotationFactorY
         );
 
         //X rotation
-        const rotationFactorX = maxRotation / coordBox.height;
+        const rotationFactorX = maxRotation / coordBox.scrollHeight;
         let xRotation = Math.ceil((e.screenY - centerPointY) * rotationFactorX);
 
         for (let [index, card] of deck.entries()) {
