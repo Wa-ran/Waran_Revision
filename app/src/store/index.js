@@ -62,7 +62,7 @@ export default createStore({
       state.actualCard = payload;
     },
     changeActualCard(state, payload) {
-      state.actualCard[payload.face] = payload.change;
+      state.actualCard[payload.key] = payload.value;
     },
     chargeFirstCard(state) {
       state.firstDeckCard = { ...state.cardsList[0] };
@@ -76,17 +76,7 @@ export default createStore({
     handleResponse(state, payload) {
       let mutate = payload.mutate;
       delete payload.mutate;
-      if (mutate == "card") {
-        payload.next_revision = new Date(payload.next_revision);
-        state.cardsList.unshift(payload);
-      } else {
-        for (let item of payload) {
-          if (item.next_revision)
-            item.next_revision = new Date(item.next_revision);
-        }
-        if (Array.isArray(payload)) state[mutate] = payload;
-        else state[mutate].push(payload);
-      }
+      state[mutate] = payload;
     },
     isLoading(state, payload) {
       state.loading = payload;
@@ -114,8 +104,14 @@ export default createStore({
         method: "POST",
         serverRoute: "/OneCard",
         data: this.state.actualCard,
-        mutate: "card",
-        dontChargeDeck: true,
+      });
+    },
+    submitCardChanges() {
+      this.dispatch("revisionRequest", {
+        method: "PUT",
+        serverRoute: "/OneCard",
+        data: this.state.actualCard,
+        mutate: "actualCard",
       });
     },
     getCardsToRevise() {
@@ -138,7 +134,7 @@ export default createStore({
             req.data
           )
           .then((res) => {
-            if (!req.dontChargeDeck) {
+            if (req.mutate) {
               res["mutate"] = req.mutate;
               context.commit("handleResponse", res);
             }

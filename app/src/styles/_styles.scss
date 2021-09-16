@@ -48,6 +48,13 @@ button {
     background-color: $violet;
   }
 }
+
+header {
+  background-color: $dark_blue;
+  border-bottom: solid 1px $pink;
+  padding: .5rem 1rem;
+}
+
 .fa-icon {
   &:hover svg, &:focus svg {
     color: $pink;

@@ -3,7 +3,7 @@
     <Header @userChange="this.chargeDeck" />
 
     <div class="home--main flex-grow-1">
-      <div></div>
+      <div class="tagsZone"></div>
 
       <div class="revisionZone flex-grow-1">
         <div id="deck" class="flex-grow-1" :key="cardsList.length">
@@ -24,7 +24,7 @@
             id="nextCard"
             @click="this.shiftCard"
           >
-            Carte suivante
+            Passer
           </button>
           <button id="charegDeck" @click="this.chargeDeck">
             Recharger le deck
@@ -89,6 +89,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "../styles/global";
+
 #home {
   width: 100%;
   min-height: 100%;
