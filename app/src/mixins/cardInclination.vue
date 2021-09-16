@@ -27,7 +27,7 @@ export default {
         const centerPointX = coordBox.scrollWidth / 2;
         const centerPointY = coordBox.scrollHeight / 2;
 
-        const maxRotation = 20;
+        const maxRotation = 25;
 
         //Y rotation
         const rotationFactorY = maxRotation / coordBox.scrollWidth;
