@@ -4,11 +4,11 @@
 
     <div class="home--main flex-grow-1">
       <div id="tagsZone">
-        <h3>Vos Tags :</h3>
-        <TagsList />
+        <TagsList class="flex-grow-1" />
+        <CardTags />
       </div>
 
-      <div class="revisionZone flex-grow-1">
+      <div class="central flex-grow-1">
         <div id="deck" class="flex-grow-1" :key="cardsList.length">
           <Card id="actualCard" @modifying="useCardEditor = $event" />
           <div
@@ -19,18 +19,14 @@
         </div>
 
         <div class="deckManager">
-          <button id="submitCard" @click="this.createCard">
-            Nouvelle carte
+          <button @click="this.createCard">Nouvelle carte</button>
+          <button v-if="cardsList.length > 0" @click="this.shiftCard">
+            Passer la carte
           </button>
-          <button
-            v-if="cardsList.length > 0"
-            id="nextCard"
-            @click="this.shiftCard"
-          >
-            Passer
-          </button>
-          <button id="charegDeck" @click="this.chargeDeck">
-            Recharger le deck
+          <button @click="this.chargeDeck">Recharger le deck</button>
+          <button class="importantButton">
+            <font-awesome-icon :icon="['fas', 'trash-alt']" />
+            <span class="flex-grow-1">Supprimer la carte</span>
           </button>
         </div>
       </div>
@@ -45,6 +41,7 @@
 <script>
 // @ is an alias to /src
 import Card from "@/components/Card.vue";
+import CardTags from "@/components/CardTags.vue";
 import Editor from "@/components/Editor.vue";
 import Header from "@/components/Header.vue";
 import TagsList from "@/components/TagsList.vue";
@@ -53,6 +50,7 @@ export default {
   name: "Home",
   components: {
     Card,
+    CardTags,
     Editor,
     Header,
     TagsList,
@@ -112,13 +110,24 @@ export default {
 }
 
 #tagsZone {
-  padding: 1rem 2rem;
+  display: flex;
+  flex-wrap: wrap-reverse;
+  & > * {
+    min-width: 200px;
+    margin: 1rem;
+  }
+}
+
+.central {
+  display: flex;
+  flex-direction: column;
 }
 
 #deck {
   width: 100%;
   min-height: 500px;
-  margin: 1rem 0 2rem 0;
+  margin: auto;
+  margin-top: 2rem;
 
   display: flex;
   justify-content: center;
@@ -134,12 +143,19 @@ export default {
 }
 
 .deckManager {
-  margin: auto;
+  margin: 2rem auto;
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
   & button {
-    min-width: 25%;
-    margin: 1rem;
+    min-width: 30%;
+    margin: 0.5rem auto;
   }
+}
+
+#cardEditor {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 </style>

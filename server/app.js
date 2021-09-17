@@ -2,9 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 // const user = require('./routes/user');
-const card = require('./routes/card');
-const list = require('./routes/list');
-const user = require('./routes/user');
+const router = require('./routes/router');
 const fs = require('fs');
 const path = require('path');
 
@@ -39,8 +37,6 @@ app.use('/images',
   },
   express.static(path.join(__dirname, 'images')));
 
-app.use('/OneCard', card);
-app.use('/List', list);
-app.use('/User', user);
+app.use('/', router);
 
 module.exports = app;

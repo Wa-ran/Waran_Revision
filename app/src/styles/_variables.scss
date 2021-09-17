@@ -32,5 +32,15 @@ $card_rad: 1rem;
 @mixin case_style {
   background-color: $dark_blue;
   border: solid 1px $pink;
-  padding: 0.25rem 0.75rem;
+  padding: 0.25rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  & span {
+    margin: 0 0.75rem;
+  }
+  & svg {
+    margin: 0 0.5rem;
+    margin-right: auto;
+  }
 }

@@ -13,6 +13,7 @@ import {
   faStrikethrough,
   faTint,
   faHistory,
+  faTrashAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
@@ -26,7 +27,8 @@ library.add(
   faUndo,
   faStrikethrough,
   faTint,
-  faHistory
+  faHistory,
+  faTrashAlt
 );
 
 const VueApp = createApp(App);

@@ -1,9 +1,13 @@
 const express = require('express');
 const router = express.Router();
 // const auth = require('../middlewares/auth');
-const userCtrl = require('../controllers/user');
+const ctrl = require('../controllers/controller');
 
-router.post('/:object/:fctName', userCtrl)
+router.get('/:fctName/:object/:id', ctrl);
+router.post('/:fctName', ctrl)
+router.put('/:fctName', ctrl);
+router.delete('/:fctName', ctrl);
+
 
 // router.post('/signup', userCtrl.signup);
 // router.post('/login', userCtrl.login);

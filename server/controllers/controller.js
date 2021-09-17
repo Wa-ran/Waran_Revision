@@ -1,26 +1,33 @@
 // const jwt = require('jsonwebtoken');
 // const fs = require('fs');
-const userFct = require('../middlewares/user');
-const UserClass = require('../models/user');
-const TagClass = require('../models/tag');
+const requestFct = require('../middlewares/request');
 const objCreator = require('../middlewares/objectCreator');
 
 module.exports = async (req, res, next) => {
-  let fctName = req.params.fctName;
-  let reqObj = req.params.object;
-  let data;
-  switch (reqObj) {
-    case "Tag":
-      data = objCreator.createObj(TagClass, req.body)
-      break;
-    case "User":
-      data = objCreator.createObj(UserClass, req.body)
-      break;
+  let method = req.method.toLowerCase();
+  let fctName = method + req.params.fctName;
+  let data = {};
+  if (method === "get") {
+    let objName = req.params.object;
+    let object = { 'id': req.params.id };
+    req.body[objName] = object;
+  }
+  for ([objName, object] of Object.entries(req.body)) {
+    data[objName] = objCreator.createObj(objName, object)
   }
 
-  await userFct[fctName](data)
-    .then((result) => {
-      result.parseToJS();
+  await requestFct[fctName](data)
+    .then((response) => {
+      let result;
+      if (Array.isArray(response)) {
+        result = [];
+        for (obj of response) {
+          obj.parseToJS();
+          result.push(obj);
+        };
+      }
+      else result = response.parseToJS();
+
       res.send(result)
     })
     .catch((error) => {

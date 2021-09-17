@@ -52,6 +52,7 @@ export default createStore({
       user_id: ",",
     },
     tagsList: [],
+    actualCardTagsList: [],
     user: {
       id: 1,
       pseudo: "",
@@ -115,39 +116,47 @@ export default createStore({
       context.commit("shiftCard");
       this.dispatch("revisionRequest", {
         method: "POST",
-        serverRoute: "/OneCard",
-        data: this.state.actualCard,
+        serverRoute: "/Card",
+        data: { "card": this.state.actualCard },
       });
     },
     submitTag() {
       this.dispatch("revisionRequest", {
         method: "POST",
-        serverRoute: "/User/Tag/postTag",
-        data: this.state.actualTag,
+        serverRoute: "/Tag",
+        data: { "tag": this.state.actualTag },
       });
     },
-    submitCardChanges() {
+    saveCardChanges() {
       this.dispatch("revisionRequest", {
         method: "PUT",
-        serverRoute: "/OneCard",
-        data: this.state.actualCard,
+        serverRoute: "/Card",
+        data: { "card": this.state.actualCard },
         mutate: "actualCard",
       });
     },
     getCardsToRevise() {
       this.dispatch("revisionRequest", {
         method: "GET",
-        serverRoute: "/List/CardsToRevise",
-        data: this.state.user.id,
+        serverRoute: "/CardsToRevise",
+        data: "user/" + this.state.user.id,
         mutate: "cardsList",
       });
     },
     getAllUserTags() {
       this.dispatch("revisionRequest", {
         method: "GET",
-        serverRoute: "/List/AllUserTags",
-        data: this.state.user.id,
+        serverRoute: "/AllUserTags",
+        data: "user/" + this.state.user.id,
         mutate: "tagsList",
+      });
+    },
+    getActualCardTags() {
+      this.dispatch("revisionRequest", {
+        method: "POST",
+        serverRoute: "/GetCardTags",
+        data: { "card": this.state.actualCard },
+        mutate: "actualCardTags",
       });
     },
     revisionRequest(context, req) {

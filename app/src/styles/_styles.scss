@@ -45,12 +45,27 @@ button {
   &:active {
     background-color: $violet;
   }
+  &.icon svg{
+    margin: 0 0.5rem;
+  }
+}
+
+.tag {
+  border-radius: $card_rad;
 }
 
 header {
   background-color: $dark_blue;
   border-bottom: solid 1px $pink;
   padding: .5rem 1rem;
+  margin-bottom: 1rem;
+}
+
+hr {
+  height: 0;
+  border: none;
+  border-top: solid 1px $pink;
+  margin: 1rem;
 }
 
 .fa-icon {
@@ -113,6 +128,24 @@ header {
       background-color: transparent;
       border: none;
     }
+    & .bottom {
+      width: auto;
+      max-width: 100%;
+      & .calc-revision {
+        padding-top: 1rem;
+        font-style: italic;
+      }
+      & .streak {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+      }
+      & .mini {
+        margin: 0.25rem;
+        margin-left: auto;
+        font-size: 0.75rem;
+      }
+    }
   }
   & .verso {
     transform: rotateY(180deg);
@@ -132,36 +165,25 @@ header {
       }
     }
   }
-  & .bottom {
-    & .calc-revision {
-      padding: 1rem 0;
-      font-style: italic;
-    }
-    & .streak {
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-    }
-    & .mini {
-      margin: 0.25rem;
-      margin-left: auto;
-      font-size: 0.75rem;
-    }    
-  }
 }
 
-.doubleButtons {
+.multiButtons {
   margin: 0;
   display: flex;
   justify-content: flex-start;
   & button {
     margin: 0;
-    padding: 0.25rem 1rem;
     flex-grow: 1;
-    &:first-child {
-      margin-right: -1px;
+    &:not(:last-child) {
+      border-right: none;
     }
   }
+}
+
+.importantButton:hover {
+  background-color: $white;
+  color: red;
+  font-weight: bold;
 }
 
 .doodle {
