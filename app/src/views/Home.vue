@@ -3,7 +3,10 @@
     <Header @userChange="this.chargeDeck" />
 
     <div class="home--main flex-grow-1">
-      <div class="tagsZone"></div>
+      <div id="tagsZone">
+        <h3>Vos Tags :</h3>
+        <TagsList />
+      </div>
 
       <div class="revisionZone flex-grow-1">
         <div id="deck" class="flex-grow-1" :key="cardsList.length">
@@ -44,6 +47,7 @@
 import Card from "@/components/Card.vue";
 import Editor from "@/components/Editor.vue";
 import Header from "@/components/Header.vue";
+import TagsList from "@/components/TagsList.vue";
 
 export default {
   name: "Home",
@@ -51,6 +55,7 @@ export default {
     Card,
     Editor,
     Header,
+    TagsList,
   },
   data() {
     return {
@@ -67,14 +72,14 @@ export default {
   },
   methods: {
     async chargeDeck() {
-      await this.shiftCard(); // permet de reload le deck (key change)
+      this.shiftCard(); // permet de reload le deck (key change)
       await this.$store.dispatch("getCardsToRevise");
     },
-    async createCard() {
-      await this.$store.dispatch("mutateStore", { fct: "createCard" });
+    createCard() {
+      this.$store.dispatch("mutateStore", { fct: "createCard" });
     },
-    async shiftCard() {
-      await this.$store.dispatch("mutateStore", { fct: "shiftCard" });
+    shiftCard() {
+      this.$store.dispatch("mutateStore", { fct: "shiftCard" });
     },
   },
   async created() {
@@ -104,6 +109,10 @@ export default {
       width: 100%;
     }
   }
+}
+
+#tagsZone {
+  padding: 1rem 2rem;
 }
 
 #deck {

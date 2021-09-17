@@ -1,7 +1,9 @@
+const cardClass = require('../models/card');
 const cardFct = require('../middlewares/card');
+const objCreator = require('../middlewares/objectCreator')
 
 module.exports = async (req, res, next) => {
-  let newCard = cardFct.createObjCard(req.body);
+  let newCard = objCreator.createObj(cardClass, req.body);
 
   let fctName = req.baseUrl.slice(1);
   let fct = req.method.toLowerCase() + fctName;

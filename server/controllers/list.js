@@ -1,11 +1,15 @@
 const listFct = require('../middlewares/list');
+const userClass = require('../models/user');
 
 module.exports = async (req, res, next) => {
-  let route = req.path.split("/");
-  let fct = route[1];
-  let user_id = route[route.length - 1];
+  let fctName = req.params.fctName;
+  let data = null;
+  // lorsque GET est utilisé, l'envoi de liste se réfère tjs à l'user
+  // tags = []
+  if (req.params.user_id) data = new userClass(req.params.user_id)
+  else data = req.body;
 
-  await listFct[fct](user_id)
+  await listFct[fctName](data)
     .then((list) => {
       res.send(list)
     })

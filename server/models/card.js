@@ -1,6 +1,4 @@
-const dtb = require('../middlewares/dtb');
-const dateParser = require('../middlewares/dateParser');
-const { encrypt, decrypt } = require('../middlewares/crypto');
+const dtbObj = require('./dtbObj');
 
 const HOURS_SUITE = {
   0: 0,
@@ -21,9 +19,10 @@ const HOURS_SUITE = {
   15: 7320
 };
 
-module.exports = class Card {
+module.exports = class Card extends dtbObj {
 
   constructor(id, recto, verso, streak, user_id, next_revision, required_cards, reverse, tags) {
+    super();
     this.id = this.tryParseInt(id);
     this.recto = recto;
     this.verso = verso;
@@ -33,54 +32,6 @@ module.exports = class Card {
     this.required_cards = this.tryJoin(required_cards);
     this.reverse = reverse;
     this.tags = this.tryJoin(tags);
-  };
-
-  parseToJS() {
-    for (let [key, value] of Object.entries(this)) {
-      try {
-        if (!Number.isInteger(value) && key != "next_revision") {
-          this[key] = decrypt(value)
-        };
-      }
-      catch (error) {
-        console.log([key, value])
-        throw error
-      };
-    };
-    this.next_revision = dateParser.toJS(this.next_revision);
-    return this
-  };
-
-  parseToMySQL() {
-    // not null, string = encryption
-    for (let [key, value] of Object.entries(this)) {
-      try {
-        if (value === null) {
-          this[key] = '""'
-        }
-        else if (!Number.isInteger(value) && key != "next_revision" && value !== true && value !== false) {
-          this[key] = `"${encrypt(value)}"`
-        };
-      }
-      catch (error) {
-        console.log([key, value])
-        throw error
-      };
-    };
-    this.next_revision = `"${dateParser.toMySQL(this.next_revision)}"`;
-    return this
-  };
-
-  tryJoin(array) {
-    try {
-      return array.join();
-    } catch (error) {
-      return null;
-    };
-  };
-
-  tryParseInt(val) {
-    return Number.isInteger(val) ? val : (isNaN(Number.parseInt(val)) ? null : Number.parseInt(val));
   };
 
   calculNextRevision() {
@@ -96,12 +47,5 @@ module.exports = class Card {
       this.recto = this.verso;
       this.verso = recto;
     }
-  };
-
-  async updateFromDtb() {
-    let dtbCard = await dtb.SelectCard(this);
-    for (let [key, value] of Object.entries(this)) {
-      this[key] = dtbCard[key]
-    };
   };
 }

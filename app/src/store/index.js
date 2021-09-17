@@ -18,7 +18,7 @@ export default createStore({
       verso: "",
       streak: 0,
       next_revision: "",
-      user_id: 1,
+      user_id: "",
       required_cards: [],
       reverse: true,
       tags: [],
@@ -29,7 +29,7 @@ export default createStore({
       verso: "",
       streak: 0,
       next_revision: "",
-      user_id: 1,
+      user_id: "",
       required_cards: [],
       reverse: true,
       tags: [],
@@ -45,6 +45,11 @@ export default createStore({
     loading: true,
     serverAddress: {
       waran_revision: "http://localhost:3000",
+    },
+    actualTag: {
+      id: "",
+      name: "",
+      user_id: ",",
     },
     tagsList: [],
     user: {
@@ -64,6 +69,9 @@ export default createStore({
     changeActualCard(state, payload) {
       state.actualCard[payload.key] = payload.value;
     },
+    changeActualTag(state, payload) {
+      state.actualTag = payload;
+    },
     chargeFirstCard(state) {
       state.firstDeckCard = { ...state.cardsList[0] };
     },
@@ -73,10 +81,15 @@ export default createStore({
     shiftCard(state) {
       state.cardsList.shift();
     },
+    shiftTag(state) {
+      state.tagsList.shift();
+    },
     handleResponse(state, payload) {
       let mutate = payload.mutate;
       delete payload.mutate;
-      state[mutate] = payload;
+      if (Array.isArray(state[mutate]) && !Array.isArray(payload))
+        state[mutate].push(payload);
+      else state[mutate] = payload;
     },
     isLoading(state, payload) {
       state.loading = payload;
@@ -106,6 +119,13 @@ export default createStore({
         data: this.state.actualCard,
       });
     },
+    submitTag() {
+      this.dispatch("revisionRequest", {
+        method: "POST",
+        serverRoute: "/User/Tag/postTag",
+        data: this.state.actualTag,
+      });
+    },
     submitCardChanges() {
       this.dispatch("revisionRequest", {
         method: "PUT",
@@ -120,6 +140,14 @@ export default createStore({
         serverRoute: "/List/CardsToRevise",
         data: this.state.user.id,
         mutate: "cardsList",
+      });
+    },
+    getAllUserTags() {
+      this.dispatch("revisionRequest", {
+        method: "GET",
+        serverRoute: "/List/AllUserTags",
+        data: this.state.user.id,
+        mutate: "tagsList",
       });
     },
     revisionRequest(context, req) {

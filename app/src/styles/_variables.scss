@@ -28,3 +28,9 @@ $card_rad: 1rem;
     flex-grow: $i;
   }
 };
+
+@mixin case_style {
+  background-color: $dark_blue;
+  border: solid 1px $pink;
+  padding: 0.25rem 0.75rem;
+}

@@ -21,7 +21,7 @@ body,
   margin: 0;
 }
 
-textarea, div[contenteditable="true"] {
+input, textarea, div[contenteditable="true"] {
   font-family: "Roboto", sans-serif;
   resize: none;
 
@@ -36,10 +36,8 @@ textarea, div[contenteditable="true"] {
 }
 
 button {
-  padding: 0.25rem 0.75rem;
+  @include case_style;
   z-index: 1000;
-  border: solid 1px $pink;
-  background-color: $dark_blue;
   color: $white;
   &:hover {
     background-color: $pink;
