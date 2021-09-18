@@ -16,63 +16,101 @@ export default {
     },
     cardInclination() {
       const deck = document.querySelectorAll(".card");
-      // const last = document.querySelector("#actualCard");
-
-      const cardMovement = (e) => {
-        // const coordBox = last.getBoundingClientRect();
-        // const centerPointX = coordBox.x + coordBox.width / 2;
-        // const centerPointY = coordBox.y + coordBox.height / 2;
-
-        const coordBox = document.body;
-        const centerPointX = coordBox.scrollWidth / 2;
-        const centerPointY = coordBox.scrollHeight / 2;
-
-        const maxRotation = 25;
-
-        //Y rotation
-        const rotationFactorY = maxRotation / coordBox.scrollWidth;
-        let yRotation = Math.ceil(
-          -1 * (e.screenX - centerPointX) * rotationFactorY
-        );
-
-        //X rotation
-        const rotationFactorX = maxRotation / coordBox.scrollHeight;
-        let xRotation = Math.ceil((e.screenY - centerPointY) * rotationFactorX);
-
+      const cardMovement = () => {
         for (let [index, card] of deck.entries()) {
-          let xR = xRotation;
-          let yR = yRotation;
+          let flip = 0;
+          let Tx = 1;
           if (card.classList.contains("flip")) {
-            xR = -xR;
-            yR += 180;
+            flip = 180;
+            Tx = -1;
           }
           let styleText = `z-index: ${100 - index};
             transition: transform 0.2s;
             transform:
-            rotateY(${yR}deg)
-            rotateX(${xR}deg)
+            rotateY(${flip}deg)
             translateZ(${index * 10}px)`;
           if (card.classList.contains("flip_anim")) {
             styleText += ` translateX(25px) translateY(20px)`;
             setTimeout(() => {
-              cardMovement(e);
+              cardMovement();
             }, 300);
+          } else {
+            styleText += ` translateX(${Tx * index * 3}px) translateY(${
+              -index * 3
+            }px)`;
           }
           card.style.cssText = styleText;
         }
+        cardMoveListenRemove();
+        cardMoveListen();
       };
-
       const cardMoveListen = () => {
-        document.addEventListener("mousemove", cardMovement);
         document.addEventListener("click", cardMovement);
       };
       const cardMoveListenRemove = () => {
-        document.removeEventListener("mousemove", cardMovement);
         document.removeEventListener("click", cardMovement);
       };
-      cardMoveListenRemove();
-      cardMoveListen();
+      cardMovement();
     },
+    // cardInclination() {
+    //   const deck = document.querySelectorAll(".card");
+    //   // const last = document.querySelector("#actualCard");
+
+    //   const cardMovement = (e) => {
+    //     // const coordBox = last.getBoundingClientRect();
+    //     // const centerPointX = coordBox.x + coordBox.width / 2;
+    //     // const centerPointY = coordBox.y + coordBox.height / 2;
+
+    //     const coordBox = document.body;
+    //     const centerPointX = coordBox.scrollWidth / 2;
+    //     const centerPointY = coordBox.scrollHeight / 2;
+
+    //     const maxRotation = 25;
+
+    //     //Y rotation
+    //     const rotationFactorY = maxRotation / coordBox.scrollWidth;
+    //     let yRotation = Math.ceil(
+    //       -1 * (e.screenX - centerPointX) * rotationFactorY
+    //     );
+
+    //     //X rotation
+    //     const rotationFactorX = maxRotation / coordBox.scrollHeight;
+    //     let xRotation = Math.ceil((e.screenY - centerPointY) * rotationFactorX);
+
+    //     for (let [index, card] of deck.entries()) {
+    //       let xR = xRotation;
+    //       let yR = yRotation;
+    //       if (card.classList.contains("flip")) {
+    //         xR = -xR;
+    //         yR += 180;
+    //       }
+    //       let styleText = `z-index: ${100 - index};
+    //         transition: transform 0.2s;
+    //         transform:
+    //         rotateY(${yR}deg)
+    //         rotateX(${xR}deg)
+    //         translateZ(${index * 10}px)`;
+    //       if (card.classList.contains("flip_anim")) {
+    //         styleText += ` translateX(25px) translateY(20px)`;
+    //         setTimeout(() => {
+    //           cardMovement(e);
+    //         }, 300);
+    //       }
+    //       card.style.cssText = styleText;
+    //     }
+    //   };
+
+    //   const cardMoveListen = () => {
+    //     document.addEventListener("mousemove", cardMovement);
+    //     document.addEventListener("click", cardMovement);
+    //   };
+    //   const cardMoveListenRemove = () => {
+    //     document.removeEventListener("mousemove", cardMovement);
+    //     document.removeEventListener("click", cardMovement);
+    //   };
+    //   cardMoveListenRemove();
+    //   cardMoveListen();
+    // },
   },
 };
 </script>

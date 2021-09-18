@@ -48,6 +48,7 @@ button {
 
 .tag {
   border-radius: $card_rad;
+  width: max-content;
 }
 
 header {
@@ -102,15 +103,15 @@ hr {
       background-color: rgba($color: $dark_blue, $alpha: 1);
       border: solid 1px $pink;
       text-align: center;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-content: center;
     }
     & .readingZone {
       width: auto;
       padding: 1rem;
       padding-top: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-content: center;
     }
     & hr {
       border: none;
@@ -124,24 +125,6 @@ hr {
       color: $white;
       background-color: transparent;
       border: none;
-    }
-    & .bottom {
-      width: auto;
-      max-width: 100%;
-      & .calc-revision {
-        padding-top: 1rem;
-        font-style: italic;
-      }
-      & .streak {
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-      }
-      & .mini {
-        margin: 0.25rem;
-        margin-left: auto;
-        font-size: 0.75rem;
-      }
     }
   }
   & .verso {
@@ -186,7 +169,7 @@ hr {
 .doodle {
   position: absolute;
   width: 100%;
-  height: 100%;
+  height: calc(100% + 2px);
   overflow: hidden;
   border-radius: $card_rad;
   z-index: -1;

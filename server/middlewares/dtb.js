@@ -92,7 +92,7 @@ exports.selectCard = async (card) => {
 };
 
 exports.selectCardTags = async (card) => {
-  return await this.connect("SELECT JSON_OBJECT('id', tags.id, 'name', tags.name, 'user_id', tags.user_id) FROM tags JOIN cards_tags ON cards_tags.tag_id = tags.id JOIN cards ON cards.id = " + card.id + ";");
+  return await this.connect("SELECT JSON_OBJECT('id', tags.id, 'name', tags.name, 'user_id', tags.user_id) FROM tags JOIN cards_tags ON cards_tags.tag_id = tags.id JOIN cards ON cards.id = cards_tags.card_id WHERE cards.id = " + card.id + ";");
 };
 
 exports.selectCardsToRevise = async (user) => {

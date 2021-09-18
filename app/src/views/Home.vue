@@ -1,11 +1,11 @@
 <template>
   <main id="home">
-    <Header @userChange="this.chargeDeck" />
+    <Header @userChange="chargeDeck" />
 
     <div class="home--main flex-grow-1">
       <div id="tagsZone">
         <TagsList class="flex-grow-1" />
-        <CardTags />
+        <CardTags :key="actualCard" />
       </div>
 
       <div class="central flex-grow-1">
@@ -19,11 +19,11 @@
         </div>
 
         <div class="deckManager">
-          <button @click="this.createCard"><span>Nouvelle carte</span></button>
-          <button v-if="cardsList.length > 0" @click="this.shiftCard">
+          <button @click="createCard"><span>Nouvelle carte</span></button>
+          <button v-if="cardsList.length > 0" @click="shiftCard">
             <span>Passer la carte</span>
           </button>
-          <button @click="this.chargeDeck">
+          <button @click="chargeDeck">
             <span>Recharger le deck</span>
           </button>
           <button class="importantButton">
@@ -64,7 +64,7 @@ export default {
   },
   computed: {
     actualCard() {
-      return this.$store.state.actualCard.id;
+      return this.$store.state.actualCard;
     },
     cardsList() {
       return this.$store.state.cardsList;
@@ -116,6 +116,7 @@ export default {
   flex-wrap: wrap-reverse;
   & > * {
     min-width: 200px;
+    max-width: 200px;
     margin: 1rem;
   }
 }

@@ -91,8 +91,10 @@ export default createStore({
     addTagToActualCard(state, payload) {
       state.actualCardTagsList.push(payload);
     },
+    resetCardTags(state) {
+      state.actualCardTagsList = [];
+    },
     handleResponse(state, payload) {
-      console.log(payload)
       let mutate = payload.mutate;
       delete payload.mutate;
       if (Array.isArray(state[mutate]) && !Array.isArray(payload))
