@@ -19,11 +19,13 @@
         </div>
 
         <div class="deckManager">
-          <button @click="this.createCard">Nouvelle carte</button>
+          <button @click="this.createCard"><span>Nouvelle carte</span></button>
           <button v-if="cardsList.length > 0" @click="this.shiftCard">
-            Passer la carte
+            <span>Passer la carte</span>
           </button>
-          <button @click="this.chargeDeck">Recharger le deck</button>
+          <button @click="this.chargeDeck">
+            <span>Recharger le deck</span>
+          </button>
           <button class="importantButton">
             <font-awesome-icon :icon="['fas', 'trash-alt']" />
             <span class="flex-grow-1">Supprimer la carte</span>

@@ -7,14 +7,36 @@ module.exports = async (req, res, next) => {
   let method = req.method.toLowerCase();
   let fctName = method + req.params.fctName;
   let data = {};
+
   if (method === "get") {
     let objName = req.params.object;
     let object = { 'id': req.params.id };
     req.body[objName] = object;
-  }
+  };
+
   for ([objName, object] of Object.entries(req.body)) {
-    data[objName] = objCreator.createObj(objName, object)
-  }
+    if (Array.isArray(object)) {
+      let idList = [];
+      for (obj of object) {
+        let alreadyExist = 0;
+        idList.push(obj.id);
+        for (id of idList) {
+          if (id == object.id) {
+            alreadyExist++;
+          };
+        };
+
+        if (alreadyExist == 2) return
+        else {
+          data[objName] = [];
+          data[objName].push(objCreator.createObj(objName, obj));
+        };
+      };
+    }
+    else {
+      data[objName] = objCreator.createObj(objName, object);
+    };
+  };
 
   await requestFct[fctName](data)
     .then((response) => {

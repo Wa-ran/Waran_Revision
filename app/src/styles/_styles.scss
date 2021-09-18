@@ -7,10 +7,6 @@ html {
   background-color: $violet;
   color: $white;
   word-wrap: break-word;
-
-  & hr {
-    background-color: $white;
-  }
 }
 
 body,
@@ -65,6 +61,7 @@ hr {
   height: 0;
   border: none;
   border-top: solid 1px $pink;
+  background-color: transparent;
   margin: 1rem;
 }
 

@@ -45,8 +45,8 @@ exports.getTag = async (req) => {
 
 exports.postTag = async (req) => {
   let resTag;
-  if (reqTag.id) {
-    resTag = await this.modifTag(reqTag)
+  if (req.tag.id) {
+    resTag = await this.putTag(req.tag)
   } else {
     await dtbFct.createTag(req.tag)
       .then((newTag) => {
@@ -82,7 +82,7 @@ exports.getAllUserCards = async (req) => {
 
 exports.getAllUserCardsByTags = async (req) => {
   let resList = [];
-  await dtbFct.selectAllUserCardsByTags(req.tag)
+  await dtbFct.selectAllUserCardsByTags(req.user, req.tag)
     .then((list) => {
       if (!Array.isArray(list)) {
         list = [list]
@@ -125,7 +125,7 @@ exports.getCardsToRevise = async (req) => {
   return resList
 };
 
-exports.postGetCardTags = async (req) => {
+exports.getCardTags = async (req) => {
   let resList = [];
   await dtbFct.selectCardTags(req.card)
     .then((list) => {
@@ -136,6 +136,19 @@ exports.postGetCardTags = async (req) => {
         let objTag = objCreator.createObj("tag", tag);
         resList.push(objTag);
       };
+    })
+  return resList
+};
+
+exports.postCardTags = async (req) => {
+  let resList;
+  await new Promise(async () => {
+    for await (tag of req.tag) {
+      await dtbFct.createCardTag(req.card, tag)
+    }
+  })
+    .then(async () => {
+      resList = await this.postGetCardTags(req)
     })
   return resList
 };

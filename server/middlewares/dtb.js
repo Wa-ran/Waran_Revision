@@ -72,16 +72,15 @@ exports.selectAllUserCards = async (user) => {
   return await this.connect("SELECT JSON_OBJECT('id', id, 'recto', recto, 'verso', verso, 'streak', streak, 'next_revision', next_revision, 'user_id', user_id, 'required_cards', required_cards, 'reverse', reverse) FROM cards WHERE user_id = " + user.id + ";");
 };
 
-exports.selectAllUserCardsByTags = async (tags) => {
-  let user_id = tags[0].user_id;
+exports.selectAllUserCardsByTags = async (user, tags) => {
   let tagsIdList = "(";
   for (let tag of tags) {
     tagsIdList += ` ${tag.id},`
   }
   if (tags.length > 0) tagsIdList.replace(" ", "").slice(0, -1)
   tagsIdList += ")";
-  console.log(tagsIdList)
-  return await this.connect("SELECT JSON_OBJECT('id', id, 'recto', recto, 'verso', verso, 'streak', streak, 'next_revision', next_revision, 'user_id', user_id, 'required_cards', required_cards, 'reverse', reverse) FROM cards JOIN cards_tags ON cards.id JOIN tags ON cards_tags.tags_id WHERE cards.user_id = " + user_id + " AND tags.id IN " + tagsIdList + ";");
+
+  return await this.connect("SELECT JSON_OBJECT('id', id, 'recto', recto, 'verso', verso, 'streak', streak, 'next_revision', next_revision, 'user_id', user_id, 'required_cards', required_cards, 'reverse', reverse) FROM cards JOIN cards_tags ON cards.id JOIN tags ON cards_tags.tags_id WHERE cards.user_id = " + user.id + " AND tags.id IN " + tagsIdList + ";");
 };
 
 exports.selectAllUserTags = async (user) => {
@@ -93,7 +92,7 @@ exports.selectCard = async (card) => {
 };
 
 exports.selectCardTags = async (card) => {
-  return await this.connect("SELECT * FROM tags JOIN cards_tags ON tags.id JOIN cards ON cards_tags.card_id WHERE cards.id = " + card.id + ";");
+  return await this.connect("SELECT JSON_OBJECT('id', tags.id, 'name', tags.name, 'user_id', tags.user_id) FROM tags JOIN cards_tags ON cards_tags.tag_id = tags.id JOIN cards ON cards.id = " + card.id + ";");
 };
 
 exports.selectCardsToRevise = async (user) => {
