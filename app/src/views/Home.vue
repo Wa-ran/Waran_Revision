@@ -2,19 +2,18 @@
   <main id="home">
     <Header @userChange="chargeDeck" />
 
-    <div class="home--main flex-grow-1">
+    <div :key="this.$store.state.user.id" class="home--main flex-grow-1">
       <div id="tagsZone">
         <TagsList class="flex-grow-1" />
-        <CardTags :key="actualCard" />
       </div>
 
       <div class="central flex-grow-1">
         <div id="deck" class="flex-grow-1" :key="cardsList.length">
-          <Card id="actualCard" @modifying="useCardEditor = $event" />
+          <Card @modifying="useCardEditor = $event" />
           <div
             v-for="card in cardsList.slice(0, 5)"
             :key="card"
-            class="card"
+            class="card move"
           ></div>
         </div>
 
@@ -26,7 +25,7 @@
           <button @click="chargeDeck">
             <span>Recharger le deck</span>
           </button>
-          <button class="importantButton">
+          <button @click="deleteCard" class="importantButton">
             <font-awesome-icon :icon="['fas', 'trash-alt']" />
             <span class="flex-grow-1">Supprimer la carte</span>
           </button>
@@ -43,7 +42,6 @@
 <script>
 // @ is an alias to /src
 import Card from "@/components/Card.vue";
-import CardTags from "@/components/CardTags.vue";
 import Editor from "@/components/Editor.vue";
 import Header from "@/components/Header.vue";
 import TagsList from "@/components/TagsList.vue";
@@ -52,7 +50,6 @@ export default {
   name: "Home",
   components: {
     Card,
-    CardTags,
     Editor,
     Header,
     TagsList,
@@ -63,8 +60,8 @@ export default {
     };
   },
   computed: {
-    actualCard() {
-      return this.$store.state.actualCard;
+    actualCardId() {
+      return this.$store.state.actualCard.id;
     },
     cardsList() {
       return this.$store.state.cardsList;
@@ -72,21 +69,34 @@ export default {
   },
   methods: {
     async chargeDeck() {
-      this.shiftCard(); // permet de reload le deck (key change)
-      await this.$store.dispatch("getCardsToRevise");
+      if (this.$store.state.searchTagsList.length > 0)
+        await this.$store.dispatch("getCardsToReviseByTags");
+      else await this.$store.dispatch("getCardsToRevise");
     },
     createCard() {
-      this.$store.dispatch("mutateStore", { fct: "createCard" });
+      this.$store.dispatch("mutateStore", {
+        fct: "mutateKey",
+        value: {
+          mutate: "cardsList",
+          body: this.$store.state.newCard,
+        },
+      });
+    },
+    async deleteCard() {
+      await this.$store.dispatch("deleteCard");
     },
     shiftCard() {
-      this.$store.dispatch("mutateStore", { fct: "shiftCard" });
+      this.$store.dispatch("mutateStore", {
+        fct: "shiftKey",
+        value: "cardsList",
+      });
     },
   },
-  async created() {
+  async mounted() {
     await this.chargeDeck();
   },
   watch: {
-    actualCard() {
+    actualCardId() {
       this.useCardEditor = false;
     },
   },
@@ -146,6 +156,7 @@ export default {
 }
 
 .deckManager {
+  width: 100%;
   margin: 2rem auto;
   display: flex;
   justify-content: space-between;

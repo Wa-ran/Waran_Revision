@@ -16,7 +16,9 @@ module.exports = async (req, res, next) => {
 
   for ([objName, object] of Object.entries(req.body)) {
     if (Array.isArray(object)) {
+      data[objName] = [];
       let idList = [];
+      // On enlève les doublons
       for (obj of object) {
         let alreadyExist = 0;
         idList.push(obj.id);
@@ -28,7 +30,6 @@ module.exports = async (req, res, next) => {
 
         if (alreadyExist == 2) return
         else {
-          data[objName] = [];
           data[objName].push(objCreator.createObj(objName, obj));
         };
       };
@@ -40,17 +41,20 @@ module.exports = async (req, res, next) => {
 
   await requestFct[fctName](data)
     .then((response) => {
-      let result;
-      if (Array.isArray(response)) {
-        result = [];
-        for (obj of response) {
-          obj.parseToJS();
-          result.push(obj);
-        };
-      }
-      else result = response.parseToJS();
+      if (response) {
+        let result;
+        if (Array.isArray(response)) {
+          result = [];
+          for (obj of response) {
+            obj.parseToJS();
+            result.push(obj);
+          };
+        }
+        else result = response.parseToJS();
 
-      res.send(result)
+        res.send(result)
+      }
+      else res.status(200)
     })
     .catch((error) => {
       console.log(error);

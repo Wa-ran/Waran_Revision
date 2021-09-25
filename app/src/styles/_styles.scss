@@ -35,14 +35,19 @@ button {
   @include case_style;
   z-index: 1000;
   color: $white;
-  &:hover {
+  &:hover, &.selected {
     background-color: $pink;
+    color: $violet;
+    font-weight: bold;
   }
   &:active {
     background-color: $violet;
   }
   &.icon svg{
     margin: 0 0.5rem;
+  }
+  & > span {
+    flex-grow: 1;
   }
 }
 
@@ -79,10 +84,14 @@ hr {
   border: solid 1px $pink;
   border-radius: $card_rad;
   background-color: $violet;
-
-  transform-style: preserve-3d;
-  &:last-child {
-    box-shadow: 0 0 15px 5px rgba(0, 0, 0, 0.5);
+  & hr {
+    margin: 0.5rem;
+  }
+  &.move {
+    transform-style: preserve-3d;
+    &:last-child {
+      box-shadow: 0 0 15px 5px rgba(0, 0, 0, 0.5);
+    }
   }
   & .recto,
   & .verso {
@@ -164,6 +173,9 @@ hr {
   background-color: $white;
   color: red;
   font-weight: bold;
+  & svg {
+    display: none;
+  }
 }
 
 .doodle {

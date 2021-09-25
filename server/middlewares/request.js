@@ -11,27 +11,21 @@ exports.getCard = async (req) => {
 };
 
 exports.postCard = async (req) => {
-  let resCard;
   if (Number.isInteger(req.card.id)) {
-    resCard = await this.putOneCard(req.card)
+    await this.putCard(req)
   } else {
     await dtbFct.createCard(req.card)
-      .then((newcard) => {
-        resCard = objCreator.createObj("card", newcard);
-      })
   }
-  return resCard
 };
 
 exports.putCard = async (req) => {
-  let resCard;
   req.card.calculNextRevision();
   req.card.inverseRectoVerso();
-  await dtbFct.updateCard(req.card)
-    .then(() => {
-      resCard = this.getOneCard(req.card)
-    })
-  return resCard
+  await dtbFct.updateCard(req.card);
+};
+
+exports.deleteCard = async (req) => {
+  await dtbFct.deleteCard(req.card)
 };
 
 exports.getTag = async (req) => {
@@ -44,25 +38,19 @@ exports.getTag = async (req) => {
 };
 
 exports.postTag = async (req) => {
-  let resTag;
   if (req.tag.id) {
-    resTag = await this.putTag(req.tag)
+    await this.putTag(req)
   } else {
     await dtbFct.createTag(req.tag)
-      .then((newTag) => {
-        resTag = objCreator.createObj("tag", newTag);
-      })
   }
-  return resTag
 };
 
 exports.putTag = async (req) => {
-  let resTag;
   await dtbFct.updateTag(req.tag)
-    .then(() => {
-      resTag = this.getOneTag(req.tag)
-    })
-  return resTag
+};
+
+exports.deleteTag = async (req) => {
+  await dtbFct.deleteTag(req.tag)
 };
 
 exports.getAllUserCards = async (req) => {
@@ -80,9 +68,24 @@ exports.getAllUserCards = async (req) => {
   return resList
 };
 
-exports.getAllUserCardsByTags = async (req) => {
+exports.getAllUserCardsByTagsAND = async (req) => {
   let resList = [];
-  await dtbFct.selectAllUserCardsByTags(req.user, req.tag)
+  await dtbFct.selectAllUserCardsByTagsAND(req.user, req.tag)
+    .then((list) => {
+      if (!Array.isArray(list)) {
+        list = [list]
+      }
+      for (card of list) {
+        let objCard = objCreator.createObj("card", card);
+        resList.push(objCard);
+      };
+    })
+  return resList
+};
+
+exports.getAllUserCardsByTagsOR = async (req) => {
+  let resList = [];
+  await dtbFct.selectAllUserCardsByTagsOR(req.user, req.tag)
     .then((list) => {
       if (!Array.isArray(list)) {
         list = [list]
@@ -125,6 +128,36 @@ exports.getCardsToRevise = async (req) => {
   return resList
 };
 
+exports.postgetCardsToReviseByTagsAND = async (req) => {
+  let resList = [];
+  await dtbFct.selectCardsToReviseByTagsAND(req.user, req.tag)
+    .then((list) => {
+      if (!Array.isArray(list)) {
+        list = [list]
+      }
+      for (card of list) {
+        let objCard = objCreator.createObj("card", card);
+        resList.push(objCard);
+      };
+    })
+  return resList
+};
+
+exports.postgetCardsToReviseByTagsOR = async (req) => {
+  let resList = [];
+  await dtbFct.selectCardsToReviseByTagsOR(req.user, req.tag)
+    .then((list) => {
+      if (!Array.isArray(list)) {
+        list = [list]
+      }
+      for (card of list) {
+        let objCard = objCreator.createObj("card", card);
+        resList.push(objCard);
+      };
+    })
+  return resList
+};
+
 exports.getCardTags = async (req) => {
   let resList = [];
   await dtbFct.selectCardTags(req.card)
@@ -144,11 +177,13 @@ exports.postCardTags = async (req) => {
   let resList;
   await new Promise(async () => {
     for await (tag of req.tag) {
-      await dtbFct.createCardTag(req.card, tag)
-    }
+      dtbFct.createCardTag(req.card, tag)
+    };
+    resList = await this.getCardTags(req)
   })
-    .then(async () => {
-      resList = await this.postGetCardTags(req)
-    })
   return resList
+};
+
+exports.deleteCardTags = async (req) => {
+  await dtbFct.deleteCardTag(req.card, req.tag)
 };

@@ -40,7 +40,7 @@ export default createStore({
       Authorization: "",
       "Content-Type": "application/json",
     },
-    loading: true,
+    loading: false,
     serverAddress: {
       waran_revision: "http://localhost:3000",
     },
@@ -50,6 +50,8 @@ export default createStore({
       user_id: ",",
     },
     tagsList: [],
+    searchTagsCond: "OR",
+    searchTagsList: [],
     actualCardTagsList: [],
     user: {
       id: 1,
@@ -62,47 +64,30 @@ export default createStore({
       state.user.id = payload;
       state.defaultCard.user_id = payload;
     },
-    buildActualCard(state, payload) {
-      state.actualCard = payload;
-    },
-    changeActualCard(state, payload) {
-      if (
-        Array.isArray(state.actualCard[payload.key]) &&
-        !Array.isArray(payload)
-      )
-        state.actualCard[payload.key].push(payload.value);
-      else state.actualCard[payload.key] = payload.value;
-    },
-    changeActualTag(state, payload) {
-      state.actualTag = payload;
-    },
-    chargeFirstCard(state) {
-      state.firstDeckCard = { ...state.cardsList[0] };
-    },
-    createCard(state) {
-      state.cardsList.unshift(state.newCard);
-    },
-    shiftCard(state) {
-      state.cardsList.shift();
-    },
-    shiftTag(state) {
-      state.tagsList.shift();
-    },
-    addTagToActualCard(state, payload) {
-      state.actualCardTagsList.push(payload);
-    },
-    resetCardTags(state) {
-      state.actualCardTagsList = [];
-    },
-    handleResponse(state, payload) {
+    mutateKey(state, payload) {
       let mutate = payload.mutate;
       delete payload.mutate;
-      if (Array.isArray(state[mutate]) && !Array.isArray(payload))
-        state[mutate].push(payload);
-      else state[mutate] = payload;
+      if (Array.isArray(state[mutate]) && !Array.isArray(payload.body))
+        state[mutate].unshift(payload.body);
+      else {
+        state[mutate] = payload.body;
+      }
     },
-    isLoading(state, payload) {
-      state.loading = payload;
+    resetKey(state, stateKey) {
+      if (Array.isArray(state[stateKey])) state[stateKey] = [];
+      else state[stateKey] = "";
+    },
+    shiftKey(state, stateKey) {
+      if (Array.isArray(state[stateKey])) state[stateKey].shift();
+      else this.resetKey(stateKey);
+    },
+    deleteOneSearchTag(state) {
+      let index = 0;
+      for (let tag of state.searchTagsList) {
+        if (tag.id == state.actualTag.id)
+          return state.searchTagsList.slice(index, 1);
+        index++;
+      }
     },
     triggError(state, payload) {
       if (payload.status !== 404) {
@@ -112,39 +97,66 @@ export default createStore({
       }
       state.error.pending = false;
     },
-    setSubmit(state, payload) {
-      state.form.revisionAPI = payload.revisionAPI;
-      state.form.submitPath = payload.submitPath;
-    },
   },
   actions: {
     mutateStore(context, payload) {
-      context.commit(payload.fct, payload.body);
+      payload.value = payload.value ? payload.value : null;
+      context.commit(payload.fct, payload.value);
     },
-    submitCard(context) {
-      context.commit("shiftCard");
+    deleteCard() {
+      this.dispatch("revisionRequest", {
+        method: "DELETE",
+        serverRoute: "/Card",
+        data: { card: this.state.actualCard },
+        mutate: "cardsList",
+      });
+    },
+    deleteCardTag() {
+      this.dispatch("revisionRequest", {
+        method: "DELETE",
+        serverRoute: "/CardTags",
+        data: { card: this.state.actualCard, tag: this.state.actualTag },
+        mutate: "actualCardTagsList",
+      });
+    },
+    deleteTag() {
+      this.dispatch("revisionRequest", {
+        method: "DELETE",
+        serverRoute: "/Tag",
+        data: { tag: this.state.actualTag },
+        mutate: "tagsList",
+      });
+    },
+    postCard() {
       this.dispatch("revisionRequest", {
         method: "POST",
         serverRoute: "/Card",
         data: { card: this.state.actualCard },
+        mutate: "cardsList",
       });
     },
-    submitTag() {
-      this.dispatch("revisionRequest", {
+    async postTag() {
+      await this.dispatch("revisionRequest", {
         method: "POST",
         serverRoute: "/Tag",
         data: { tag: this.state.actualTag },
-      });
+      })
+        .then(() => {
+          this.dispatch("getAllUserTags");
+        })
     },
-    submitCardTags() {
+    postCardTags() {
       this.dispatch("revisionRequest", {
         method: "POST",
         serverRoute: "/CardTags",
-        data: { card: this.state.actualCard, tag: this.state.actualCardTagsList },
+        data: {
+          card: this.state.actualCard,
+          tag: this.state.actualCardTagsList,
+        },
         mutate: "actualCardTagsList",
       });
     },
-    saveCardChanges() {
+    putCard() {
       this.dispatch("revisionRequest", {
         method: "PUT",
         serverRoute: "/Card",
@@ -152,11 +164,33 @@ export default createStore({
         mutate: "actualCard",
       });
     },
+    async putTag() {
+      await this.dispatch("revisionRequest", {
+        method: "PUT",
+        serverRoute: "/Tag",
+        data: { tag: this.state.actualTag },
+      })
+        .then(() => {
+          this.dispatch("getAllUserTags");
+        })
+    },
     getCardsToRevise() {
       this.dispatch("revisionRequest", {
         method: "GET",
         serverRoute: "/CardsToRevise",
         data: "user/" + this.state.user.id,
+        mutate: "cardsList",
+      });
+    },
+    getCardsToReviseByTags() {
+      this.dispatch("revisionRequest", {
+        method: "POST",
+        serverRoute:
+          "/getCardsToReviseByTags" + this.state.searchTagsCond.toUpperCase(),
+        data: {
+          user: this.state.user,
+          tag: this.state.searchTagsList,
+        },
         mutate: "cardsList",
       });
     },
@@ -178,8 +212,8 @@ export default createStore({
     },
     revisionRequest(context, req) {
       if (!this.state.error.pending) {
-        context.commit("isLoading", true);
-        return revisionAPI
+        this.dispatch("mutateStore", { fct: "mutateKey", value: { mutate: "loading", body: true } });
+        revisionAPI
           .request(
             req.method,
             this.state.serverAddress.waran_revision,
@@ -187,12 +221,17 @@ export default createStore({
             this.state.headers,
             req.data
           )
-          .then((res) => {
+          .then((response) => {
             if (req.mutate) {
-              res["mutate"] = req.mutate;
-              context.commit("handleResponse", res);
+              context.commit("shiftKey", req.mutate);
+              let result = {};
+              if (response) {
+                result["mutate"] = req.mutate;
+                result["body"] = response;
+                this.dispatch("mutateStore", { fct: "mutateKey", value: result });
+              }
             }
-            context.commit("isLoading", false);
+            this.dispatch("mutateStore", { fct: "mutateKey", value: { mutate: "loading", body: false } });
           })
           .catch((error) => {
             if (error.status !== 404) console.log(error);
@@ -201,7 +240,7 @@ export default createStore({
               status: error.status,
               msg: error.msg,
             });
-            context.commit("isLoading", false);
+            this.dispatch("mutateStore", { fct: "mutateKey", value: { mutate: "loading", body: false } });
             throw error;
           });
       }

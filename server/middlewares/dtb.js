@@ -60,27 +60,30 @@ exports.createTag = async (tag) => {
   return newTag
 };
 
-exports.deleteCard = async (card) => {
-  return await this.connect('DELETE FROM cards WHERE id = ' + card.id + ';');
-};
-
-exports.deleteTag = async (tag) => {
-  return await this.connect('DELETE FROM tags WHERE id = ' + tag.id + ';');
-};
-
 exports.selectAllUserCards = async (user) => {
   return await this.connect("SELECT JSON_OBJECT('id', id, 'recto', recto, 'verso', verso, 'streak', streak, 'next_revision', next_revision, 'user_id', user_id, 'required_cards', required_cards, 'reverse', reverse) FROM cards WHERE user_id = " + user.id + ";");
 };
 
-exports.selectAllUserCardsByTags = async (user, tags) => {
+exports.selectAllUserCardsByTagsAND = async (user, tags) => {
   let tagsIdList = "(";
   for (let tag of tags) {
     tagsIdList += ` ${tag.id},`
-  }
-  if (tags.length > 0) tagsIdList.replace(" ", "").slice(0, -1)
+  };
+  tagsIdList = tagsIdList.replace(" ", "").slice(0, -1);
   tagsIdList += ")";
 
-  return await this.connect("SELECT JSON_OBJECT('id', id, 'recto', recto, 'verso', verso, 'streak', streak, 'next_revision', next_revision, 'user_id', user_id, 'required_cards', required_cards, 'reverse', reverse) FROM cards JOIN cards_tags ON cards.id JOIN tags ON cards_tags.tags_id WHERE cards.user_id = " + user.id + " AND tags.id IN " + tagsIdList + ";");
+  return await this.connect("SELECT JSON_OBJECT('id', id, 'recto', recto, 'verso', verso, 'streak', streak, 'next_revision', next_revision, 'user_id', user_id, 'required_cards', required_cards, 'reverse', reverse) FROM cards JOIN cards_tags ON cards.id = cards_tags.card_id JOIN tags ON cards_tags.tag_id = tags.id WHERE cards.user_id = " + user.id + " AND tags.id IN " + tagsIdList + " GROUP BY cards.id HAVING COUNT(DISTINCT tags.id) = " + tags.length + ";");
+};
+
+exports.selectAllUserCardsByTagsOR = async (user, tags) => {
+  let tagsIdList = "(";
+  for (let tag of tags) {
+    tagsIdList += ` ${tag.id},`
+  };
+  tagsIdList = tagsIdList.replace(" ", "").slice(0, -1);
+  tagsIdList += ")";
+
+  return await this.connect("SELECT JSON_OBJECT('id', id, 'recto', recto, 'verso', verso, 'streak', streak, 'next_revision', next_revision, 'user_id', user_id, 'required_cards', required_cards, 'reverse', reverse) FROM cards JOIN cards_tags ON cards.id = cards_tags.card_id JOIN tags ON cards_tags.tag_id = tags.id WHERE cards.user_id = " + user.id + " AND tags.id IN " + tagsIdList + " GROUP BY cards.id;");
 };
 
 exports.selectAllUserTags = async (user) => {
@@ -97,6 +100,29 @@ exports.selectCardTags = async (card) => {
 
 exports.selectCardsToRevise = async (user) => {
   return await this.connect("SELECT JSON_OBJECT('id', id, 'recto', recto, 'verso', verso, 'streak', streak, 'next_revision', next_revision, 'user_id', user_id, 'required_cards', required_cards, 'reverse', reverse) FROM cards WHERE user_id = " + user.id + " AND next_revision < NOW();");
+};
+
+exports.selectCardsToReviseByTagsAND = async (user, tags) => {
+  let tagsIdList = "(";
+  for (let tag of tags) {
+    tagsIdList += ` ${tag.id},`
+  };
+  tagsIdList = tagsIdList.replace(" ", "").slice(0, -1);
+  tagsIdList += ")";
+
+  return await this.connect("SELECT JSON_OBJECT('id', cards.id, 'recto', recto, 'verso', verso, 'streak', streak, 'next_revision', next_revision, 'user_id', cards.user_id, 'required_cards', required_cards, 'reverse', reverse) FROM cards JOIN cards_tags ON cards.id = cards_tags.card_id JOIN tags ON cards_tags.tag_id = tags.id WHERE cards.user_id = " + user.id + " AND next_revision < NOW() AND tags.id IN " + tagsIdList + " GROUP BY cards.id HAVING COUNT(DISTINCT tags.id) = " + tags.length + ";");
+};
+
+
+exports.selectCardsToReviseByTagsOR = async (user, tags) => {
+  let tagsIdList = "(";
+  for (let tag of tags) {
+    tagsIdList += ` ${tag.id},`
+  };
+  tagsIdList = tagsIdList.replace(" ", "").slice(0, -1);
+  tagsIdList += ")";
+
+  return await this.connect("SELECT JSON_OBJECT('id', cards.id, 'recto', recto, 'verso', verso, 'streak', streak, 'next_revision', next_revision, 'user_id', cards.user_id, 'required_cards', required_cards, 'reverse', reverse) FROM cards JOIN cards_tags ON cards.id = cards_tags.card_id JOIN tags ON cards_tags.tag_id = tags.id WHERE cards.user_id = " + user.id + " AND next_revision < NOW() AND tags.id IN " + tagsIdList + " GROUP BY cards.id;");
 };
 
 exports.selectLastCardCreated = async () => {
@@ -125,3 +151,14 @@ exports.updateTag = async (tag) => {
   return await this.connect('UPDATE tags SET name = ' + tag.name + ' WHERE id = ' + tag.id + ';');
 };
 
+exports.deleteCard = async (card) => {
+  return await this.connect('DELETE FROM cards WHERE id = ' + card.id + ';');
+};
+
+exports.deleteCardTag = async (card, tag) => {
+  return await this.connect('DELETE FROM cards_tags WHERE card_id = ' + card.id + ' AND tag_id = ' + tag.id + ';');
+};
+
+exports.deleteTag = async (tag) => {
+  return await this.connect('DELETE FROM tags WHERE id = ' + tag.id + ';');
+};
