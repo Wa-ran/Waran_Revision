@@ -83,19 +83,22 @@ export default {
   },
   watch: {
     cardsListLength() {
-      setTimeout(() => {
-        let cards = document.querySelectorAll(".sub_card");
-        for (let index of this.cardsList.keys()) {
-          cards[index].style.cssText = `
+      console.log(document.body.clientWidth);
+      if (document.body.clientWidth > 767) {
+        setTimeout(() => {
+          let cards = document.querySelectorAll(".sub_card");
+          for (let index of this.cardsList.keys()) {
+            cards[index].style.cssText = `
           z-index: ${6 - index};
           transition: transform 0.2s;
           transform:
           translateX(${-index * 6}px)
           translateY(${-index * 2}px)
           rotateZ(${-index * 0.7}deg);`;
-          if (index == 5) break;
-        }
-      });
+            if (index == 5) break;
+          }
+        });
+      }
     },
   },
   // mixins: [cardInclination],
@@ -133,10 +136,17 @@ export default {
     margin: 0.5rem 0.25rem;
   }
   & button {
-    min-width: max-content;
-    max-width: 250px;
     width: 100%;
     margin: auto;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .deck {
+    margin: auto;
+  }
+  .sub_card {
+    display: none;
   }
 }
 </style>

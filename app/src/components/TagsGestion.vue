@@ -141,14 +141,21 @@ export default {
   & input {
     margin-bottom: 0.5rem;
   }
+  & button {
+    margin: auto;
+  }
 }
 
 .gestion_buttons {
   width: auto;
   max-width: 200px;
+  margin: auto;
   display: flex;
   flex-wrap: wrap;
-  & * {
+  & button {
+    min-width: 100px;
+  }
+  & *:not(button) {
     width: 100%;
     & *:not(.multiButtons) > button:not(:first-child) {
       margin-top: -1px;

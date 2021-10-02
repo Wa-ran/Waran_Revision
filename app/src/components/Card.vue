@@ -1,8 +1,8 @@
 <template>
   <div :key="actualCard" class="card move">
-    <!-- <div class="doodle">
+    <div class="doodle">
       <css-doodle use="var(--pattern-card-side)"></css-doodle>
-    </div> -->
+    </div>
 
     <div v-if="recto" class="recto">
       <button @click="recto = false" class="fa-icon flip-card">

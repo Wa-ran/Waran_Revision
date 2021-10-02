@@ -193,23 +193,25 @@ export default {
 <style lang="scss" scoped>
 @import "@/styles/global";
 
-.editor--main > * {
-  width: 100%;
-  margin: 2rem 0;
+.editor--main {
+  width: 90%;
+  & > * {
+    max-width: 100%;
+  }
 }
 .deck {
   height: 250px;
-}
-.card {
-  width: 400px;
-  max-width: 90%;
-  height: 200px;
-  margin: 1rem;
-  margin-top: 3rem;
-  margin-right: auto;
+  & .card {
+    width: 100%;
+    height: 200px;
+    margin: 1rem;
+    margin-top: 3rem;
+    margin-right: auto;
 
-  position: absolute;
+    position: relative;
+  }
 }
+
 .card--main {
   position: relative;
   & .face {
@@ -250,5 +252,19 @@ export default {
   width: 30px;
   margin-right: 0.25rem;
   border-radius: 20%;
+}
+
+@media screen and (max-width: 767px) {
+  .editor--main {
+    margin: 0;
+    width: 100%;
+    & * {
+      margin: 0 !important;
+    }
+    & .resetButton {
+      top: 1rem;
+      left: -0.5rem;
+    }
+  }
 }
 </style>

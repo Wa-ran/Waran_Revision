@@ -51,6 +51,8 @@ button {
   @include case_style;
   z-index: 100;
   color: $white;
+  min-width: max-content;
+  max-width: 250px;
   &:hover {
     background-color: $white;
     color: $dark-blue;
@@ -69,6 +71,7 @@ button {
   }
   & > span {
     flex-grow: 1;
+    padding: 0 0.5rem;
   }
 }
 

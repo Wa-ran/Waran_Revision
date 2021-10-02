@@ -7,11 +7,11 @@
         <Tags class="flex-grow-1" />
       </div>
 
-      <div class="central flex-grow-1">
+      <div class="central flex-grow-2">
         <Deck @modifying="useCardEditor = $event" />
       </div>
 
-      <div>
+      <div class="edit flex-grow-1">
         <Editor id="cardEditor" v-if="useCardEditor" />
       </div>
     </div>
@@ -66,8 +66,11 @@ export default {
   & > .home--main {
     width: 100%;
     display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
     & > div {
-      width: 100%;
+      max-width: 400px;
+      margin: 1rem;
     }
   }
 }
@@ -76,9 +79,8 @@ export default {
   display: flex;
   flex-wrap: wrap-reverse;
   & > * {
-    min-width: 200px;
-    max-width: 200px;
-    margin: 1rem;
+    // min-width: 200px;
+    max-width: 300px;
   }
 }
 
@@ -87,9 +89,25 @@ export default {
   flex-direction: column;
 }
 
-#cardEditor {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
+@media screen and (max-width: 767px) {
+  .home--main {
+    & > * {
+      width: 100%;
+      margin: auto !important;
+      & > * {
+        width: 95%;
+        margin: auto;
+      }
+    }
+    & .central {
+      order: 2;
+    }
+    & .edit {
+      order: 1;
+    }
+    & #tagsZone {
+      order: 3;
+    }
+  }
 }
 </style>

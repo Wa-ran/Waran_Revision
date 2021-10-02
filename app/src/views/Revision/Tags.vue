@@ -210,9 +210,9 @@ export default {
 <style lang="scss" scoped>
 @import "@/styles/global";
 
-button {
-  width: 100%;
-}
+// button {
+//   width: 100%;
+// }
 h3 {
   margin-bottom: 0.5rem;
 }
