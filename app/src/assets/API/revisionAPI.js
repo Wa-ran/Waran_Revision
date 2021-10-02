@@ -1,13 +1,13 @@
 export default {
-  request(method = "GET", address, route, headers, body = null) {
+  async request(method = "GET", address, route, headers, body) {
     method = method.toUpperCase();
 
-    if (body && typeof body === "object" && !(body instanceof FormData)) {
-      // body = object to send
-      body = JSON.stringify(body);
-    } else if (method == "GET") {
+    if (method == "GET") {
       route = route + "/" + body;
       body = null;
+    } else if (typeof body === "object" && !(body instanceof FormData)) {
+      // body = object to send
+      body = JSON.stringify(body);
     } else {
       // Si rien a envoyer, OU si FormData = on laisse le browser gérer le content-type
       headers = { Authorization: headers.Authorization };
@@ -33,12 +33,12 @@ export default {
         err["msg"] = msg;
 
         throw err;
-      } else if (res) {
+      } else {
         try {
           res = await res.json();
           return res;
         } catch (error) {
-          return res; // Si le serveur renvois un statut 2XX/3XX seul
+          return null; // Si le serveur renvois un statut 2XX/3XX seul
         }
       }
     });

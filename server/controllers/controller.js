@@ -54,7 +54,7 @@ module.exports = async (req, res, next) => {
 
         res.send(result)
       }
-      else res.status(200)
+      else res.sendStatus(200)
     })
     .catch((error) => {
       console.log(error);

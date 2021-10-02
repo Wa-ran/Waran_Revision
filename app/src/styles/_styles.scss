@@ -3,10 +3,26 @@ html {
 
   height: 100%;
   width: 100%;
-  overflow: hidden;
+  overflow-x: hidden;
   background-color: $violet;
   color: $white;
   word-wrap: break-word;
+}
+
+::-webkit-scrollbar {
+  background-color: transparent;
+  overflow-y: overlay;
+  border: none;
+  border-radius: 5px;
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: $dark_blue;
+  border-left: solid 1px $pink;
+}
+::-webkit-scrollbar-thumb {
+  background: $pink;
+  border-radius: 5px;
 }
 
 body,
@@ -33,9 +49,14 @@ input, textarea, div[contenteditable="true"] {
 
 button {
   @include case_style;
-  z-index: 1000;
+  z-index: 100;
   color: $white;
-  &:hover, &.selected {
+  &:hover {
+    background-color: $white;
+    color: $dark-blue;
+    font-weight: bold;
+  }
+  &.selected {
     background-color: $pink;
     color: $violet;
     font-weight: bold;
@@ -50,6 +71,29 @@ button {
     flex-grow: 1;
   }
 }
+
+.multiButtons {
+  margin: 0;
+  display: flex;
+  justify-content: flex-start;
+  & button {
+    margin: 0;
+    flex-grow: 1;
+    &:not(:last-child) {
+      border-right: none;
+    }
+  }
+}
+
+.importantButton:hover {
+  background-color: $white;
+  color: red;
+  font-weight: bold;
+  & svg {
+    display: none;
+  }
+}
+
 
 .tag {
   border-radius: $card_rad;
@@ -84,15 +128,23 @@ hr {
   border: solid 1px $pink;
   border-radius: $card_rad;
   background-color: $violet;
+  box-shadow: 0 0 25px 2px rgba(0, 0, 0, 0.15);
+
+  z-index: 100;
+  // &.sub_card {
+  //   z-index: 1;
+  // }
+  
   & hr {
     margin: 0.5rem;
   }
-  &.move {
-    transform-style: preserve-3d;
-    &:last-child {
-      box-shadow: 0 0 15px 5px rgba(0, 0, 0, 0.5);
-    }
-  }
+  // &.move {
+    // transform-style: preserve-3d;
+
+    // &:last-child {
+      // box-shadow: 0 0 25px 2px rgba(0, 0, 0, 0.15);
+    // }
+  // }
   & .recto,
   & .verso {
     position: absolute;
@@ -101,8 +153,8 @@ hr {
     width: calc(100% - 2rem);
     height: calc(100% - 2rem);
 
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
+    // -webkit-backface-visibility: hidden;
+    // backface-visibility: hidden;
 
     display: flex;
     flex-direction: column;
@@ -137,7 +189,7 @@ hr {
     }
   }
   & .verso {
-    transform: rotateY(180deg);
+    // transform: rotateY(180deg);
     & .readingZone {
       position: relative;
     }
@@ -153,28 +205,6 @@ hr {
         word-wrap: normal;
       }
     }
-  }
-}
-
-.multiButtons {
-  margin: 0;
-  display: flex;
-  justify-content: flex-start;
-  & button {
-    margin: 0;
-    flex-grow: 1;
-    &:not(:last-child) {
-      border-right: none;
-    }
-  }
-}
-
-.importantButton:hover {
-  background-color: $white;
-  color: red;
-  font-weight: bold;
-  & svg {
-    display: none;
   }
 }
 
@@ -251,7 +281,7 @@ css-doodle {
   );
   --pattern-card-side: (
     @grid: 32;
-    @size: 1px calc(15px + 70%);
+    @size: 1px calc(35px + 70%);
     transform: rotate(@r(±90deg));
     background: #e84a5f;
     opacity: calc(1 - 1 / 1000 * @index);

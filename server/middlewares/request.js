@@ -12,7 +12,7 @@ exports.getCard = async (req) => {
 
 exports.postCard = async (req) => {
   if (Number.isInteger(req.card.id)) {
-    await this.putCard(req)
+    throw "Id déjà existant"
   } else {
     await dtbFct.createCard(req.card)
   }
@@ -39,7 +39,7 @@ exports.getTag = async (req) => {
 
 exports.postTag = async (req) => {
   if (req.tag.id) {
-    await this.putTag(req)
+    throw "Id déjà existant"
   } else {
     await dtbFct.createTag(req.tag)
   }

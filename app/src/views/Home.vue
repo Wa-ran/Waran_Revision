@@ -4,32 +4,11 @@
 
     <div :key="this.$store.state.user.id" class="home--main flex-grow-1">
       <div id="tagsZone">
-        <TagsList class="flex-grow-1" />
+        <Tags class="flex-grow-1" />
       </div>
 
       <div class="central flex-grow-1">
-        <div id="deck" class="flex-grow-1" :key="cardsList.length">
-          <Card @modifying="useCardEditor = $event" />
-          <div
-            v-for="card in cardsList.slice(0, 5)"
-            :key="card"
-            class="card move"
-          ></div>
-        </div>
-
-        <div class="deckManager">
-          <button @click="createCard"><span>Nouvelle carte</span></button>
-          <button v-if="cardsList.length > 0" @click="shiftCard">
-            <span>Passer la carte</span>
-          </button>
-          <button @click="chargeDeck">
-            <span>Recharger le deck</span>
-          </button>
-          <button @click="deleteCard" class="importantButton">
-            <font-awesome-icon :icon="['fas', 'trash-alt']" />
-            <span class="flex-grow-1">Supprimer la carte</span>
-          </button>
-        </div>
+        <Deck @modifying="useCardEditor = $event" />
       </div>
 
       <div>
@@ -40,19 +19,19 @@
 </template>
 
 <script>
-// @ is an alias to /src
-import Card from "@/components/Card.vue";
-import Editor from "@/components/Editor.vue";
+import Deck from "@/views/Revision/Deck.vue";
+import Editor from "@/views/Revision/Editor.vue";
+import Tags from "@/views/Revision/Tags.vue";
+
 import Header from "@/components/Header.vue";
-import TagsList from "@/components/TagsList.vue";
 
 export default {
   name: "Home",
   components: {
-    Card,
+    Deck,
     Editor,
     Header,
-    TagsList,
+    Tags,
   },
   data() {
     return {
@@ -66,34 +45,6 @@ export default {
     cardsList() {
       return this.$store.state.cardsList;
     },
-  },
-  methods: {
-    async chargeDeck() {
-      if (this.$store.state.searchTagsList.length > 0)
-        await this.$store.dispatch("getCardsToReviseByTags");
-      else await this.$store.dispatch("getCardsToRevise");
-    },
-    createCard() {
-      this.$store.dispatch("mutateStore", {
-        fct: "mutateKey",
-        value: {
-          mutate: "cardsList",
-          body: this.$store.state.newCard,
-        },
-      });
-    },
-    async deleteCard() {
-      await this.$store.dispatch("deleteCard");
-    },
-    shiftCard() {
-      this.$store.dispatch("mutateStore", {
-        fct: "shiftKey",
-        value: "cardsList",
-      });
-    },
-  },
-  async mounted() {
-    await this.chargeDeck();
   },
   watch: {
     actualCardId() {
@@ -134,37 +85,6 @@ export default {
 .central {
   display: flex;
   flex-direction: column;
-}
-
-#deck {
-  width: 100%;
-  min-height: 500px;
-  margin: auto;
-  margin-top: 2rem;
-
-  display: flex;
-  justify-content: center;
-  align-content: center;
-
-  & .card {
-    min-width: 300px;
-    min-height: 500px;
-    margin: auto;
-
-    position: absolute;
-  }
-}
-
-.deckManager {
-  width: 100%;
-  margin: 2rem auto;
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  & button {
-    min-width: 30%;
-    margin: 0.5rem auto;
-  }
 }
 
 #cardEditor {
