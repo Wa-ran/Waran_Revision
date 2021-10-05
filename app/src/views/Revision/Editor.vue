@@ -3,7 +3,11 @@
     <div class="deck">
       <div class="card">
         <div class="doodle">
-          <css-doodle use="var(--pattern-card-side)"></css-doodle>
+          <css-doodle>
+            @grid: 32; @size: 1px calc(35px + 70%); transform:
+            rotate(@r(±90deg)); background: #e7576a; opacity: calc(1 - 1 / 1000
+            * @index);
+          </css-doodle>
         </div>
 
         <div class="recto">
@@ -99,7 +103,9 @@
               >
                 <font-awesome-icon :icon="['fas', 'undo']" />
               </button>
-              <button @click="mutateModifs"><span>Valider</span></button>
+              <button @click="mutateModifs" class="default">
+                <span>Valider</span>
+              </button>
             </div>
           </div>
         </div>
@@ -145,10 +151,10 @@ export default {
       // Insertion d'une chaine random pour retrouver la position de l'insertion
 
       node.textContent =
-        node.textContent.substring(0, selection.baseOffset) +
+        node.textContent.substring(0, selection.anchorOffset) +
         rand1 +
         node.textContent.substring(
-          selection.baseOffset,
+          selection.anchorOffset,
           selection.focusOffset
         ) +
         rand2 +
@@ -258,7 +264,7 @@ export default {
   .editor--main {
     margin: 0;
     width: 100%;
-    & * {
+    & *:not(svg) {
       margin: 0 !important;
     }
     & .resetButton {

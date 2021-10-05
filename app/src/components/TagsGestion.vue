@@ -10,8 +10,6 @@
       />
     </div>
 
-    <hr />
-
     <div class="gestion_buttons">
       <button v-if="!active" @click="active = true">Modifier</button>
 
@@ -49,6 +47,7 @@
         <span>Terminer</span>
       </button>
     </div>
+    <hr />
   </div>
 </template>
 
@@ -143,6 +142,10 @@ export default {
   }
   & button {
     margin: auto;
+  }
+  & hr {
+    margin-top: 0.5rem;
+    margin-bottom: 0;
   }
 }
 

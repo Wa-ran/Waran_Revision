@@ -32,11 +32,17 @@ module.exports = class dtbObj {
           if (value && value instanceof Date && value.getTime()) {
             this[key] = `"${dateParser.toMySQL(value)}"`;
           }
-          // else if (value === null) {
-          //   this[key] = '""'
-          // }
-          else if (value !== true && value !== false) {
+          else if (value === true) {
+            this[key] = 1;
+          }
+          else if (value === false) {
+            this[key] = 0;
+          }
+          else if (value) {
             this[key] = `"${encrypt(value)}"`
+          }
+          else {
+            this[key] = null
           };
         }
         catch (error) {
@@ -50,7 +56,9 @@ module.exports = class dtbObj {
 
   tryJoin(array) {
     try {
-      return array.join();
+      let string = array.join();
+      if (string === '') throw error
+      else return string
     } catch (error) {
       return null;
     };

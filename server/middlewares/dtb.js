@@ -40,10 +40,7 @@ exports.connect = async (fctRequest) => {
 
 exports.createCard = async (card) => {
   card.parseToMySQL();
-  let newCard;
-  await this.connect('INSERT INTO cards (recto, verso, streak, next_revision, user_id, required_cards, reverse) VALUES (' + card.recto + ', ' + card.verso + ', ' + card.streak + ', ' + card.next_revision + ', ' + card.user_id + ', ' + card.required_cards + ', ' + card.reverse + ');')
-    .then(async () => { newCard = await this.selectLastCardCreated() })
-  return newCard
+  await this.connect('INSERT INTO cards (recto, verso, streak, next_revision, user_id, required_cards, reverse) VALUES (' + card.recto + ', ' + card.verso + ', ' + card.streak + ', ' + card.next_revision + ', ' + card.user_id + ', ' + card.required_cards + ', ' + card.reverse + ');');
 };
 
 exports.createCardTag = async (card, tag) => {
@@ -54,10 +51,7 @@ exports.createCardTag = async (card, tag) => {
 
 exports.createTag = async (tag) => {
   tag.parseToMySQL();
-  let newTag;
-  await this.connect('INSERT INTO tags (name, user_id) VALUES (' + tag.name + ', ' + tag.user_id + ');')
-    .then(async () => { newTag = await this.selectLastTagCreated() })
-  return newTag
+  await this.connect('INSERT INTO tags (name, user_id) VALUES (' + tag.name + ', ' + tag.user_id + ');');
 };
 
 exports.selectAllUserCards = async (user) => {
@@ -161,4 +155,13 @@ exports.deleteCardTag = async (card, tag) => {
 
 exports.deleteTag = async (tag) => {
   return await this.connect('DELETE FROM tags WHERE id = ' + tag.id + ';');
+};
+
+exports.createUser = async (user) => {
+  user.parseToMySQL();
+  await this.connect('INSERT INTO users (pseudo, password) VALUES (' + user.pseudo + ', ' + user.password + ');');
+};
+
+exports.selectUser = async (user) => {
+  return await this.connect("SELECT JSON_OBJECT('id', id, 'pseudo', pseudo, 'password', password) FROM users WHERE id = " + user.id + ";");
 };

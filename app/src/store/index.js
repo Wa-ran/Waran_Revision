@@ -7,19 +7,8 @@ export default createStore({
     //card
     actualCard: {},
     cardsList: [],
-    defaultCard: {
-      id: "",
-      recto: "C'est la dernière carte, Félicitation !",
-      verso: "",
-      streak: 0,
-      next_revision: "",
-      user_id: "",
-      required_cards: [],
-      reverse: true,
-    },
     firstDeckCard: {},
     newCard: {
-      id: "",
       recto: "Une carte toute neuve !",
       verso: "",
       streak: 0,
@@ -44,7 +33,8 @@ export default createStore({
     },
     loading: false,
     serverAddress: {
-      waran_revision: "http://localhost:3000",
+      // waran_revision: "http://195.110.59.46:3008",
+      waran_revision: "http://localhost:3008",
     },
 
     //tag
@@ -66,11 +56,15 @@ export default createStore({
       pseudo: "",
       token: "",
     },
+    submitUser: {
+      pseudo: "",
+      password: "",
+    },
   },
   mutations: {
     changeUser(state, payload) {
       state.user.id = payload;
-      state.defaultCard.user_id = payload;
+      state.newCard.user_id = payload;
     },
     mutateKey(state, payload) {
       let mutate = payload.mutate;
@@ -141,6 +135,8 @@ export default createStore({
       });
     },
     postCard() {
+      if (!this.state.actualCard.user_id)
+        this.state.actualCard.user_id = this.state.user.id;
       this.dispatch("revisionRequest", {
         method: "POST",
         serverRoute: "/Card",
@@ -149,6 +145,8 @@ export default createStore({
       });
     },
     postTag() {
+      if (!this.state.actualTag.user_id)
+        this.state.actualTag.user_id = this.state.user.id;
       this.dispatch("revisionRequest", {
         method: "POST",
         serverRoute: "/Tag",
@@ -156,32 +154,42 @@ export default createStore({
         mutate: "tagsList",
       });
     },
-    postCardTags() {
-      this.dispatch("revisionRequest", {
-        method: "POST",
-        serverRoute: "/CardTags",
-        data: {
-          card: this.state.actualCard,
-          tag: this.state.cardTagsList.concat(this.state.tagsSelectedList),
-        },
-        mutate: "cardTagsList",
+    async postCardTags() {
+      await new Promise(() => {
+        if (!this.state.actualCard.id) {
+          return this.postCard();
+        }
+      }).then(() => {
+        this.dispatch("revisionRequest", {
+          method: "POST",
+          serverRoute: "/CardTags",
+          data: {
+            card: this.state.actualCard,
+            tag: this.state.cardTagsList.concat(this.state.tagsSelectedList),
+          },
+          mutate: "cardTagsList",
+        });
       });
     },
     putCard() {
-      this.dispatch("revisionRequest", {
-        method: "PUT",
-        serverRoute: "/Card",
-        data: { card: this.state.actualCard },
-        // mutate: "actualCard",
-      });
+      if (this.state.actualCard.id) {
+        this.dispatch("revisionRequest", {
+          method: "PUT",
+          serverRoute: "/Card",
+          data: { card: this.state.actualCard },
+          // mutate: "actualCard",
+        });
+      }
     },
     putTag() {
-      this.dispatch("revisionRequest", {
-        method: "PUT",
-        serverRoute: "/Tag",
-        data: { tag: this.state.actualTag },
-        mutate: "tagsList",
-      });
+      if (this.state.actualTag.id) {
+        this.dispatch("revisionRequest", {
+          method: "PUT",
+          serverRoute: "/Tag",
+          data: { tag: this.state.actualTag },
+          mutate: "tagsList",
+        });
+      }
     },
     getCardsToRevise() {
       this.dispatch("revisionRequest", {
@@ -217,6 +225,14 @@ export default createStore({
         serverRoute: "/CardTags",
         data: "card/" + this.state.actualCard.id,
         mutate: "cardTagsList",
+      });
+    },
+    getUser() {
+      this.dispatch("revisionRequest", {
+        method: "POST",
+        serverRoute: "/User",
+        data: this.state.submitUser,
+        mutate: "user",
       });
     },
     async revisionRequest(context, req) {

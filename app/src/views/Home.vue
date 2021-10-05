@@ -69,7 +69,6 @@ export default {
     justify-content: space-between;
     flex-wrap: wrap;
     & > div {
-      max-width: 400px;
       margin: 1rem;
     }
   }
@@ -78,10 +77,6 @@ export default {
 #tagsZone {
   display: flex;
   flex-wrap: wrap-reverse;
-  & > * {
-    // min-width: 200px;
-    max-width: 300px;
-  }
 }
 
 .central {
@@ -95,8 +90,8 @@ export default {
       width: 100%;
       margin: auto !important;
       & > * {
-        width: 95%;
-        margin: auto;
+        width: auto;
+        margin: 2%;
       }
     }
     & .central {

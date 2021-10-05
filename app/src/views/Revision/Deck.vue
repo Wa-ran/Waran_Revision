@@ -58,6 +58,14 @@ export default {
       if (this.$store.state.tagsSelectedList.length > 0)
         await this.$store.dispatch("getCardsToReviseByTags");
       else await this.$store.dispatch("getCardsToRevise");
+
+      this.$store.dispatch("mutateStore", {
+        fct: "mutateKey",
+        value: {
+          mutate: "newCard",
+          body: { recto: "Tu n'as plus de cartes à réviser, félicitation !" },
+        },
+      });
     },
     createCard() {
       this.$store.dispatch("mutateStore", {
@@ -83,24 +91,28 @@ export default {
   },
   watch: {
     cardsListLength() {
-      console.log(document.body.clientWidth);
-      if (document.body.clientWidth > 767) {
+      if (this.cardsList) {
+        let weight = 1;
+        if (document.body.clientWidth > 767) weight++;
         setTimeout(() => {
           let cards = document.querySelectorAll(".sub_card");
-          for (let index of this.cardsList.keys()) {
-            cards[index].style.cssText = `
-          z-index: ${6 - index};
-          transition: transform 0.2s;
-          transform:
-          translateX(${-index * 6}px)
-          translateY(${-index * 2}px)
-          rotateZ(${-index * 0.7}deg);`;
-            if (index == 5) break;
+          if (cards.length > 0) {
+            for (let index of this.cardsList.keys()) {
+              cards[index].style.cssText = `
+              z-index: ${6 - index};
+              transition: transform 0.2s;
+              transform:
+              translateX(${-index * 3 * weight}px)
+              translateY(${-index * weight}px)
+              rotateZ(${-index * 0.35 * weight}deg);`;
+              if (index == 4) break;
+            }
           }
         });
       }
     },
   },
+
   // mixins: [cardInclination],
 };
 </script>
@@ -127,6 +139,7 @@ export default {
 
 .deckManager {
   width: 100%;
+  max-width: 400px;
   margin: 2rem auto;
   display: flex;
   justify-content: space-between;
@@ -144,9 +157,6 @@ export default {
 @media screen and (max-width: 767px) {
   .deck {
     margin: auto;
-  }
-  .sub_card {
-    display: none;
   }
 }
 </style>

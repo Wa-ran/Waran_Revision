@@ -53,14 +53,17 @@ button {
   color: $white;
   min-width: max-content;
   max-width: 250px;
-  &:hover {
-    background-color: $white;
-    color: $dark-blue;
-    font-weight: bold;
-  }
-  &.selected {
+  &.selected, &.default {
     background-color: $pink;
     color: $violet;
+    font-weight: bold;
+  }
+  &.default {
+    box-shadow: inset 0 0 0 1px $dark_blue;
+  }
+  &:hover, &.default:hover {
+    background-color: $white;
+    color: $dark-blue;
     font-weight: bold;
   }
   &:active {
@@ -226,67 +229,67 @@ css-doodle {
   top: -5%;
   left: -5%;
 
-  --rule: (
-    @grid: 35;
-    --deg: @p(45deg, -45deg, 135deg, -135deg);
-    --lg: linear-gradient(@var(--deg),#60569e 50%, transparent 0);
-    @nth(2n + 1) {
-      background:
-      @var(--lg) 0 0 / 100% 100%,
-      @var(--lg) 0 0 / 50% 50%;
-    }
-    @nth(2n) {
-    }
-  );
-  --rule1: (
-    :doodle {
-      @grid: 35;
-      background: #0a0c27;
-    };
-    --hue: calc(180 + 1.5 * @row * @col);
-    background: hsl(var(--hue), 50%, 70%);
-    margin: -.5px;
-    transition: @r(.5s) ease;
-    clip-path: polygon(@pick(
-      '0 0, 100% 0, 100% 100%',
-      '0 0, 100% 0, 0 100%',
-      '0 0, 100% 100%, 0 100%',
-      '100% 0, 100% 100%, 0 100%'
-    ));
-  );
-  --pattern-9: (
-    @grid: 1 / 100%;
-    background-color: $violet;
-    background-image: @doodle(
-      :doodle {
-        @grid: 1 / 10000px;
-        transform: scale(1.5) rotate(45deg);
-      }
-      background-size: 300px 300px;
-      background-image: @doodle(
-        @grid: 1 / 100%;
-        background: @doodle(
-          @grid: @r(8) / 100%;
-            background: @doodle(
-            @grid: @r(10) / 100%;
-            background: radial-gradient(
-              @stripe.@m2.@p(
-                @m10(#293462),
-                @m10(#211a4c), 
-                @m2(#b2ebf2), 
-                #e84a5f
-              )
-            );
-          );
-        );
-      );
-    );
-  );
-  --pattern-card-side: (
-    @grid: 32;
-    @size: 1px calc(35px + 70%);
-    transform: rotate(@r(±90deg));
-    background: #e84a5f;
-    opacity: calc(1 - 1 / 1000 * @index);
-  )
+  // --rule: (
+  //   @grid: 35;
+  //   --deg: @p(45deg, -45deg, 135deg, -135deg);
+  //   --lg: linear-gradient(@var(--deg),#60569e 50%, transparent 0);
+  //   @nth(2n + 1) {
+  //     background:
+  //     @var(--lg) 0 0 / 100% 100%,
+  //     @var(--lg) 0 0 / 50% 50%;
+  //   }
+  //   @nth(2n) {
+  //   }
+  // );
+  // --rule1: (
+  //   :doodle {
+  //     @grid: 35;
+  //     background: #0a0c27;
+  //   };
+  //   --hue: calc(180 + 1.5 * @row * @col);
+  //   background: hsl(var(--hue), 50%, 70%);
+  //   margin: -.5px;
+  //   transition: @r(.5s) ease;
+  //   clip-path: polygon(@pick(
+  //     '0 0, 100% 0, 100% 100%',
+  //     '0 0, 100% 0, 0 100%',
+  //     '0 0, 100% 100%, 0 100%',
+  //     '100% 0, 100% 100%, 0 100%'
+  //   ));
+  // );
+  // --pattern-9: (
+  //   @grid: 1 / 100%;
+  //   background-color: $violet;
+  //   background-image: @doodle(
+  //     :doodle {
+  //       @grid: 1 / 10000px;
+  //       transform: scale(1.5) rotate(45deg);
+  //     }
+  //     background-size: 300px 300px;
+  //     background-image: @doodle(
+  //       @grid: 1 / 100%;
+  //       background: @doodle(
+  //         @grid: @r(8) / 100%;
+  //           background: @doodle(
+  //           @grid: @r(10) / 100%;
+  //           background: radial-gradient(
+  //             @stripe.@m2.@p(
+  //               @m10(#293462),
+  //               @m10(#211a4c), 
+  //               @m2(#b2ebf2), 
+  //               #e84a5f
+  //             )
+  //           );
+  //         );
+  //       );
+  //     );
+  //   );
+  // );
+  // --pattern-card-side: (
+  //   @grid: 32;
+  //   @size: 1px calc(35px + 70%);
+  //   transform: rotate(@r(±90deg));
+  //   background: #e84a5f;
+  //   opacity: calc(1 - 1 / 1000 * @index);
+  // )
 }

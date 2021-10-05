@@ -187,3 +187,20 @@ exports.postCardTags = async (req) => {
 exports.deleteCardTags = async (req) => {
   await dtbFct.deleteCardTag(req.card, req.tag)
 };
+
+exports.getUser = async (req) => {
+  let resUser;
+  await dtbFct.selectUser(req.user)
+    .then(dtbUser => {
+      resUser = objCreator.createObj("user", dtbUser)
+    })
+  return resUser
+};
+
+exports.postUser = async (req) => {
+  if (Number.isInteger(req.user.id)) {
+    throw "Id déjà existant"
+  } else {
+    await dtbFct.createUser(req.user)
+  }
+};

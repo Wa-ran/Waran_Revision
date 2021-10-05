@@ -1,7 +1,10 @@
 <template>
   <div :key="actualCard" class="card move">
     <div class="doodle">
-      <css-doodle use="var(--pattern-card-side)"></css-doodle>
+      <css-doodle>
+        @grid: 32; @size: 1px calc(35px + 70%); transform: rotate(@r(±90deg));
+        background: #e7576a; opacity: calc(1 - 1 / 1000 * @index);
+      </css-doodle>
     </div>
 
     <div v-if="recto" class="recto">
@@ -55,10 +58,14 @@
         <div class="calc-revision">Prochaine révision {{ nextRevision() }}</div>
         <div v-if="!modifyingCard && wasModified" class="multiButtons">
           <button @click="modifyingCard = true"><span>Modifer</span></button>
-          <button @click="postCard"><span>Valider</span></button>
+          <button @click="postCard" class="default">
+            <span>Valider</span>
+          </button>
         </div>
         <div v-if="modifyingCard" class="multiButtons">
-          <button @click="saveCardChanges"><span>Terminer</span></button>
+          <button @click="saveCardChanges" class="default">
+            <span>Terminer</span>
+          </button>
           <button @click="buildActualCard" class="icon">
             <font-awesome-icon :icon="['fas', 'undo']" />
           </button>
@@ -102,7 +109,7 @@ export default {
       let bodyActualCard;
       if (this.$store.state.cardsList.length > 0)
         bodyActualCard = { ...this.$store.state.cardsList[0] };
-      else bodyActualCard = { ...this.$store.state.defaultCard };
+      else bodyActualCard = { ...this.$store.state.newCard };
 
       await this.$store.dispatch("mutateStore", {
         fct: "mutateKey",
@@ -192,6 +199,11 @@ export default {
     await this.buildActualCard();
   },
   watch: {
+    recto() {
+      if (!this.actualCard.id && !this.recto) {
+        this.modifyingCard = true;
+      }
+    },
     modifyingCard() {
       this.wasModified = true;
       this.$emit("modifying", this.modifyingCard);
