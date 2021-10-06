@@ -42,6 +42,11 @@ export default {
   components: {
     Card,
   },
+  data() {
+    return {
+      success: false,
+    };
+  },
   computed: {
     actualCardId() {
       return this.$store.state.actualCard.id;
@@ -58,14 +63,6 @@ export default {
       if (this.$store.state.tagsSelectedList.length > 0)
         await this.$store.dispatch("getCardsToReviseByTags");
       else await this.$store.dispatch("getCardsToRevise");
-
-      this.$store.dispatch("mutateStore", {
-        fct: "mutateKey",
-        value: {
-          mutate: "newCard",
-          body: { recto: "Tu n'as plus de cartes à réviser, félicitation !" },
-        },
-      });
     },
     createCard() {
       this.$store.dispatch("mutateStore", {
@@ -90,7 +87,7 @@ export default {
     await this.chargeDeck();
   },
   watch: {
-    cardsListLength() {
+    async cardsListLength() {
       if (this.cardsList) {
         let weight = 1;
         if (document.body.clientWidth > 767) weight++;
@@ -109,6 +106,26 @@ export default {
             }
           }
         });
+      }
+      if (this.cardsListLength == 0) {
+        if (this.success) {
+          setTimeout(() => {
+            this.$store.dispatch("mutateStore", {
+              fct: "mutateKey",
+              value: {
+                mutate: "cardsList",
+                body: {
+                  recto: "Le deck est vide. Félicitation !",
+                  end: true,
+                },
+              },
+            });
+            this.success = false;
+          }, 200);
+        } else {
+          this.success = true;
+          await this.chargeDeck();
+        }
       }
     },
   },
@@ -129,7 +146,6 @@ export default {
   align-content: center;
 
   & .card {
-    min-width: 300px;
     min-height: 500px;
     margin: auto;
 

@@ -7,6 +7,10 @@ export default createStore({
     //card
     actualCard: {},
     cardsList: [],
+    endCard: {
+      recto: "Le deck est vide",
+      end: true,
+    },
     firstDeckCard: {},
     newCard: {
       recto: "Une carte toute neuve !",

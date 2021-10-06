@@ -135,22 +135,12 @@ hr {
   border-radius: $card_rad;
   background-color: $violet;
   box-shadow: 0 0 25px 2px rgba(0, 0, 0, 0.15);
-
+  min-width: 300px;
+  max-width: 400px;
   z-index: 100;
-  // &.sub_card {
-  //   z-index: 1;
-  // }
-  
   & hr {
     margin: 0.5rem;
   }
-  // &.move {
-    // transform-style: preserve-3d;
-
-    // &:last-child {
-      // box-shadow: 0 0 25px 2px rgba(0, 0, 0, 0.15);
-    // }
-  // }
   & .recto,
   & .verso {
     position: absolute;

@@ -3,15 +3,15 @@
     <Header @userChange="chargeDeck" />
 
     <div :key="this.$store.state.user.id" class="home--main flex-grow-1">
-      <div id="tagsZone">
-        <Tags class="flex-grow-1" />
+      <div class="tagsZone">
+        <Tags />
       </div>
 
-      <div class="central flex-grow-2">
+      <div class="central">
         <Deck @modifying="useCardEditor = $event" />
       </div>
 
-      <div class="edit flex-grow-1">
+      <div class="edit">
         <Editor id="cardEditor" v-if="useCardEditor" />
       </div>
     </div>
@@ -63,18 +63,21 @@ export default {
 
   display: flex;
   flex-direction: column;
-  & > .home--main {
-    width: 100%;
+  & .home--main {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     flex-wrap: wrap;
-    & > div {
+    & > * {
+      min-width: 350px;
       margin: 1rem;
+    }
+    & * {
+      max-width: 96vw;
     }
   }
 }
 
-#tagsZone {
+.tagsZone {
   display: flex;
   flex-wrap: wrap-reverse;
 }
@@ -88,10 +91,11 @@ export default {
   .home--main {
     & > * {
       width: 100%;
+      min-width: 33%;
       margin: auto !important;
       & > * {
         width: auto;
-        margin: 2%;
+        margin: auto;
       }
     }
     & .central {
@@ -100,7 +104,7 @@ export default {
     & .edit {
       order: 1;
     }
-    & #tagsZone {
+    & .tagsZone {
       order: 3;
     }
   }

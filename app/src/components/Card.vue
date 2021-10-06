@@ -8,7 +8,11 @@
     </div>
 
     <div v-if="recto" class="recto">
-      <button @click="recto = false" class="fa-icon flip-card">
+      <button
+        v-if="!actualCard.end"
+        @click="recto = false"
+        class="fa-icon flip-card"
+      >
         <font-awesome-icon :icon="['fas', 'share']" size="2x" />
       </button>
       <div class="readingZone flex-grow-1">
@@ -95,6 +99,9 @@ export default {
     actualCard() {
       return this.$store.state.actualCard;
     },
+    cardsList() {
+      return this.$store.state.cardsList;
+    },
     zerofillId() {
       let id = this.actualCard.id ? this.actualCard.id : 0;
       let width = 5 - id.toString().length;
@@ -105,13 +112,12 @@ export default {
     },
   },
   methods: {
-    async buildActualCard() {
+    buildActualCard() {
       let bodyActualCard;
-      if (this.$store.state.cardsList.length > 0)
-        bodyActualCard = { ...this.$store.state.cardsList[0] };
+      if (this.cardsList.length > 0) bodyActualCard = { ...this.cardsList[0] };
       else bodyActualCard = { ...this.$store.state.newCard };
 
-      await this.$store.dispatch("mutateStore", {
+      this.$store.dispatch("mutateStore", {
         fct: "mutateKey",
         value: {
           mutate: "actualCard",
@@ -184,6 +190,7 @@ export default {
           value: "cardsList",
         });
       } else await this.$store.dispatch("postCard");
+      if (this.cardsList.length == 0) this.buildActualCard();
     },
     async saveCardChanges() {
       // Modifier la carte sans échanger recto et verso

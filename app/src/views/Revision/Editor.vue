@@ -200,6 +200,7 @@ export default {
 @import "@/styles/global";
 
 .editor--main {
+  margin: auto;
   width: 90%;
   & > * {
     max-width: 100%;
@@ -208,11 +209,10 @@ export default {
 .deck {
   height: 250px;
   & .card {
-    width: 100%;
     height: 200px;
     margin: 1rem;
     margin-top: 3rem;
-    margin-right: auto;
+    margin: auto;
 
     position: relative;
   }
@@ -239,8 +239,10 @@ export default {
   position: absolute;
   top: -0.75rem;
   left: -0.5rem;
-
+  // max-width: 95%;
+  width: 100%;
   display: flex;
+  justify-content: space-between;
   & button:hover {
     background-color: currentColor;
     & svg {
@@ -250,13 +252,12 @@ export default {
 }
 .resetButton {
   position: absolute;
-  top: -0.75rem;
-  right: -0.5rem;
+  top: 1rem;
+  left: -0.5rem;
 }
 .editor--options button,
 .resetButton {
-  width: 30px;
-  margin-right: 0.25rem;
+  min-width: 30px;
   border-radius: 20%;
 }
 
@@ -264,12 +265,8 @@ export default {
   .editor--main {
     margin: 0;
     width: 100%;
-    & *:not(svg) {
+    & > * {
       margin: 0 !important;
-    }
-    & .resetButton {
-      top: 1rem;
-      left: -0.5rem;
     }
   }
 }
