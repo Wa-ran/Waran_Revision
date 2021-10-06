@@ -100,7 +100,7 @@ export default {
               translateX(${-index * 3}px)
               translateY(${-index}px)
               rotateZ(${-index * 0.35}deg);`;
-              if (index == 10) break;
+              if (index == 10 || index == cards.length - 1) break;
             }
           }
         });

@@ -12,7 +12,8 @@ import {
   faUndo,
   faStrikethrough,
   faTint,
-  faHistory,
+  faCircle,
+  faCheck,
   faTrashAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -27,7 +28,8 @@ library.add(
   faUndo,
   faStrikethrough,
   faTint,
-  faHistory,
+  faCircle,
+  faCheck,
   faTrashAlt
 );
 
