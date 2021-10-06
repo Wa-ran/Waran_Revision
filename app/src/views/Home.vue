@@ -70,6 +70,10 @@ export default {
     & > * {
       min-width: 350px;
       margin: 1rem;
+      & > * {
+        margin: auto;
+        margin-top: 2rem;
+      }
     }
     & * {
       max-width: 96vw;
@@ -96,6 +100,7 @@ export default {
       & > * {
         width: auto;
         margin: auto;
+        margin-top: 0 !important;
       }
     }
     & .central {

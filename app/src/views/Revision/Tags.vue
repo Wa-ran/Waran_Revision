@@ -1,74 +1,84 @@
 <template>
   <div class="container">
-    <h3>Vos Tags :</h3>
-    <TagsGestion
-      @mounted="refreshReq('getAllUserTags')"
-      @submitTagRequest="submitTagRequest"
-      @deleteButton="setTagRequest('deleteTag')"
-      :chooseList="'tagsList'"
-    >
-      <template v-slot:default>
-        <button @click="setTagRequest('postTag')">Créer un Tag</button>
-        <button @click="setTagRequest('putTag')">Modifier un Tag</button>
-      </template>
-      <template v-slot:input>
-        <input
-          v-if="createModif"
-          v-model="tagNameInput"
-          autofocus
-          placeholder="Sélectionnez"
-        />
-      </template>
-    </TagsGestion>
-
-    <h3>Réviser par tags :</h3>
-    <div v-if="tagsSelectedList.length > 1">
-      <p>Les cartes doivent avoir :</p>
-      <div class="multiButtons">
-        <button
-          @click="changeSearchTagCond('AND')"
-          :class="searchTagsCond == 'AND' ? 'selected' : ''"
-        >
-          Tous les tags
-        </button>
-        <button
-          @click="changeSearchTagCond('OR')"
-          :class="searchTagsCond == 'OR' ? 'selected' : ''"
-        >
-          Un des tags
-        </button>
-      </div>
-      <hr />
+    <div>
+      <h3>Vos Tags :</h3>
+      <TagsGestion
+        @mounted="refreshReq('getAllUserTags')"
+        @submitTagRequest="submitTagRequest"
+        @deleteButton="setTagRequest('deleteTag')"
+        :chooseList="'tagsList'"
+      >
+        <template v-slot:default>
+          <button @click="setTagRequest('postTag')">
+            <span>Créer un Tag</span>
+          </button>
+          <button @click="setTagRequest('putTag')">
+            <span>Modifier un Tag</span>
+          </button>
+        </template>
+        <template v-slot:input>
+          <input
+            v-if="createModif"
+            v-model="tagNameInput"
+            autofocus
+            placeholder="Sélectionnez"
+          />
+        </template>
+      </TagsGestion>
     </div>
-    <TagsGestion
-      @mounted="refreshTagSelection"
-      @submitTagRequest="submitTagRequest"
-      @deleteButton="setTagRequest('deleteSearchTag')"
-      :chooseList="'tagsSelectedList'"
-    >
-      <div @click="setTagRequest('getCardsToReviseByTags')">
-        <button @click="handleTagSelection = 'add'">
-          <span>Ajouter un tag</span>
-        </button>
-        <button
-          v-if="tagsSelectedList.length > 0"
-          @click="handleTagSelection = 'remove'"
-        >
-          <span>Enlever un tag</span>
-        </button>
-      </div>
-    </TagsGestion>
 
-    <h3>Carte :</h3>
-    <TagsGestion
-      @submitTagRequest="submitTagRequest"
-      @deleteButton="setTagRequest('deleteCardTag')"
-      :chooseList="'cardTagsList'"
-    >
-      <button @click="setTagRequest('postCardTag')">
-        <span>Ajouter un tag à la carte</span>
-      </button>
-    </TagsGestion>
+    <div v-if="tagsListLength > 0">
+      <h3>Réviser par tags :</h3>
+      <div v-if="tagsSelectedList.length > 1">
+        <p>Les cartes doivent avoir :</p>
+        <div class="multiButtons">
+          <button
+            @click="changeSearchTagCond('AND')"
+            :class="searchTagsCond == 'AND' ? 'selected' : ''"
+          >
+            <span>Tous les tags</span>
+          </button>
+          <button
+            @click="changeSearchTagCond('OR')"
+            :class="searchTagsCond == 'OR' ? 'selected' : ''"
+          >
+            <span>Un des tags</span>
+          </button>
+        </div>
+        <hr />
+      </div>
+      <TagsGestion
+        @mounted="refreshTagSelection"
+        @submitTagRequest="submitTagRequest"
+        @deleteButton="setTagRequest('deleteSearchTag')"
+        :chooseList="'tagsSelectedList'"
+      >
+        <div @click="setTagRequest('getCardsToReviseByTags')">
+          <button @click="handleTagSelection = 'add'">
+            <span>Ajouter un tag</span>
+          </button>
+          <button
+            v-if="tagsSelectedList.length > 0"
+            @click="handleTagSelection = 'remove'"
+          >
+            <span>Enlever un tag</span>
+          </button>
+        </div>
+      </TagsGestion>
+    </div>
+
+    <div v-if="tagsListLength > 0">
+      <h3>Carte :</h3>
+      <TagsGestion
+        @submitTagRequest="submitTagRequest"
+        @deleteButton="setTagRequest('deleteCardTag')"
+        :chooseList="'cardTagsList'"
+      >
+        <button @click="setTagRequest('postCardTag')">
+          <span>Ajouter un tag à la carte</span>
+        </button>
+      </TagsGestion>
+    </div>
   </div>
 </template>
 
@@ -102,6 +112,9 @@ export default {
     },
     searchTagsCond() {
       return this.$store.state.searchTagsCond;
+    },
+    tagsListLength() {
+      return this.$store.state.tagsList.length;
     },
     tagsSelectedList() {
       return this.$store.state.tagsSelectedList;
@@ -210,9 +223,6 @@ export default {
 <style lang="scss" scoped>
 @import "@/styles/global";
 
-// button {
-//   width: 100%;
-// }
 h3 {
   margin-bottom: 0.5rem;
 }

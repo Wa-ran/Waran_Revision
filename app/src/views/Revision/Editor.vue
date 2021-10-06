@@ -11,7 +11,7 @@
         </div>
 
         <div class="recto">
-          <div class="card--main readingZone flex-grow-1">
+          <div class="card--main flex-grow-1">
             <div class="editor--options">
               <button
                 @click="
@@ -45,39 +45,38 @@
               </button>
 
               <button
-                class="icon cust_red"
+                class="icon color cust_red"
                 @click="editContent('<span class=\'cust_red\'>', '</span>')"
               >
                 <font-awesome-icon :icon="['fas', 'tint']" />
               </button>
               <button
-                class="icon cust_orange"
+                class="icon color cust_orange"
                 @click="editContent('<span class=\'cust_orange\'>', '</span>')"
               >
                 <font-awesome-icon :icon="['fas', 'tint']" />
               </button>
               <button
-                class="icon cust_yellow"
+                class="icon color cust_yellow"
                 @click="editContent('<span class=\'cust_yellow\'>', '</span>')"
               >
                 <font-awesome-icon :icon="['fas', 'tint']" />
               </button>
               <button
-                class="icon cust_green"
+                class="icon color cust_green"
                 @click="editContent('<span class=\'cust_green\'>', '</span>')"
               >
                 <font-awesome-icon :icon="['fas', 'tint']" />
               </button>
               <button
-                class="icon cust_blue"
+                class="icon color cust_blue"
                 @click="editContent('<span class=\'cust_blue\'>', '</span>')"
               >
                 <font-awesome-icon :icon="['fas', 'tint']" />
               </button>
             </div>
-
             <button class="icon resetButton importantButton" @click="resetText">
-              <font-awesome-icon :icon="['fas', 'history']" />
+              <span>Reset</span>
             </button>
 
             <div
@@ -200,26 +199,31 @@ export default {
 @import "@/styles/global";
 
 .editor--main {
-  margin: auto;
   width: 90%;
   & > * {
     max-width: 100%;
   }
 }
 .deck {
-  height: 250px;
+  margin-bottom: 2rem;
   & .card {
-    height: 200px;
+    height: auto;
     margin: 1rem;
     margin-top: 3rem;
     margin: auto;
 
     position: relative;
   }
+  & .recto {
+    position: relative;
+    margin-bottom: 2rem;
+  }
 }
 
 .card--main {
   position: relative;
+  height: fit-content;
+  min-width: fit-content;
   & .face {
     position: absolute;
     bottom: -0.5rem;
@@ -232,18 +236,20 @@ export default {
   }
 }
 #contentEditable {
-  padding-top: 2rem;
+  padding: 3rem 1rem;
+  min-height: 100%;
+  max-height: 300px;
+  overflow: auto;
 }
 
 .editor--options {
   position: absolute;
   top: -0.75rem;
   left: -0.5rem;
-  // max-width: 95%;
-  width: 100%;
+  width: 95%;
   display: flex;
   justify-content: space-between;
-  & button:hover {
+  & button.color:hover {
     background-color: currentColor;
     & svg {
       color: $dark_blue;
@@ -252,20 +258,23 @@ export default {
 }
 .resetButton {
   position: absolute;
-  top: 1rem;
+  top: 0.75rem;
   left: -0.5rem;
+  & span {
+    padding: 0;
+  }
 }
 .editor--options button,
 .resetButton {
   min-width: 30px;
-  border-radius: 20%;
+  border-radius: 0.5rem;
 }
 
 @media screen and (max-width: 767px) {
   .editor--main {
     margin: 0;
     width: 100%;
-    & > * {
+    & > *:not(.deck) {
       margin: 0 !important;
     }
   }

@@ -11,7 +11,9 @@
     </div>
 
     <div class="gestion_buttons">
-      <button v-if="!active" @click="active = true">Modifier</button>
+      <button v-if="!active" @click="active = true">
+        <span>Modifier</span>
+      </button>
 
       <div v-if="!tagRequest && active">
         <div>
@@ -34,18 +36,20 @@
         </div>
         <p>Sélectionnez un tag</p>
         <div class="multiButtons">
-          <button @click="submitTagRequest">Valider</button>
-          <button @click="setTagRequest(false)">Annuler</button>
+          <button @click="submitTagRequest"><span>Valider</span></button>
+          <button @click="setTagRequest(false)"><span>Annuler</span></button>
         </div>
       </div>
 
-      <button
-        v-if="!tagRequest && active"
-        @click="refresh"
-        class="importantButton selected"
-      >
-        <span>Terminer</span>
-      </button>
+      <div>
+        <button
+          v-if="!tagRequest && active"
+          @click="refresh"
+          class="importantButton selected"
+        >
+          <span>Terminer</span>
+        </button>
+      </div>
     </div>
     <hr />
   </div>
@@ -155,8 +159,14 @@ export default {
   margin: auto;
   display: flex;
   flex-wrap: wrap;
-  & button {
-    min-width: 100px;
+  & > div:not(.multiButtons) {
+    min-width: 200px;
+    max-width: 80%;
+    width: 80%;
+    & button {
+      margin-top: 0.5rem;
+      width: 80%;
+    }
   }
   & *:not(button) {
     width: 100%;
@@ -171,6 +181,8 @@ export default {
     @include case_style;
     padding: 0.25rem 1rem;
     width: auto;
+    margin: auto;
+    margin-bottom: 0.5rem;
   }
 }
 

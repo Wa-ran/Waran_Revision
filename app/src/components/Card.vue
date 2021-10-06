@@ -1,7 +1,7 @@
 <template>
   <div :key="actualCard" class="card move">
     <div class="doodle">
-      <css-doodle>
+      <css-doodle :seed="doodleSeed">
         @grid: 32; @size: 1px calc(35px + 70%); transform: rotate(@r(±90deg));
         background: #e7576a; opacity: calc(1 - 1 / 1000 * @index);
       </css-doodle>
@@ -89,8 +89,10 @@ export default {
   name: "Card",
   data() {
     return {
+      doodleSeed: "",
       recto: true,
       modifyingCard: false,
+      initialStreak: "",
       streakSet: false,
       wasModified: false,
     };
@@ -124,6 +126,7 @@ export default {
           body: bodyActualCard,
         },
       });
+      this.initialStreak = bodyActualCard.streak;
     },
     calculNextRevision() {
       const HOURS_SUITE = {
@@ -154,6 +157,7 @@ export default {
     handleStreak(add) {
       this.streakSet = true;
       if (add) this.mutateModifs("streak", this.actualCard.streak + add);
+      else this.mutateModifs("srteak", this.initialStreak);
       if (this.actualCard.streak < 0) this.mutateModifs("streak", 0);
       this.nextRevision();
     },
@@ -204,6 +208,7 @@ export default {
   },
   async mounted() {
     await this.buildActualCard();
+    this.doodleSeed = Math.trunc(Math.random) * 1000;
   },
   watch: {
     recto() {

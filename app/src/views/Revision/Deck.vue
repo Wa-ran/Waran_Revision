@@ -89,20 +89,18 @@ export default {
   watch: {
     async cardsListLength() {
       if (this.cardsList) {
-        let weight = 1;
-        if (document.body.clientWidth > 767) weight++;
         setTimeout(() => {
           let cards = document.querySelectorAll(".sub_card");
           if (cards.length > 0) {
             for (let index of this.cardsList.keys()) {
               cards[index].style.cssText = `
-              z-index: ${6 - index};
+              z-index: ${50 - index};
               transition: transform 0.2s;
               transform:
-              translateX(${-index * 3 * weight}px)
-              translateY(${-index * weight}px)
-              rotateZ(${-index * 0.35 * weight}deg);`;
-              if (index == 4) break;
+              translateX(${-index * 3}px)
+              translateY(${-index}px)
+              rotateZ(${-index * 0.35}deg);`;
+              if (index == 10) break;
             }
           }
         });
@@ -139,7 +137,6 @@ export default {
   width: 100%;
   min-height: 500px;
   margin: auto;
-  margin-top: 2rem;
 
   display: flex;
   justify-content: center;
