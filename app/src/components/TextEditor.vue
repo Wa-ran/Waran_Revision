@@ -130,6 +130,8 @@ export default {
       this.faceSelected = null;
       setTimeout(() => {
         this.faceSelected = face;
+        this.textarea = this.faceContent;
+        this.$emit("faceChange", face);
       });
     },
     editContent(wrapStart, wrapEnd) {

@@ -42,6 +42,7 @@ exports.jsonList = (objName) => {
 const mysqlx = require('@mysql/xdevapi');
 const config = {
   password: 'pass',
+  // password: 'root',
   user: 'root',
   // host: 'localhost',
   // port: '3306',

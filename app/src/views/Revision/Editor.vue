@@ -1,8 +1,8 @@
 <template>
   <div class="editor--main">
-    <TextEditor class="deck" />
+    <TextEditor @faceChange="faceSelected = $event" class="deck" />
     <h3>Options :</h3>
-    <CardEditor />
+    <CardEditor :cardFace="faceSelected" :key="faceSelected" />
   </div>
 </template>
 
@@ -15,6 +15,11 @@ export default {
   components: {
     CardEditor,
     TextEditor,
+  },
+  data() {
+    return {
+      faceSelected: "recto",
+    };
   },
 };
 </script>

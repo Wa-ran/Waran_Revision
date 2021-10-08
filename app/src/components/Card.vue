@@ -221,6 +221,9 @@ export default {
     await this.buildActualCard();
     this.doodleSeed = Math.trunc(Math.random) * 1000;
   },
+  unmounted() {
+    this.$emit("modifying", false);
+  },
   watch: {
     recto() {
       if (!this.actualCard.id && !this.recto) {

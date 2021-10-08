@@ -3,7 +3,7 @@
     <div class="deck flex-grow-1" :key="cardsListLength">
       <Card @modifying="$emit('modifying', $event)" />
       <div
-        v-for="card in cardsList.slice(0, 5)"
+        v-for="card in cardsList.slice(0, 8)"
         :key="card"
         class="card sub_card"
       ></div>
@@ -60,7 +60,6 @@ export default {
   },
   methods: {
     async chargeDeck() {
-      this.createCard();
       if (this.$store.state.tagsSelectedList.length > 0)
         await this.$store.dispatch("getCardsToReviseByTags");
       else await this.$store.dispatch("getCardsToRevise");
@@ -84,7 +83,7 @@ export default {
       });
     },
   },
-  async mounted() {
+  async created() {
     await this.chargeDeck();
   },
   watch: {
@@ -94,9 +93,10 @@ export default {
           let cards = document.querySelectorAll(".sub_card");
           if (cards.length > 0) {
             for (let index of this.cardsList.keys()) {
+              console.log("coucou");
               cards[index].style.cssText = `
               z-index: ${50 - index};
-              transition: transform 0.2s;
+              transition: transform 0.2s 0.${index}s;
               transform:
               translateX(${-index * 3}px)
               translateY(${-index}px)
@@ -108,24 +108,23 @@ export default {
       }
       if (this.cardsListLength == 0) {
         if (this.success) {
-          setTimeout(() => {
-            this.$store.dispatch("mutateStore", {
-              fct: "mutateKey",
-              value: {
-                mutate: "cardsList",
-                body: {
-                  recto: "Le deck est vide. Félicitation !",
-                  end: true,
-                },
+          this.$store.dispatch("mutateStore", {
+            fct: "mutateKey",
+            value: {
+              mutate: "cardsList",
+              body: {
+                recto: "Le deck est vide. Félicitation !",
+                end: true,
               },
-            });
-            this.success = false;
-          }, 200);
+            },
+          });
+          this.success = false;
         } else {
           this.success = true;
           await this.chargeDeck();
         }
-      }
+      } else this.success = false;
+      this.$emit("modifying", false);
     },
   },
 
