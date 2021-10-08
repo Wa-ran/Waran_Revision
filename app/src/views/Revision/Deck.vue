@@ -60,6 +60,7 @@ export default {
   },
   methods: {
     async chargeDeck() {
+      this.createCard();
       if (this.$store.state.tagsSelectedList.length > 0)
         await this.$store.dispatch("getCardsToReviseByTags");
       else await this.$store.dispatch("getCardsToRevise");
@@ -160,6 +161,7 @@ export default {
   & > div {
     flex-grow: 1;
     margin: 0.5rem 0.25rem;
+    margin-top: 0;
   }
   & button {
     width: 100%;

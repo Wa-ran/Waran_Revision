@@ -20,6 +20,8 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 import { CssDoodle } from "css-doodle";
 
+import VueMathjax from "vue-mathjax-next";
+
 library.add(
   faShare,
   faBold,
@@ -36,6 +38,7 @@ library.add(
 const VueApp = createApp(App);
 VueApp.component("font-awesome-icon", FontAwesomeIcon);
 VueApp.component("css-doodle", CssDoodle);
+VueApp.component("vue-mathjax", VueMathjax);
 VueApp.use(store).use(router);
 
 VueApp.mount("#app");

@@ -27,18 +27,12 @@ module.exports = class dtbObj {
   parseToMySQL() {
     // not null, string = encryption
     for (let [key, value] of Object.entries(this)) {
-      if (value && !Number.isInteger(value)) {
+      if (!Number.isInteger(value) && value !== true && value !== false) {
         try {
           if (value && value instanceof Date && value.getTime()) {
             this[key] = `"${dateParser.toMySQL(value)}"`;
           }
-          else if (value === true) {
-            this[key] = 1;
-          }
-          else if (value === false) {
-            this[key] = 0;
-          }
-          else if (value) {
+          else if (value && value.length > 0) {
             this[key] = `"${encrypt(value)}"`
           }
           else {
@@ -67,4 +61,10 @@ module.exports = class dtbObj {
   tryParseInt(val) {
     return Number.isInteger(val) ? val : (isNaN(Number.parseInt(val)) ? null : Number.parseInt(val));
   };
+
+  isBoolean(val) {
+    if (val === true || val === false) return val
+    else if (val == 1) return true;
+    else return false;
+  }
 }

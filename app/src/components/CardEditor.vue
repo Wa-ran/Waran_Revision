@@ -1,11 +1,15 @@
 <template>
   <div>
     <CheckButton
-      @check="setCardReverse($event)"
+      @check="setCardParams('reverse', $event)"
       :desc="'Inversion de la carte'"
-      :preChecked="reverseCard"
+      :preChecked="actualCard.reverse"
     />
-    <CheckButton :desc="'Formule mathématique'" />
+    <CheckButton
+      @check="setCardParams([cardFace + '_formula'], $event)"
+      :desc="'Formule Mathématique'"
+      :preChecked="actualCard[cardFace + '_formula']"
+    />
   </div>
 </template>
 
@@ -16,15 +20,18 @@ export default {
   components: {
     CheckButton,
   },
-  data() {
-    return {
-      reverseCard: true,
-    };
+  props: {
+    cardFace: { type: String, default: "recto" },
+  },
+  computed: {
+    actualCard() {
+      return this.$store.state.actualCard;
+    },
   },
   methods: {
-    setCardReverse(bool) {
+    setCardParams(key, value) {
       let card = { ...this.$store.state.actualCard };
-      card.reverse = bool;
+      card[key] = value;
       this.$store.dispatch("mutateStore", {
         fct: "mutateKey",
         value: {
@@ -33,9 +40,6 @@ export default {
         },
       });
     },
-  },
-  mounted() {
-    this.reverseCard = this.$store.state.actualCard.reverse;
   },
 };
 </script>

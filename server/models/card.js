@@ -21,7 +21,7 @@ const HOURS_SUITE = {
 
 module.exports = class Card extends dtbObj {
 
-  constructor(id, recto, verso, streak, user_id, next_revision, required_cards, reverse) {
+  constructor(id, recto, verso, streak, user_id, next_revision, reverse, recto_comment, verso_comment, recto_formula, verso_formula, recto_image, verso_image) {
     super();
     this.id = this.tryParseInt(id);
     this.recto = recto;
@@ -29,8 +29,13 @@ module.exports = class Card extends dtbObj {
     this.streak = this.tryParseInt(streak);
     this.user_id = this.tryParseInt(user_id);
     this.next_revision = next_revision ? next_revision : new Date();
-    this.required_cards = this.tryJoin(required_cards);
-    this.reverse = reverse;
+    this.recto_comment = recto_comment;
+    this.verso_comment = verso_comment;
+    this.recto_formula = this.isBoolean(recto_formula);
+    this.verso_formula = this.isBoolean(verso_formula);
+    this.recto_image = this.isBoolean(recto_image);
+    this.verso_image = this.isBoolean(verso_image);
+    this.reverse = this.isBoolean(reverse);
   };
 
   calculNextRevision() {

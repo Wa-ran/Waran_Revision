@@ -1,11 +1,11 @@
 const dtbFct = require('./dtb');
-const objCreator = require('./objectCreator')
+const createObj = require('./createObj')
 
 exports.getCard = async (req) => {
   let resCard;
   await dtbFct.selectCard(req.card)
     .then(dtbCard => {
-      resCard = objCreator.createObj("card", dtbCard)
+      resCard = createObj("card", dtbCard)
     })
   return resCard
 };
@@ -32,7 +32,7 @@ exports.getTag = async (req) => {
   let resTag;
   await dtbFct.selectTag(req.tag)
     .then(dtbTag => {
-      resTag = objCreator.createObj("tag", dtbTag)
+      resTag = createObj("tag", dtbTag)
     })
   return resTag
 };
@@ -61,7 +61,7 @@ exports.getAllUserCards = async (req) => {
         list = [list]
       }
       for (card of list) {
-        let objCard = objCreator.createObj("card", card);
+        let objCard = createObj("card", card);
         resList.push(objCard);
       };
     })
@@ -76,7 +76,7 @@ exports.getAllUserCardsByTagsAND = async (req) => {
         list = [list]
       }
       for (card of list) {
-        let objCard = objCreator.createObj("card", card);
+        let objCard = createObj("card", card);
         resList.push(objCard);
       };
     })
@@ -91,7 +91,7 @@ exports.getAllUserCardsByTagsOR = async (req) => {
         list = [list]
       }
       for (card of list) {
-        let objCard = objCreator.createObj("card", card);
+        let objCard = createObj("card", card);
         resList.push(objCard);
       };
     })
@@ -106,7 +106,7 @@ exports.getAllUserTags = async (req) => {
         list = [list]
       }
       for (tag of list) {
-        let objTag = objCreator.createObj("tag", tag);
+        let objTag = createObj("tag", tag);
         resList.push(objTag);
       };
     })
@@ -121,7 +121,7 @@ exports.getCardsToRevise = async (req) => {
         list = [list]
       }
       for (card of list) {
-        let objCard = objCreator.createObj("card", card);
+        let objCard = createObj("card", card);
         resList.push(objCard);
       };
     })
@@ -136,7 +136,7 @@ exports.postgetCardsToReviseByTagsAND = async (req) => {
         list = [list]
       }
       for (card of list) {
-        let objCard = objCreator.createObj("card", card);
+        let objCard = createObj("card", card);
         resList.push(objCard);
       };
     })
@@ -151,7 +151,7 @@ exports.postgetCardsToReviseByTagsOR = async (req) => {
         list = [list]
       }
       for (card of list) {
-        let objCard = objCreator.createObj("card", card);
+        let objCard = createObj("card", card);
         resList.push(objCard);
       };
     })
@@ -166,7 +166,7 @@ exports.getCardTags = async (req) => {
         list = [list]
       }
       for (tag of list) {
-        let objTag = objCreator.createObj("tag", tag);
+        let objTag = createObj("tag", tag);
         resList.push(objTag);
       };
     })
@@ -192,7 +192,7 @@ exports.getUser = async (req) => {
   let resUser;
   await dtbFct.selectUser(req.user)
     .then(dtbUser => {
-      resUser = objCreator.createObj("user", dtbUser)
+      resUser = createObj("user", dtbUser)
     })
   return resUser
 };

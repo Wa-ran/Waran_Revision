@@ -1,7 +1,7 @@
 // const jwt = require('jsonwebtoken');
 // const fs = require('fs');
 const requestFct = require('../middlewares/request');
-const objCreator = require('../middlewares/objectCreator');
+const createObj = require('../middlewares/createObj');
 
 module.exports = async (req, res, next) => {
   let method = req.method.toLowerCase();
@@ -30,12 +30,12 @@ module.exports = async (req, res, next) => {
 
         if (alreadyExist == 2) return
         else {
-          data[objName].push(objCreator.createObj(objName, obj));
+          data[objName].push(createObj(objName, obj));
         };
       };
     }
     else {
-      data[objName] = objCreator.createObj(objName, object);
+      data[objName] = createObj(objName, object);
     };
   };
 

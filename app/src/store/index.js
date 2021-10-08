@@ -18,7 +18,12 @@ export default createStore({
       streak: 0,
       next_revision: "",
       user_id: "",
-      required_cards: [],
+      recto_comment: "",
+      verso_comment: "",
+      recto_formula: false,
+      verso_formula: false,
+      recto_image: false,
+      verso_image: false,
       reverse: true,
     },
 
@@ -37,8 +42,8 @@ export default createStore({
     },
     loading: false,
     serverAddress: {
-      waran_revision: "http://195.110.59.46:3008",
-      // waran_revision: "http://localhost:3008",
+      // waran_revision: "http://195.110.59.46:3008",
+      waran_revision: "http://localhost:3008",
     },
 
     //tag

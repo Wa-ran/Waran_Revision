@@ -100,9 +100,9 @@
             >
               <font-awesome-icon :icon="['fas', 'undo']" />
             </button>
-            <button @click="mutateModifs" class="default">
+            <!-- <button @click="mutateModifs" class="default">
               <span>Valider</span>
-            </button>
+            </button> -->
           </div>
         </div>
       </div>
@@ -117,10 +117,11 @@ export default {
     return {
       faceSelected: "recto",
       changeHist: [],
+      textarea: "",
     };
   },
   computed: {
-    textarea() {
+    faceContent() {
       return this.$store.state.actualCard[this.faceSelected];
     },
   },
@@ -176,17 +177,19 @@ export default {
           body: cardModif,
         },
       });
-      this.changeFaceSelection(this.faceSelected);
     },
     reverseChange() {
-      document.getElementById("contentEditable").innerHTML =
-        this.changeHist.pop();
+      this.textarea = this.changeHist.pop();
     },
     saveChange() {
       this.changeHist.push(
         document.getElementById("contentEditable").innerHTML
       );
+      this.mutateModifs();
     },
+  },
+  mounted() {
+    this.textarea = this.faceContent;
   },
 };
 </script>

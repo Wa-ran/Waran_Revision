@@ -16,7 +16,11 @@
         <font-awesome-icon :icon="['fas', 'share']" size="2x" />
       </button>
       <div class="readingZone flex-grow-1">
-        <span v-html="actualCard.recto"></span>
+        <vue-mathjax
+          v-if="actualCard.recto_formula"
+          :formula="actualCard.recto"
+        />
+        <span v-else v-html="actualCard.recto"></span>
       </div>
     </div>
 
@@ -26,13 +30,21 @@
       </button>
 
       <div class="readingZone flex-grow-1">
-        <span v-html="actualCard.recto"></span>
+        <vue-mathjax
+          v-if="actualCard.recto_formula"
+          :formula="actualCard.recto"
+        />
+        <span v-else v-html="actualCard.recto"></span>
       </div>
 
       <hr />
 
       <div class="readingZone flex-grow-3">
-        <span v-html="actualCard.verso"></span>
+        <vue-mathjax
+          v-if="actualCard.verso_formula"
+          :formula="actualCard.recto"
+        />
+        <span v-else v-html="actualCard.verso"></span>
 
         <div class="streakButtons">
           <button
@@ -59,6 +71,7 @@
       <hr />
 
       <div class="bottom">
+        <div class="level">Niveau: {{ actualCard.streak }}</div>
         <div class="calc-revision">Prochaine révision {{ nextRevision() }}</div>
         <div v-if="!modifyingCard && wasModified" class="multiButtons">
           <button @click="modifyingCard = true"><span>Modifer</span></button>
@@ -74,9 +87,7 @@
             <font-awesome-icon :icon="['fas', 'undo']" />
           </button>
         </div>
-        <div class="mini">
-          niveau: {{ actualCard.streak }} &nbsp; id-{{ zerofillId }}
-        </div>
+        <div class="mini">id-{{ zerofillId }}</div>
       </div>
     </div>
   </div>
@@ -252,6 +263,13 @@ export default {
     margin-bottom: -0.25rem;
     font-size: 0.75rem;
     text-align: right;
+  }
+  & .level {
+    margin: 0;
+    margin-top: -0.5rem;
+    margin-left: 0.5rem;
+    width: fit-content;
+    font-size: 0.75rem;
   }
 }
 </style>
