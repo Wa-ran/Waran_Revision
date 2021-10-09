@@ -7,6 +7,9 @@ html {
   background-color: $violet;
   color: $white;
   word-wrap: break-word;
+  & * {
+    font-family: "Roboto", sans-serif;
+  }
 }
 
 ::-webkit-scrollbar {
@@ -34,7 +37,6 @@ body,
 }
 
 input, textarea, div[contenteditable="true"] {
-  font-family: "Roboto", sans-serif;
   resize: none;
 
   height: 100%;
@@ -53,10 +55,13 @@ button {
   color: $white;
   min-width: max-content;
   max-width: 250px;
+  font-size: 1rem;
+  &.selected, &.default, &:hover, &:active {
+    font-weight: bold;
+  }
   &.selected, &.default {
     background-color: $pink;
     color: $violet;
-    font-weight: bold;
   }
   &.default {
     box-shadow: inset 0 0 0 2px $dark_blue;
@@ -64,7 +69,7 @@ button {
   &:hover, &.default:hover {
     background-color: $white;
     color: $dark-blue;
-    font-weight: bold;
+    box-shadow: inset 0 0 0 1px $dark_blue;
   }
   &:active {
     background-color: $violet;
@@ -170,6 +175,7 @@ hr {
       justify-content: center;
       align-content: center;
       overflow: visible;
+      font-size: 1.1rem;
     }
     & hr {
       border: none;

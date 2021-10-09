@@ -1,5 +1,7 @@
 const dtbFct = require('./dtb');
-const createObj = require('./createObj')
+const createObj = require('./createObj');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
 exports.getCard = async (req) => {
   let resCard;
@@ -188,11 +190,30 @@ exports.deleteCardTags = async (req) => {
   await dtbFct.deleteCardTag(req.card, req.tag)
 };
 
-exports.getUser = async (req) => {
+exports.postgetUser = async (req) => {
   let resUser;
-  await dtbFct.selectUser(req.user)
-    .then(dtbUser => {
-      resUser = createObj("user", dtbUser)
+  let compUser = { ...req.user };
+  let dtbUser;
+  await req.user.cryptPassword()
+    .then(() => {
+      return dtbFct.selectUser(req.user)
+    })
+    .then((selectedUser) => {
+      dtbUser = selectedUser;
+      return bcrypt.compare(selectedUser.password, compUser.password)
+    })
+    .catch((err) => {
+      console.log(err)
+      throw { custMsg: 'Mot de passe incorrect >:(' }
+    })
+    .then(() => {
+      resUser = createObj("user", dtbUser);
+      let tokenId = resUser.id;
+      resUser['token'] = jwt.sign(
+        { tokenId },
+        'b$UKq/Tjy9lCriz$$YUUTXCMo.obIcG/AO4',
+        { expiresIn: '24h' }
+      );
     })
   return resUser
 };

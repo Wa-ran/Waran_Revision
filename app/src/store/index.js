@@ -61,19 +61,15 @@ export default createStore({
     tagGestionRefreshKey: 0,
 
     user: {
-      id: 1,
+      id: "",
       pseudo: "",
       token: "",
-    },
-    submitUser: {
-      pseudo: "",
-      password: "",
     },
   },
   mutations: {
     changeUser(state, payload) {
-      state.user.id = payload;
-      state.newCard.user_id = payload;
+      state.newCard.user_id = payload.id;
+      state.headers.Authorization = payload.token;
     },
     mutateKey(state, payload) {
       let mutate = payload.mutate;
@@ -163,22 +159,26 @@ export default createStore({
         mutate: "tagsList",
       });
     },
+    postUser() {
+      this.dispatch("revisionRequest", {
+        method: "POST",
+        serverRoute: "/User",
+        data: { card: this.state.user },
+        mutate: "user",
+      });
+    },
     async postCardTags() {
-      await new Promise(() => {
-        if (!this.state.actualCard.id) {
-          return this.postCard();
-        }
-      }).then(() => {
+      if (this.state.actualCard.id) {
         this.dispatch("revisionRequest", {
           method: "POST",
           serverRoute: "/CardTags",
           data: {
             card: this.state.actualCard,
-            tag: this.state.cardTagsList.concat(this.state.tagsSelectedList),
+            tag: this.state.cardTagsList,
           },
           mutate: "cardTagsList",
         });
-      });
+      }
     },
     putCard() {
       if (this.state.actualCard.id) {
@@ -239,8 +239,8 @@ export default createStore({
     getUser() {
       this.dispatch("revisionRequest", {
         method: "POST",
-        serverRoute: "/User",
-        data: this.state.submitUser,
+        serverRoute: "/getUser",
+        data: { user: this.state.user },
         mutate: "user",
       });
     },

@@ -15,40 +15,44 @@
         <span>Modifier</span>
       </button>
 
-      <div v-if="!tagRequest && active">
+      <div v-if="active">
+        <div v-if="!optionSelected" @click="optionSelected = true">
+          <div>
+            <slot></slot>
+          </div>
+
+          <button
+            v-if="chosenList.length > 0"
+            @click="$emit('deleteButton')"
+            class="importantButton"
+          >
+            <font-awesome-icon :icon="['fas', 'trash-alt']" />
+            <span>Supprimer un tag</span>
+          </button>
+        </div>
+
+        <div v-if="optionSelected">
+          <div>
+            <slot name="input"></slot>
+          </div>
+          <p>Sélectionnez un tag</p>
+          <div class="multiButtons">
+            <button @click="submitTagRequest"><span>Valider</span></button>
+            <button @click="optionSelected = false">
+              <span>Annuler</span>
+            </button>
+          </div>
+        </div>
+
         <div>
-          <slot></slot>
+          <button
+            v-if="!optionSelected"
+            @click="refresh"
+            class="importantButton selected"
+          >
+            <span>Terminer</span>
+          </button>
         </div>
-
-        <button
-          v-if="chosenList.length > 0"
-          @click="$emit('deleteButton')"
-          class="importantButton"
-        >
-          <font-awesome-icon :icon="['fas', 'trash-alt']" />
-          <span>Supprimer un tag</span>
-        </button>
-      </div>
-
-      <div v-if="tagRequest && active">
-        <div>
-          <slot name="input"></slot>
-        </div>
-        <p>Sélectionnez un tag</p>
-        <div class="multiButtons">
-          <button @click="submitTagRequest"><span>Valider</span></button>
-          <button @click="setTagRequest(false)"><span>Annuler</span></button>
-        </div>
-      </div>
-
-      <div>
-        <button
-          v-if="!tagRequest && active"
-          @click="refresh"
-          class="importantButton selected"
-        >
-          <span>Terminer</span>
-        </button>
       </div>
     </div>
     <hr />
@@ -70,6 +74,7 @@ export default {
     return {
       active: false,
       activeKey: 0,
+      optionSelected: false,
     };
   },
   computed: {
@@ -79,26 +84,15 @@ export default {
     refreshKey() {
       return this.$store.state.tagGestionRefreshKey;
     },
-    tagRequest() {
-      return this.$store.state.tagRequest;
-    },
   },
   methods: {
     submitTagRequest() {
       this.$emit("submitTagRequest");
-      this.setTagRequest(false);
-    },
-    setTagRequest(req) {
-      this.$store.dispatch("mutateStore", {
-        fct: "mutateKey",
-        value: {
-          mutate: "tagRequest",
-          body: req,
-        },
-      });
+      this.optionSelected = false;
+      this.$emit("mounted");
     },
     refresh() {
-      this.setTagRequest(false);
+      this.optionSelected = false;
       this.$store.dispatch("mutateStore", {
         fct: "resetKey",
         value: "actualTag",
@@ -112,6 +106,7 @@ export default {
   watch: {
     active() {
       if (this.active) {
+        this.$emit("active");
         this.activeKey = this.refreshKey + 1;
         this.$store.dispatch("mutateStore", {
           fct: "mutateKey",

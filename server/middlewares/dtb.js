@@ -31,7 +31,7 @@ exports.updateRequest = (obj) => {
 exports.jsonList = (objName) => {
   let req = '(';
   for (let params of fctArgsNames(objName)) {
-    req += `'${params}', ${params}, `
+    req += `'${params}', ${objName}s.${params}, `
   }
   req = req.substring(0, req.length - 2);
   req += ')';
@@ -205,5 +205,6 @@ exports.createUser = async (user) => {
 };
 
 exports.selectUser = async (user) => {
-  return await this.connect("SELECT JSON_OBJECT" + this.jsonList('user') + " FROM users WHERE id = " + user.id + ";");
+  user.parseToMySQL();
+  return await this.connect("SELECT JSON_OBJECT" + this.jsonList('user') + " FROM users WHERE pseudo = " + user.pseudo + ";");
 };

@@ -2,8 +2,10 @@
   <div class="container">
     <div>
       <h3>Vos Tags :</h3>
+
       <TagsGestion
-        @mounted="refreshReq('getAllUserTags')"
+        @active="setTagRequest('getAllUserTags')"
+        @mounted="submitTagRequest('getAllUserTags')"
         @submitTagRequest="submitTagRequest"
         @deleteButton="setTagRequest('deleteTag')"
         :chooseList="'tagsList'"
@@ -18,7 +20,7 @@
         </template>
         <template v-slot:input>
           <input
-            v-if="createModif"
+            v-if="createOrModif"
             v-model="tagNameInput"
             autofocus
             placeholder="Sélectionnez"
@@ -29,6 +31,7 @@
 
     <div v-if="tagsListLength > 0">
       <h3>Réviser par tags :</h3>
+
       <div v-if="tagsSelectedList.length > 1">
         <p>Les cartes doivent avoir :</p>
         <div class="multiButtons">
@@ -47,21 +50,20 @@
         </div>
         <hr />
       </div>
+
       <TagsGestion
+        @active="
+          selectedList = 'tagsSelectedList';
+          setTagRequest('getCardsToReviseByTags');
+        "
         @mounted="refreshTagSelection"
         @submitTagRequest="submitTagRequest"
-        @deleteButton="setTagRequest('deleteSearchTag')"
+        @deleteButton="handleTagSelection = 'remove'"
         :chooseList="'tagsSelectedList'"
       >
-        <div @click="setTagRequest('getCardsToReviseByTags')">
+        <div>
           <button @click="handleTagSelection = 'add'">
             <span>Ajouter un tag</span>
-          </button>
-          <button
-            v-if="tagsSelectedList.length > 0"
-            @click="handleTagSelection = 'remove'"
-          >
-            <span>Enlever un tag</span>
           </button>
         </div>
       </TagsGestion>
@@ -69,14 +71,25 @@
 
     <div v-if="tagsListLength > 0">
       <h3>Carte :</h3>
+
       <TagsGestion
+        @active="
+          selectedList = 'cardTagsList';
+          setTagRequest('postCardTags');
+        "
+        @mounted="submitTagRequest('getCardTags')"
         @submitTagRequest="submitTagRequest"
-        @deleteButton="setTagRequest('deleteCardTag')"
+        @deleteButton="
+          handleTagSelection = 'remove';
+          setTagRequest('deleteCardTag');
+        "
         :chooseList="'cardTagsList'"
       >
-        <button @click="setTagRequest('postCardTag')">
-          <span>Ajouter un tag à la carte</span>
-        </button>
+        <div>
+          <button @click="handleTagSelection = 'add'">
+            <span>Ajouter un tag à la carte</span>
+          </button>
+        </div>
       </TagsGestion>
     </div>
   </div>
@@ -94,6 +107,7 @@ export default {
     return {
       handleTagSelection: false,
       tagNameInput: "",
+      selectedList: "",
     };
   },
   computed: {
@@ -103,7 +117,7 @@ export default {
     actualTag() {
       return this.$store.state.actualTag;
     },
-    createModif() {
+    createOrModif() {
       try {
         return this.tagRequest.match(/[post|put]Tag|/g);
       } catch (error) {
@@ -124,27 +138,40 @@ export default {
     },
   },
   methods: {
-    async submitTagRequest() {
-      let req = this.tagRequest;
-      if (req == "deleteSearchTag") {
+    async submitTagRequest(req = null) {
+      req = req ? req : this.tagRequest;
+      if (this.createOrModif) {
         this.$store.dispatch("mutateStore", {
-          fct: "deleteSearchTag",
-        });
-      } else {
-        if (this.createModif) {
-          this.$store.dispatch("mutateStore", {
-            fct: "mutateKey",
-            value: {
-              mutate: "actualTag",
-              body: {
-                id: this.actualTag.id,
-                name: this.tagNameInput,
-                user_id: this.$store.state.user.id,
-              },
+          fct: "mutateKey",
+          value: {
+            mutate: "actualTag",
+            body: {
+              id: this.actualTag.id,
+              name: this.tagNameInput,
+              user_id: this.$store.state.user.id,
             },
-          });
+          },
+        });
+      }
+      if (
+        req == "getCardsToReviseByTags" &&
+        this.tagsSelectedList.length == 0
+      ) {
+        req = "getCardsToRevise";
+      }
+      await this.$store.dispatch(req);
+      if (this.handleTagSelection == "remove") {
+        let newList = [];
+        for (let tag of this.$store.state[this.selectedList]) {
+          if (this.actualTag.id != tag.id) newList.unshift(tag);
         }
-        await this.$store.dispatch(req);
+        this.$store.dispatch("mutateStore", {
+          fct: "mutateKey",
+          value: {
+            mutate: this.selectedList,
+            body: newList,
+          },
+        });
       }
     },
     setTagRequest(req) {
@@ -156,12 +183,9 @@ export default {
         },
       });
     },
-    async refreshReq(req) {
-      await this.$store.dispatch(req);
-    },
     async refreshTagSelection() {
       if (this.tagsSelectedList.length > 0) {
-        await this.refreshReq("getCardsToReviseByTags");
+        await this.submitTagRequest("getCardsToReviseByTags");
       }
       this.handleTagSelection = false;
     },
@@ -172,7 +196,6 @@ export default {
       });
     },
     async changeSearchTagCond(cond) {
-      this.setTagRequest("getCardsToReviseByTags");
       this.$store.dispatch("mutateStore", {
         fct: "mutateKey",
         value: {
@@ -180,7 +203,7 @@ export default {
           body: cond,
         },
       });
-      await this.submitTagRequest();
+      await this.submitTagRequest("getCardsToReviseByTags");
     },
   },
   watch: {
@@ -194,20 +217,8 @@ export default {
           this.$store.dispatch("mutateStore", {
             fct: "mutateKey",
             value: {
-              mutate: "tagsSelectedList",
+              mutate: this.selectedList,
               body: this.actualTag,
-            },
-          });
-        } else if (this.handleTagSelection == "remove") {
-          let newList = [];
-          for (let tag of this.tagsSelectedList) {
-            if (this.actualTag.id != tag.id) newList.unshift(tag);
-          }
-          this.$store.dispatch("mutateStore", {
-            fct: "mutateKey",
-            value: {
-              mutate: "tagsSelectedList",
-              body: newList,
             },
           });
         }

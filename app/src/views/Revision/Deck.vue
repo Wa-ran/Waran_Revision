@@ -93,7 +93,6 @@ export default {
           let cards = document.querySelectorAll(".sub_card");
           if (cards.length > 0) {
             for (let index of this.cardsList.keys()) {
-              console.log("coucou");
               cards[index].style.cssText = `
               z-index: ${50 - index};
               transition: transform 0.2s 0.${index}s;

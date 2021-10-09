@@ -1,8 +1,8 @@
 <template>
   <main id="home">
-    <Header @userChange="chargeDeck" />
+    <Header />
 
-    <div :key="this.$store.state.user.id" class="home--main flex-grow-1">
+    <div v-if="userId" :key="userId" class="home--main flex-grow-1">
       <div class="tagsZone">
         <Tags />
       </div>
@@ -44,6 +44,9 @@ export default {
     },
     cardsList() {
       return this.$store.state.cardsList;
+    },
+    userId() {
+      return this.$store.state.user.id;
     },
   },
   watch: {

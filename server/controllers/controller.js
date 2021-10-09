@@ -2,55 +2,90 @@
 // const fs = require('fs');
 const requestFct = require('../middlewares/request');
 const createObj = require('../middlewares/createObj');
+const verifToken = require('../middlewares/token');
 
 module.exports = async (req, res, next) => {
   let method = req.method.toLowerCase();
   let fctName = method + req.params.fctName;
   let data = {};
+  let token = null;
 
-  if (method === "get") {
-    let objName = req.params.object;
-    let object = { 'id': req.params.id };
-    req.body[objName] = object;
+  const verifIdByToken = (obj) => {
+    if (token && ((obj.user_id && obj.user_id !== token.tokenId) || (!obj.user_id && obj.id !== token.tokenId))) {
+      return false
+    }
+    else return true
   };
 
-  for ([objName, object] of Object.entries(req.body)) {
-    if (Array.isArray(object)) {
-      data[objName] = [];
-      let idList = [];
-      // On enlève les doublons
-      for (obj of object) {
-        let alreadyExist = 0;
-        idList.push(obj.id);
-        for (id of idList) {
-          if (id == object.id) {
-            alreadyExist++;
+  const checkToken = async () => {
+    // Checked if token needed (not login or signup)
+    if (!(method === 'post' && Object.keys(req.body).length === 1 && Object.keys(req.body)[0] === 'user')) {
+      token = verifToken(req.headers.authorization);
+      return
+    }
+    else return
+  };
+
+  checkToken().then(() => {
+    if (method === "get") {
+      let objName = req.params.object;
+      let object = { 'id': req.params.id };
+      req.body[objName] = object;
+    };
+
+    for ([objName, object] of Object.entries(req.body)) {
+      if (Array.isArray(object)) {
+        data[objName] = [];
+        let idList = [];
+        // On enlève les doublons
+        for (obj of object) {
+          let alreadyExist = 0;
+          idList.push(obj.id);
+          for (id of idList) {
+            if (id == object.id) {
+              alreadyExist++;
+            };
+          };
+
+          if (alreadyExist == 2) return
+          else {
+            let newObj = createObj(objName, obj);
+            if (method !== 'get' && !verifIdByToken(newObj)) {
+              throw 'Token invalide'
+            }
+            else data[objName].push(newObj);
           };
         };
-
-        if (alreadyExist == 2) return
-        else {
-          data[objName].push(createObj(objName, obj));
-        };
+      }
+      else {
+        let newObj = createObj(objName, object);
+        if (method !== 'get' && !verifIdByToken(newObj)) {
+          throw 'Token invalide'
+        }
+        else data[objName] = newObj;
       };
-    }
-    else {
-      data[objName] = createObj(objName, object);
     };
-  };
-
-  await requestFct[fctName](data)
+  })
+    .then(() => requestFct[fctName](data))
     .then((response) => {
       if (response) {
         let result;
         if (Array.isArray(response)) {
           result = [];
           for (obj of response) {
+            if (method === 'get' && !verifIdByToken(obj)) {
+              throw 'Token invalide'
+            };
             obj.parseToJS();
             result.push(obj);
           };
         }
-        else result = response.parseToJS();
+        else {
+          if (method === 'get' && verifIdByToken(obj)) {
+            throw 'Token invalide'
+          };
+          result = response.parseToJS();
+        }
 
         res.send(result)
       }
