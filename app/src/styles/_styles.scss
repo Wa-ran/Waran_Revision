@@ -17,7 +17,7 @@ html {
   overflow-y: overlay;
   border: none;
   border-radius: 5px;
-  width: 5px;
+  width: 0;
 }
 ::-webkit-scrollbar-track {
   background: $dark_blue;
@@ -136,12 +136,14 @@ hr {
   border: solid 1px $pink;
   border-radius: $card_rad;
   background-color: $violet;
-  box-shadow: 0 0 25px 2px rgba(0, 0, 0, 0.15);
   min-width: 300px;
   max-width: 400px;
   z-index: 100;
   &.sub_card {
     z-index: 50;
+  }
+  &:last-child {
+    box-shadow: -2px -2px 25px 2px rgba(0, 0, 0, 0.55);
   }
   & hr {
     margin: 0.5rem;
@@ -166,16 +168,21 @@ hr {
       border: solid 1px $pink;
       text-align: center;
     }
-    & .readingZone {
+    & .main--content {
       width: auto;
-      padding: 1rem;
-      padding-top: 0;
+      padding: 0;
+      padding-bottom: 1rem;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-content: center;
-      overflow: visible;
       font-size: 1.1rem;
+      & .readingZone {
+        height: fit-content;
+        padding: 1rem;
+        overflow-x: hidden;
+        overflow-y: scroll;
+      }
     }
     & hr {
       border: none;
@@ -193,19 +200,20 @@ hr {
   }
   & .verso {
     // transform: rotateY(180deg);
-    & .readingZone {
+    & .main--content {
       position: relative;
-    }
-    & .streakButtons {
-      position: absolute;
-      bottom: -0.5rem;
-      left: -2.5%;
-      width: 105%;
-      display: flex;
-      justify-content: space-between;
-      & button {
-        width: 30%;
-        word-wrap: normal;
+      max-height: 171px;
+      & .streakButtons {
+        position: absolute;
+        bottom: -0.5rem;
+        left: -2.5%;
+        width: 105%;
+        display: flex;
+        justify-content: space-between;
+        & button {
+          width: 30%;
+          word-wrap: normal;
+        }
       }
     }
   }

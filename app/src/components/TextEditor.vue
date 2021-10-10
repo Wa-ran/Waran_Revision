@@ -81,7 +81,6 @@
             id="contentEditable"
             v-html="textarea"
             contenteditable="true"
-            @keyup="saveChange"
           ></div>
 
           <div class="multiButtons face">
@@ -98,6 +97,7 @@
               <span>Verso</span>
             </button>
           </div>
+
           <div class="multiButtons validation">
             <button
               v-if="changeHist.length > 0"
@@ -188,16 +188,33 @@ export default {
     },
     reverseChange() {
       this.textarea = this.changeHist.pop();
+      setTimeout(() => {
+        this.mutateModifs();
+      });
     },
     saveChange() {
-      this.changeHist.push(
-        document.getElementById("contentEditable").innerHTML
-      );
-      this.mutateModifs();
+      setTimeout(() => {
+        if (
+          this.changeHist[this.changeHist.length] !=
+          document.getElementById("contentEditable").innerHTML
+        ) {
+          this.changeHist.push(
+            document.getElementById("contentEditable").innerHTML
+          );
+          this.mutateModifs();
+        }
+        this.listenEdition();
+      }, 350);
+    },
+    listenEdition() {
+      document
+        .getElementById("contentEditable")
+        .addEventListener("keyup", () => this.saveChange(), { once: true });
     },
   },
   mounted() {
     this.textarea = this.faceContent;
+    this.saveChange();
   },
 };
 </script>

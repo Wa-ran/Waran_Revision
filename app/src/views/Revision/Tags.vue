@@ -56,8 +56,7 @@
           selectedList = 'tagsSelectedList';
           setTagRequest('getCardsToReviseByTags');
         "
-        @mounted="refreshTagSelection"
-        @submitTagRequest="submitTagRequest"
+        @submitTagRequest="refreshTagSelection"
         @deleteButton="handleTagSelection = 'remove'"
         :chooseList="'tagsSelectedList'"
       >
@@ -84,10 +83,11 @@
           setTagRequest('deleteCardTag');
         "
         :chooseList="'cardTagsList'"
+        :key="actualCard.id"
       >
         <div>
           <button @click="handleTagSelection = 'add'">
-            <span>Ajouter un tag à la carte</span>
+            <span>Ajouter un tag</span>
           </button>
         </div>
       </TagsGestion>
@@ -160,6 +160,17 @@ export default {
         req = "getCardsToRevise";
       }
       await this.$store.dispatch(req);
+    },
+    setTagRequest(req) {
+      this.$store.dispatch("mutateStore", {
+        fct: "mutateKey",
+        value: {
+          mutate: "tagRequest",
+          body: req,
+        },
+      });
+    },
+    async refreshTagSelection() {
       if (this.handleTagSelection == "remove") {
         let newList = [];
         for (let tag of this.$store.state[this.selectedList]) {
@@ -173,20 +184,9 @@ export default {
           },
         });
       }
-    },
-    setTagRequest(req) {
-      this.$store.dispatch("mutateStore", {
-        fct: "mutateKey",
-        value: {
-          mutate: "tagRequest",
-          body: req,
-        },
-      });
-    },
-    async refreshTagSelection() {
-      if (this.tagsSelectedList.length > 0) {
-        await this.submitTagRequest("getCardsToReviseByTags");
-      }
+      if (this.tagsSelectedList.length == 0) {
+        await this.submitTagRequest("getCardsToRevise");
+      } else await this.submitTagRequest();
       this.handleTagSelection = false;
     },
     resetKey(key) {

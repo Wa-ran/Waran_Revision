@@ -20,12 +20,15 @@ module.exports = class User extends dtbObj {
   };
 
   parseToMySQL() {
+    let pass = this.password;
+    delete this.token;
+    delete this.password;
     super.parseToMySQL();
-    if (this.token) delete this.token;
+    this['password'] = '"' + pass + '"';
     return this;
   };
 
   async cryptPassword() {
-    this.password = await bcrypt.hash(this.password, 10);
+    return this.password = await bcrypt.hash(this.password, 10);
   };
 };

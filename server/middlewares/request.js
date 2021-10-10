@@ -192,15 +192,13 @@ exports.deleteCardTags = async (req) => {
 
 exports.postgetUser = async (req) => {
   let resUser;
-  let compUser = { ...req.user };
+  let reqUser = createObj("user", req.user);
   let dtbUser;
-  await req.user.cryptPassword()
-    .then(() => {
-      return dtbFct.selectUser(req.user)
-    })
-    .then((selectedUser) => {
+  await dtbFct.selectUser(req.user)
+    .then(async (selectedUser) => {
       dtbUser = selectedUser;
-      return bcrypt.compare(selectedUser.password, compUser.password)
+      if (await bcrypt.compare(reqUser.password, selectedUser.password)) return
+      else throw 'error'
     })
     .catch((err) => {
       console.log(err)
@@ -222,6 +220,6 @@ exports.postUser = async (req) => {
   if (Number.isInteger(req.user.id)) {
     throw "Id déjà existant"
   } else {
-    await dtbFct.createUser(req.user)
+    await req.user.cryptPassword().then(() => dtbFct.createUser(req.user))
   }
 };

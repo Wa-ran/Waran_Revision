@@ -163,7 +163,7 @@ export default createStore({
       this.dispatch("revisionRequest", {
         method: "POST",
         serverRoute: "/User",
-        data: { card: this.state.user },
+        data: { user: this.state.user },
         mutate: "user",
       });
     },
@@ -261,15 +261,15 @@ export default createStore({
           .then((response) => {
             if (req.mutate) {
               context.commit("shiftKey", req.mutate);
+            }
+            if (response) {
               let result = {};
-              if (response) {
-                result["mutate"] = req.mutate;
-                result["body"] = response;
-                this.dispatch("mutateStore", {
-                  fct: "mutateKey",
-                  value: result,
-                });
-              }
+              result["mutate"] = req.mutate;
+              result["body"] = response;
+              this.dispatch("mutateStore", {
+                fct: "mutateKey",
+                value: result,
+              });
             }
             this.dispatch("mutateStore", {
               fct: "mutateKey",
@@ -277,6 +277,7 @@ export default createStore({
             });
           })
           .catch((error) => {
+            alert(error.msg);
             if (error.status !== 404) console.log(error);
             context.commit("triggError", {
               bool: true,

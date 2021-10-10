@@ -82,6 +82,31 @@ export default {
         value: "cardsList",
       });
     },
+    async revisionSuccess() {
+      if (this.cardsListLength == 0) {
+        if (this.success) {
+          this.$store.dispatch("mutateStore", {
+            fct: "mutateKey",
+            value: {
+              mutate: "cardsList",
+              body: {
+                recto: "Le deck est vide. Félicitation !",
+                end: true,
+              },
+            },
+          });
+          this.success = false;
+        } else {
+          this.success = true;
+          await this.chargeDeck().then(() =>
+            setTimeout(() => {
+              this.revisionSuccess();
+            }, 200)
+          );
+        }
+      } else this.success = false;
+      this.$emit("modifying", false);
+    },
   },
   async created() {
     await this.chargeDeck();
@@ -105,25 +130,7 @@ export default {
           }
         });
       }
-      if (this.cardsListLength == 0) {
-        if (this.success) {
-          this.$store.dispatch("mutateStore", {
-            fct: "mutateKey",
-            value: {
-              mutate: "cardsList",
-              body: {
-                recto: "Le deck est vide. Félicitation !",
-                end: true,
-              },
-            },
-          });
-          this.success = false;
-        } else {
-          this.success = true;
-          await this.chargeDeck();
-        }
-      } else this.success = false;
-      this.$emit("modifying", false);
+      await this.revisionSuccess();
     },
   },
 

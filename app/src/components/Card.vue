@@ -15,7 +15,7 @@
       >
         <font-awesome-icon :icon="['fas', 'share']" size="2x" />
       </button>
-      <div class="readingZone flex-grow-1">
+      <div class="main--content flex-grow-1">
         <vue-mathjax
           v-if="actualCard.recto_formula"
           :formula="actualCard.recto"
@@ -29,22 +29,26 @@
         <font-awesome-icon :icon="['fas', 'share']" size="2x" />
       </button>
 
-      <div class="readingZone flex-grow-1">
-        <vue-mathjax
-          v-if="actualCard.recto_formula"
-          :formula="actualCard.recto"
-        />
-        <span v-else v-html="actualCard.recto"></span>
+      <div class="main--content flex-grow-1">
+        <div class="readingZone">
+          <vue-mathjax
+            v-if="actualCard.recto_formula"
+            :formula="actualCard.recto"
+          />
+          <span v-else v-html="actualCard.recto"></span>
+        </div>
       </div>
 
       <hr />
 
-      <div class="readingZone flex-grow-3">
-        <vue-mathjax
-          v-if="actualCard.verso_formula"
-          :formula="actualCard.recto"
-        />
-        <span v-else v-html="actualCard.verso"></span>
+      <div class="main--content flex-grow-2">
+        <div class="readingZone">
+          <vue-mathjax
+            v-if="actualCard.verso_formula"
+            :formula="actualCard.recto"
+          />
+          <span v-else v-html="actualCard.verso"></span>
+        </div>
 
         <div class="streakButtons">
           <button
