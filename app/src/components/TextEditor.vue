@@ -85,10 +85,16 @@
           ></div>
 
           <div class="multiButtons face">
-            <button @click="changeFaceSelection('recto')">
+            <button
+              @click="changeFaceSelection('recto')"
+              :class="faceSelected == 'recto' ? 'default' : ''"
+            >
               <span>Recto</span>
             </button>
-            <button @click="changeFaceSelection('verso')">
+            <button
+              @click="changeFaceSelection('verso')"
+              :class="faceSelected == 'verso' ? 'default' : ''"
+            >
               <span>Verso</span>
             </button>
           </div>

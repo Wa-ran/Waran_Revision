@@ -21,11 +21,11 @@
           <span v-if="displayForm == 'connexion'">Connexion :</span>
           <span v-else>Inscription :</span>
           <div class="multiButtons">
-            <button @click="submitUser" class="default">
-              <span>Valider</span>
-            </button>
             <button @click="displayForm = false">
               <span>Annuler</span>
+            </button>
+            <button @click="submitUser" class="default">
+              <span>Valider</span>
             </button>
           </div>
         </div>
@@ -80,7 +80,12 @@ export default {
       });
       if (this.displayForm === "connexion")
         await this.$store.dispatch("getUser");
-      else await this.$store.dispatch("postUser");
+      else {
+        await this.$store.dispatch("postUser").then(() => {
+          this.displayForm = false;
+          // alert("Inscription réussie !");
+        });
+      }
     },
     resetUser() {
       this.$store.dispatch("mutateStore", {

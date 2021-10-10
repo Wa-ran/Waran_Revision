@@ -89,7 +89,6 @@ export default {
     submitTagRequest() {
       this.$emit("submitTagRequest");
       this.optionSelected = false;
-      this.$emit("mounted");
     },
     refresh() {
       this.optionSelected = false;
@@ -160,7 +159,8 @@ export default {
     width: 80%;
     & button {
       margin-top: 0.5rem;
-      width: 80%;
+      width: 100%;
+      max-width: 100%;
     }
   }
   & *:not(button) {
