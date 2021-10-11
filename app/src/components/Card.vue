@@ -37,6 +37,13 @@
           />
           <span v-else v-html="actualCard.recto"></span>
         </div>
+
+        <hr v-if="actualCard.recto_comment" />
+
+        <div v-if="actualCard.recto_comment" class="readingZone comm--title">
+          <div>Commentaire :</div>
+          <p v-html="actualCard.recto_comment"></p>
+        </div>
       </div>
 
       <hr />
@@ -48,6 +55,13 @@
             :formula="actualCard.recto"
           />
           <span v-else v-html="actualCard.verso"></span>
+        </div>
+
+        <hr v-if="actualCard.verso_comment" />
+
+        <div v-if="actualCard.verso_comment" class="readingZone comm--title">
+          <div>Commentaire :</div>
+          <p v-html="actualCard.verso_comment"></p>
         </div>
 
         <div class="streakButtons">

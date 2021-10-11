@@ -147,6 +147,7 @@ hr {
   }
   & hr {
     margin: 0.5rem;
+    border-top: none;
   }
   & .recto,
   & .verso {
@@ -177,15 +178,6 @@ hr {
       justify-content: center;
       align-content: center;
       font-size: 1.1rem;
-      & .readingZone {
-        height: fit-content;
-        padding: 1rem;
-        overflow-x: hidden;
-        overflow-y: scroll;
-      }
-    }
-    & hr {
-      border: none;
     }
     & .flip-card {
       position: absolute;
@@ -196,6 +188,9 @@ hr {
       color: $white;
       background-color: transparent;
       border: none;
+      &:hover {
+        box-shadow: none;
+      }
     }
   }
   & .verso {
@@ -216,6 +211,29 @@ hr {
         }
       }
     }
+  }
+}
+
+.readingZone {
+  height: fit-content;
+  padding: 1rem;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  &.comm--title {
+    text-align: left;
+    font-style: italic;
+    font-size: 0.9rem;
+    padding-top: 0.5rem;
+  }
+  & p {
+    margin: 0.5rem;
+    margin-bottom: 0;
+    text-align: left;
+  }
+  & + hr {
+    width: 80%;
+    border-top: solid 1px $pink;
+    margin: 0 auto;
   }
 }
 

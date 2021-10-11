@@ -77,22 +77,29 @@
             </button>
           </div>
 
-          <div
-            id="contentEditable"
-            v-html="textarea"
-            contenteditable="true"
-          ></div>
+          <div class="editor--area">
+            <div v-if="modifComment" class="comm--title">Commentaire :</div>
+            <div
+              id="contentEditable"
+              v-html="textarea"
+              contenteditable="true"
+            ></div>
+          </div>
 
           <div class="multiButtons face">
             <button
               @click="changeFaceSelection('recto')"
-              :class="faceSelected == 'recto' ? 'default' : ''"
+              :class="
+                faceSelected && faceSelected.match(/^recto/) ? 'default' : ''
+              "
             >
               <span>Recto</span>
             </button>
             <button
               @click="changeFaceSelection('verso')"
-              :class="faceSelected == 'verso' ? 'default' : ''"
+              :class="
+                faceSelected && faceSelected.match(/^verso/) ? 'default' : ''
+              "
             >
               <span>Verso</span>
             </button>
@@ -129,6 +136,9 @@ export default {
   computed: {
     faceContent() {
       return this.$store.state.actualCard[this.faceSelected];
+    },
+    modifComment() {
+      return this.$store.state.modifComment;
     },
   },
   methods: {
@@ -216,6 +226,16 @@ export default {
     this.textarea = this.faceContent;
     this.saveChange();
   },
+  watch: {
+    modifComment() {
+      if (this.modifComment) {
+        this.faceSelected += "_comment";
+      } else {
+        this.faceSelected.replace("_comment", "");
+      }
+      this.changeFaceSelection(this.faceSelected);
+    },
+  },
 };
 </script>
 
@@ -254,11 +274,15 @@ export default {
     right: -0.25rem;
   }
 }
-#contentEditable {
-  padding: 3rem 1rem;
-  min-height: 100%;
+
+.editor--area {
+  padding: 2rem 1rem;
   max-height: 300px;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+#contentEditable {
+  min-height: 100%;
 }
 
 .editor--options {

@@ -1,7 +1,8 @@
 <template>
   <div class="editor--main">
-    <TextEditor @faceChange="faceSelected = $event" class="deck" />
+    <TextEditor @faceChange="changeFace($event)" class="deck" />
     <h3>Options :</h3>
+    {{ faceSelected }}
     <CardEditor :cardFace="faceSelected" :key="faceSelected" />
   </div>
 </template>
@@ -20,6 +21,12 @@ export default {
     return {
       faceSelected: "recto",
     };
+  },
+  methods: {
+    changeFace(face) {
+      let newFace = face.replaceAll("_comment", "");
+      if (this.faceSelected != newFace) this.faceSelected = newFace;
+    },
   },
 };
 </script>

@@ -1,15 +1,18 @@
 <template>
-  <div @click="checked = !checked" class="check--button">
-    <div v-if="checked" @click="$emit('check', false)">
-      <button class="icon default">
+  <div class="check--button">
+    <div>
+      <button
+        @click="handleCheck"
+        :class="checked ? 'icon default' : 'icon unchecked'"
+      >
         <font-awesome-icon :icon="['fas', 'check']" size="xs" />
       </button>
       <div>{{ desc }}</div>
     </div>
-    <div v-else @click="$emit('check', true)">
-      <button class="icon circle"></button>
+    <!-- <div>
+      <button @click="handleCheck($event)" class="icon circle"></button>
       <div>{{ desc }}</div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -18,12 +21,18 @@ export default {
   name: "CheckButton",
   props: {
     desc: String,
-    preChecked: { type: String, default: "" },
+    preChecked: { type: Boolean, default: false },
   },
   data() {
     return {
       checked: false,
     };
+  },
+  methods: {
+    handleCheck() {
+      this.checked = !this.checked;
+      this.$emit("check", this.checked);
+    },
   },
   mounted() {
     this.checked = this.preChecked;
@@ -53,5 +62,8 @@ button.icon {
     margin-left: 0.3rem;
     display: flex;
   }
+}
+.unchecked {
+  color: transparent;
 }
 </style>

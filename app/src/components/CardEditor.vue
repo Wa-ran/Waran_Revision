@@ -10,6 +10,11 @@
       :desc="'Formule Mathématique'"
       :preChecked="actualCard[cardFace + '_formula']"
     />
+    <CheckButton
+      @check="modifComment($event)"
+      :desc="'Modifer le commentaire'"
+      :preChecked="false"
+    />
   </div>
 </template>
 
@@ -29,6 +34,15 @@ export default {
     },
   },
   methods: {
+    modifComment(event) {
+      this.$store.dispatch("mutateStore", {
+        fct: "mutateKey",
+        value: {
+          mutate: "modifComment",
+          body: event,
+        },
+      });
+    },
     setCardParams(key, value) {
       let card = { ...this.$store.state.actualCard };
       card[key] = value;
@@ -40,6 +54,9 @@ export default {
         },
       });
     },
+  },
+  mounted() {
+    this.modifComment(false);
   },
 };
 </script>

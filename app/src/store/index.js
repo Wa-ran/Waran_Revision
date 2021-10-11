@@ -12,6 +12,7 @@ export default createStore({
       end: true,
     },
     firstDeckCard: {},
+    modifComment: false,
     newCard: {
       recto: "Une carte toute neuve !",
       verso: "",
