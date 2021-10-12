@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="container">
     <div class="deck flex-grow-1" :key="cardsListLength">
-      <Card @modifying="$emit('modifying', $event)" />
+      <Card />
       <div
         v-for="card in cardsList.slice(0, 8)"
         :key="card"
@@ -9,12 +9,12 @@
       ></div>
     </div>
 
-    <div class="deckManager">
-      <div>
+    <div v-if="!isModifying" class="deckManager">
+      <div v-if="actualCardId">
         <button @click="createCard"><span>Nouvelle carte</span></button>
       </div>
-      <div>
-        <button v-if="cardsListLength > 0" @click="shiftCard">
+      <div v-if="cardsListLength > 0">
+        <button @click="shiftCard">
           <span>Passer la carte</span>
         </button>
       </div>
@@ -23,10 +23,18 @@
           <span>Recharger le deck</span>
         </button>
       </div>
-      <div>
-        <button @click="deleteCard" class="importantButton">
+      <div v-if="actualCardId">
+        <DoubleCheckButton @checkedClick="deleteCard" class="importantButton">
           <font-awesome-icon :icon="['fas', 'trash-alt']" />
           <span class="flex-grow-1">Supprimer la carte</span>
+        </DoubleCheckButton>
+      </div>
+    </div>
+
+    <div v-else class="deckManager">
+      <div>
+        <button v-if="!actualCardId" @click="shiftCard">
+          <span>Annuler</span>
         </button>
       </div>
     </div>
@@ -44,6 +52,7 @@ export default {
   },
   data() {
     return {
+      hasRevised: false,
       success: false,
     };
   },
@@ -57,12 +66,17 @@ export default {
     cardsListLength() {
       return this.cardsList.length;
     },
+    isModifying() {
+      return this.$store.state.modifCard;
+    },
   },
   methods: {
     async chargeDeck() {
       if (this.$store.state.tagsSelectedList.length > 0)
         await this.$store.dispatch("getCardsToReviseByTags");
+      // .then(() => this.revisionSuccess());
       else await this.$store.dispatch("getCardsToRevise");
+      // .then(() => this.revisionSuccess());
     },
     createCard() {
       this.$store.dispatch("mutateStore", {
@@ -82,55 +96,46 @@ export default {
         value: "cardsList",
       });
     },
-    async revisionSuccess() {
-      if (this.cardsListLength == 0) {
-        if (this.success) {
-          this.$store.dispatch("mutateStore", {
-            fct: "mutateKey",
-            value: {
-              mutate: "cardsList",
-              body: {
-                recto: "Le deck est vide. Félicitation !",
-                end: true,
-              },
-            },
-          });
-          this.success = false;
-        } else {
-          this.success = true;
-          await this.chargeDeck().then(() =>
-            setTimeout(() => {
-              this.revisionSuccess();
-            }, 200)
-          );
-        }
-      } else this.success = false;
-      this.$emit("modifying", false);
-    },
+    // async revisionSuccess() {
+    //   if (this.cardsListLength == 0) {
+    //     if (this.success) {
+    //       if (this.hasRevised) alert("Le deck est vide. Félicitation !");
+    //       this.success = false;
+    //     } else {
+    //       this.success = true;
+    //       await this.chargeDeck();
+    //     }
+    //   } else {
+    //     if (this.cardsListLength > 2) this.hasRevised = true;
+    //     this.success = false;
+    //   }
+    // },
   },
-  async created() {
+  async mounted() {
     await this.chargeDeck();
   },
   watch: {
     async cardsListLength() {
-      if (this.cardsList) {
+      if (this.cardsListLength > 0) {
         setTimeout(() => {
           let cards = document.querySelectorAll(".sub_card");
           if (cards.length > 0) {
             for (let index of this.cardsList.keys()) {
               cards[index].style.cssText = `
               z-index: ${50 - index};
-              transition: transform 0.2s 0.${index}s;
+              transition: all 0.2s 0.${index}s;
               transform:
               translateX(${-index * 3}px)
               translateY(${-index}px)
-              rotateZ(${-index * 0.35}deg);`;
+              rotateZ(${-index * 0.35}deg);
+              opacity: 1;
+              position: absolute`;
               if (index == 10 || index == cards.length - 1) break;
             }
           }
         });
+        // await this.revisionSuccess();
       }
-      await this.revisionSuccess();
     },
   },
 
@@ -139,21 +144,29 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.container {
+  min-width: 100%;
+}
 .deck {
   width: 100%;
-  min-height: 500px;
   margin: auto;
 
   display: flex;
   justify-content: center;
   align-content: center;
-
+  position: relative;
   & .card {
-    min-height: 500px;
     margin: auto;
-
-    position: absolute;
+    // min-width: 350px;
+    // min-height: 500px;
+    width: 90%;
+    height: 75vh;
+    max-width: 350px;
+    max-height: 600px;
   }
+}
+.sub_card {
+  opacity: 0;
 }
 
 .deckManager {

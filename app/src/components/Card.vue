@@ -1,5 +1,5 @@
 <template>
-  <div :key="actualCard" class="card move">
+  <div :key="actualCard" class="card">
     <div class="doodle">
       <css-doodle :seed="doodleSeed">
         @grid: 32; @size: 1px calc(35px + 70%); transform: rotate(@r(±90deg));
@@ -16,16 +16,22 @@
         <font-awesome-icon :icon="['fas', 'share']" size="2x" />
       </button>
       <div class="main--content flex-grow-1">
-        <vue-mathjax
-          v-if="actualCard.recto_formula"
-          :formula="actualCard.recto"
-        />
-        <span v-else v-html="actualCard.recto"></span>
+        <div class="readingZone">
+          <vue-mathjax
+            v-if="actualCard.recto_formula"
+            :formula="actualCard.recto"
+          />
+          <span v-else v-html="actualCard.recto"></span>
+        </div>
       </div>
     </div>
 
     <div v-else class="verso">
-      <button @click="recto = true" class="fa-icon flip-card">
+      <button
+        v-if="actualCardId"
+        @click="recto = true"
+        class="fa-icon flip-card"
+      >
         <font-awesome-icon :icon="['fas', 'share']" size="2x" />
       </button>
 
@@ -66,19 +72,16 @@
 
         <div class="streakButtons">
           <button
-            v-if="modifyingCard || !streakSet"
+            v-if="isModifying || !streakSet"
             @click="this.handleStreak(-1)"
           >
             Perdu
           </button>
-          <button
-            v-if="modifyingCard || !streakSet"
-            @click="this.handleStreak()"
-          >
+          <button v-if="isModifying || !streakSet" @click="this.handleStreak()">
             à Réviser
           </button>
           <button
-            v-if="modifyingCard || !streakSet"
+            v-if="isModifying || !streakSet"
             @click="this.handleStreak(1)"
           >
             Gagné
@@ -91,13 +94,13 @@
       <div class="bottom">
         <div class="level">Niveau: {{ actualCard.streak }}</div>
         <div class="calc-revision">Prochaine révision {{ nextRevision() }}</div>
-        <div v-if="!modifyingCard && wasModified" class="multiButtons">
-          <button @click="modifyingCard = true"><span>Modifer</span></button>
+        <div v-if="!isModifying && wasModified" class="multiButtons">
+          <button @click="modifState(true)"><span>Modifer</span></button>
           <button @click="postCard" class="default">
             <span>Valider</span>
           </button>
         </div>
-        <div v-if="modifyingCard" class="multiButtons">
+        <div v-if="isModifying" class="multiButtons">
           <button @click="saveCardChanges" class="default">
             <span>Terminer</span>
           </button>
@@ -105,7 +108,6 @@
             <font-awesome-icon :icon="['fas', 'undo']" />
           </button>
         </div>
-        <div class="mini">id-{{ zerofillId }}</div>
       </div>
     </div>
   </div>
@@ -120,7 +122,6 @@ export default {
     return {
       doodleSeed: "",
       recto: true,
-      modifyingCard: false,
       initialStreak: "",
       streakSet: false,
       wasModified: false,
@@ -130,16 +131,14 @@ export default {
     actualCard() {
       return this.$store.state.actualCard;
     },
+    actualCardId() {
+      return this.$store.state.actualCard.id;
+    },
     cardsList() {
       return this.$store.state.cardsList;
     },
-    zerofillId() {
-      let id = this.actualCard.id ? this.actualCard.id : 0;
-      let width = 5 - id.toString().length;
-      if (width > 0) {
-        return new Array(width + (/\./.test(id) ? 2 : 1)).join("0") + id;
-      }
-      return id + "";
+    isModifying() {
+      return this.$store.state.modifCard;
     },
   },
   methods: {
@@ -156,6 +155,10 @@ export default {
         },
       });
       this.initialStreak = bodyActualCard.streak;
+      if (!this.actualCardId) {
+        this.recto = false;
+        this.modifState(true);
+      } else this.modifState(false);
     },
     calculNextRevision() {
       const HOURS_SUITE = {
@@ -186,9 +189,19 @@ export default {
     handleStreak(add) {
       this.streakSet = true;
       if (add) this.mutateModifs("streak", this.actualCard.streak + add);
-      else this.mutateModifs("srteak", this.initialStreak);
+      else this.mutateModifs("streak", this.initialStreak);
       if (this.actualCard.streak < 0) this.mutateModifs("streak", 0);
       this.nextRevision();
+    },
+    modifState(bool) {
+      if (bool) this.wasModified = true;
+      this.$store.dispatch("mutateStore", {
+        fct: "mutateKey",
+        value: {
+          mutate: "modifCard",
+          body: bool,
+        },
+      });
     },
     mutateModifs(cardKey, value) {
       let cardModif = { ...this.$store.state.actualCard };
@@ -216,7 +229,7 @@ export default {
       else return "le " + next.getDate() + "/" + (1 + next.getMonth());
     },
     async postCard() {
-      if (this.actualCard.id) {
+      if (this.actualCardId) {
         await this.$store.dispatch("putCard");
         this.$store.dispatch("mutateStore", {
           fct: "shiftKey",
@@ -229,13 +242,13 @@ export default {
       // Modifier la carte sans échanger recto et verso
       let cardReverse = this.actualCard.reverse;
       this.mutateModifs("reverse", false);
-      this.modifyingCard = false;
+      this.modifState(false);
       await this.$store
         .dispatch("putCard")
         .then(() => this.mutateModifs("reverse", cardReverse));
     },
   },
-  async mounted() {
+  async beforeMount() {
     await this.buildActualCard();
     this.doodleSeed = Math.trunc(Math.random) * 1000;
   },
@@ -243,15 +256,6 @@ export default {
     this.$emit("modifying", false);
   },
   watch: {
-    recto() {
-      if (!this.actualCard.id && !this.recto) {
-        this.modifyingCard = true;
-      }
-    },
-    modifyingCard() {
-      this.wasModified = true;
-      this.$emit("modifying", this.modifyingCard);
-    },
     streakSet() {
       this.wasModified = true;
     },
@@ -270,6 +274,7 @@ export default {
 .bottom {
   width: auto;
   max-width: 100%;
+  min-height: 40px;
   padding: 0.5rem 0;
   & .calc-revision {
     font-style: italic;

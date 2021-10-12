@@ -86,9 +86,12 @@ export default {
     },
   },
   methods: {
-    submitTagRequest() {
-      this.$emit("submitTagRequest");
+    async submitTagRequest() {
+      await this.$emit("submitTagRequest");
       this.optionSelected = false;
+      setTimeout(() => {
+        this.$emit("mounted");
+      });
     },
     refresh() {
       this.optionSelected = false;

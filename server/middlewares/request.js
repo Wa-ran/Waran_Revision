@@ -176,14 +176,20 @@ exports.getCardTags = async (req) => {
 };
 
 exports.postCardTags = async (req) => {
-  let resList;
-  await new Promise(async () => {
-    for await (tag of req.tag) {
-      dtbFct.createCardTag(req.card, tag)
-    };
-    resList = await this.getCardTags(req)
-  })
-  return resList
+  await this.getCardTags(req)
+    .then(async (DtbList) => {
+      // On récupère les tags déjà associés et on enlève les doublons
+      let reqList = req.tag;
+      filtList = [].concat(
+        reqList.filter(reqTag => DtbList.every(dtbTag => reqTag.id !== dtbTag.id)),
+        DtbList.filter(dtbTag => reqList.every(reqTag => dtbTag.id !== reqTag.id))
+      );
+      if (filtList.length > 0) {
+        for await (tag of filtList) {
+          dtbFct.createCardTag(req.card, tag)
+        };
+      }
+    })
 };
 
 exports.deleteCardTags = async (req) => {

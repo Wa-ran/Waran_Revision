@@ -36,8 +36,8 @@ export default {
 
 .editor--main {
   width: 100%;
-  & > *:not(h3) {
-    margin: 1rem;
+  & > .deck {
+    min-width: 350px;
   }
 }
 

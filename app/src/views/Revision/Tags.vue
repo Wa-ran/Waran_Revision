@@ -76,7 +76,7 @@
           selectedList = 'cardTagsList';
           setTagRequest('postCardTags');
         "
-        @mounted="submitTagRequest('getCardTags')"
+        @mounted="if (actualCard.id) submitTagRequest('getCardTags');"
         @submitTagRequest="submitTagRequest"
         @deleteButton="
           handleTagSelection = 'remove';
@@ -86,7 +86,12 @@
         :key="actualCard.id"
       >
         <div>
-          <button @click="handleTagSelection = 'add'">
+          <button
+            @click="
+              handleTagSelection = 'add';
+              setTagRequest('postCardTags');
+            "
+          >
             <span>Ajouter un tag</span>
           </button>
         </div>
@@ -171,19 +176,6 @@ export default {
       });
     },
     async refreshTagSelection() {
-      if (this.handleTagSelection == "remove") {
-        let newList = [];
-        for (let tag of this.$store.state[this.selectedList]) {
-          if (this.actualTag.id != tag.id) newList.unshift(tag);
-        }
-        this.$store.dispatch("mutateStore", {
-          fct: "mutateKey",
-          value: {
-            mutate: this.selectedList,
-            body: newList,
-          },
-        });
-      }
       if (this.tagsSelectedList.length == 0) {
         await this.submitTagRequest("getCardsToRevise");
       } else await this.submitTagRequest();
@@ -207,9 +199,6 @@ export default {
     },
   },
   watch: {
-    actualCard() {
-      if (this.actualCard.id) this.$store.dispatch("getCardTags");
-    },
     actualTag() {
       this.tagNameInput = { ...this.actualTag }.name;
       if (this.actualTag.id) {
@@ -219,6 +208,18 @@ export default {
             value: {
               mutate: this.selectedList,
               body: this.actualTag,
+            },
+          });
+        } else if (this.handleTagSelection == "remove") {
+          let newList = [];
+          for (let tag of this.$store.state[this.selectedList]) {
+            if (this.actualTag.id != tag.id) newList.unshift(tag);
+          }
+          this.$store.dispatch("mutateStore", {
+            fct: "mutateKey",
+            value: {
+              mutate: this.selectedList,
+              body: newList,
             },
           });
         }

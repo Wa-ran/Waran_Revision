@@ -12,6 +12,7 @@ export default createStore({
       end: true,
     },
     firstDeckCard: {},
+    modifCard: false,
     modifComment: false,
     newCard: {
       recto: "Une carte toute neuve !",
@@ -86,13 +87,21 @@ export default createStore({
         state[mutate] = payload.body;
       }
     },
-    resetKey(state, stateKey) {
-      if (Array.isArray(state[stateKey])) state[stateKey] = [];
-      else state[stateKey] = "";
+    resetKey(state, sKey) {
+      if (Array.isArray(state[sKey])) state[sKey] = [];
+      else state[sKey] = "";
     },
-    shiftKey(state, stateKey) {
-      if (Array.isArray(state[stateKey])) state[stateKey].shift();
-      else state[stateKey] = "";
+    shiftKey(state, sKey) {
+      if (Array.isArray(state[sKey])) state[sKey].shift();
+      else state[sKey] = "";
+    },
+    refreshLength(state, sKey) {
+      if (Array.isArray(state[sKey])) {
+        state[sKey].push("");
+        setTimeout(() => {
+          state[sKey].pop();
+        });
+      }
     },
     deleteSearchTag(state) {
       let index = 0;
@@ -168,7 +177,7 @@ export default createStore({
         mutate: "user",
       });
     },
-    async postCardTags() {
+    postCardTags() {
       if (this.state.actualCard.id) {
         this.dispatch("revisionRequest", {
           method: "POST",
@@ -260,9 +269,6 @@ export default createStore({
             req.data
           )
           .then((response) => {
-            if (req.mutate) {
-              context.commit("shiftKey", req.mutate);
-            }
             if (response) {
               let result = {};
               result["mutate"] = req.mutate;
@@ -272,6 +278,11 @@ export default createStore({
                 value: result,
               });
             }
+
+            if (req.mutate) {
+              context.commit("refreshLength", req.mutate);
+            }
+
             this.dispatch("mutateStore", {
               fct: "mutateKey",
               value: { mutate: "loading", body: false },

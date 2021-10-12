@@ -7,12 +7,12 @@
         <Tags />
       </div>
 
-      <div class="central">
-        <Deck @modifying="useCardEditor = $event" />
+      <div class="central flex-grow-1">
+        <Deck />
       </div>
 
       <div class="edit">
-        <Editor id="cardEditor" v-if="useCardEditor" />
+        <Editor id="cardEditor" v-if="isModifying" />
       </div>
     </div>
   </main>
@@ -33,11 +33,6 @@ export default {
     Header,
     Tags,
   },
-  data() {
-    return {
-      useCardEditor: false,
-    };
-  },
   computed: {
     actualCardId() {
       return this.$store.state.actualCard.id;
@@ -45,13 +40,11 @@ export default {
     cardsList() {
       return this.$store.state.cardsList;
     },
+    isModifying() {
+      return this.$store.state.modifCard;
+    },
     userId() {
       return this.$store.state.user.id;
-    },
-  },
-  watch: {
-    actualCardId() {
-      this.useCardEditor = false;
     },
   },
 };
@@ -69,17 +62,26 @@ export default {
   & .home--main {
     display: flex;
     justify-content: space-around;
+    align-content: center;
     flex-wrap: wrap;
     & > * {
-      min-width: 350px;
-      margin: 1rem;
+      min-width: 380px;
+      max-width: 25vw;
+      height: fit-content;
+      padding: 1rem;
       & > * {
         margin: auto;
         margin-top: 2rem;
       }
     }
-    & * {
-      max-width: 96vw;
+    & .central {
+      display: flex;
+      flex-direction: column;
+      min-height: 80vh;
+      max-width: 100%;
+      & > * {
+        margin: 0;
+      }
     }
   }
 }
@@ -89,16 +91,12 @@ export default {
   flex-wrap: wrap-reverse;
 }
 
-.central {
-  display: flex;
-  flex-direction: column;
-}
-
 @media screen and (max-width: 767px) {
   .home--main {
     & > * {
       width: 100%;
       min-width: 33%;
+      max-width: 95vw;
       margin: auto !important;
       & > * {
         width: auto;

@@ -22,6 +22,8 @@ import { CssDoodle } from "css-doodle";
 
 import VueMathjax from "vue-mathjax-next";
 
+import DoubleCheckButton from "@/components/DoubleCheckButton.vue";
+
 library.add(
   faShare,
   faBold,
@@ -39,6 +41,7 @@ const VueApp = createApp(App);
 VueApp.component("font-awesome-icon", FontAwesomeIcon);
 VueApp.component("css-doodle", CssDoodle);
 VueApp.component("vue-mathjax", VueMathjax);
+VueApp.component("DoubleCheckButton", DoubleCheckButton);
 VueApp.use(store).use(router);
 
 VueApp.mount("#app");

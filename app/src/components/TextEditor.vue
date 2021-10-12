@@ -204,16 +204,18 @@ export default {
     },
     saveChange() {
       setTimeout(() => {
-        if (
-          this.changeHist[this.changeHist.length] !=
-          document.getElementById("contentEditable").innerHTML
-        ) {
-          this.changeHist.push(
+        if (document.querySelectorAll("#contentEditable").length > 0) {
+          if (
+            this.changeHist[this.changeHist.length] !=
             document.getElementById("contentEditable").innerHTML
-          );
-          this.mutateModifs();
+          ) {
+            this.changeHist.push(
+              document.getElementById("contentEditable").innerHTML
+            );
+            this.mutateModifs();
+          }
+          this.listenEdition();
         }
-        this.listenEdition();
       }, 350);
     },
     listenEdition() {
@@ -231,7 +233,7 @@ export default {
       if (this.modifComment) {
         this.faceSelected += "_comment";
       } else {
-        this.faceSelected.replace("_comment", "");
+        this.faceSelected = this.faceSelected.replaceAll("_comment", "");
       }
       this.changeFaceSelection(this.faceSelected);
     },
@@ -245,7 +247,7 @@ export default {
 .deck {
   margin-bottom: 2rem;
   & .card {
-    min-width: 350px;
+    width: 95%;
     height: auto;
     margin: 1rem;
     margin-top: 3rem;
@@ -289,9 +291,10 @@ export default {
   position: absolute;
   top: -0.75rem;
   left: -0.5rem;
-  width: 95%;
+  width: 105%;
   display: flex;
   justify-content: flex-start;
+  overflow-x: scroll;
   & button,
   .resetButton {
     min-width: 30px;
