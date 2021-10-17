@@ -38,7 +38,7 @@
 
       <div v-else class="container">
         <button @click="resetUser"><span>Déconnexion</span></button>
-        <div>
+        <div class="welcome">
           Bienvenue,
           <span style="font-weight: bold">{{ stateUser.pseudo }}</span>
         </div>
@@ -67,17 +67,12 @@ export default {
   },
   methods: {
     async submitUser() {
-      this.$store.dispatch("mutateStore", {
-        fct: "mutateKey",
-        value: {
-          mutate: "user",
-          body: {
-            id: this.$store.state.user.id,
-            pseudo: this.pseudo,
-            password: this.password,
-          },
-        },
+      this.mutateKey("user", {
+        id: this.$store.state.user.id,
+        pseudo: this.pseudo,
+        password: this.password,
       });
+
       if (this.displayForm === "connexion")
         await this.$store.dispatch("getUser");
       else {
@@ -89,11 +84,8 @@ export default {
     },
     resetUser() {
       this.$store.dispatch("mutateStore", {
-        fct: "mutateKey",
-        value: {
-          mutate: "user",
-          body: {},
-        },
+        fct: "resetKey",
+        value: "user",
       });
     },
   },
@@ -115,6 +107,10 @@ export default {
   flex-wrap: wrap;
   & > * {
     margin: auto 1rem auto 0;
+  }
+  & .welcome {
+    height: fit-content;
+    margin: auto 0.25rem;
   }
 }
 input {

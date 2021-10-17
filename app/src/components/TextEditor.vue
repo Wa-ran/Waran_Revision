@@ -83,6 +83,7 @@
               id="contentEditable"
               v-html="textarea"
               contenteditable="true"
+              autofocus
             ></div>
           </div>
 
@@ -105,7 +106,7 @@
             </button>
           </div>
 
-          <div class="multiButtons validation">
+          <div class="undo">
             <button
               v-if="changeHist.length > 0"
               @click="reverseChange"
@@ -188,13 +189,7 @@ export default {
       let newContent = document.getElementById("contentEditable").innerHTML;
       let cardModif = { ...this.$store.state.actualCard };
       cardModif[this.faceSelected] = newContent;
-      this.$store.dispatch("mutateStore", {
-        fct: "mutateKey",
-        value: {
-          mutate: "actualCard",
-          body: cardModif,
-        },
-      });
+      this.mutateKey("actualCard", cardModif);
     },
     reverseChange() {
       this.textarea = this.changeHist.pop();
@@ -242,7 +237,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/global";
+@import "../styles/variables";
 
 .deck {
   margin-bottom: 2rem;
@@ -270,10 +265,13 @@ export default {
     bottom: -0.5rem;
     left: -0.25rem;
   }
-  & .validation {
+  & .undo {
     position: absolute;
     bottom: -0.5rem;
     right: -0.25rem;
+    & > button {
+      height: 26px;
+    }
   }
 }
 

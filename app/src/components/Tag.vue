@@ -24,16 +24,10 @@ export default {
   },
   methods: {
     changeActualTag() {
-      this.$store.dispatch("mutateStore", {
-        fct: "mutateKey",
-        value: {
-          mutate: "actualTag",
-          body: {
-            id: this.tagId,
-            name: this.tagName,
-            user_id: this.$store.state.user.id,
-          },
-        },
+      this.mutateKey("actualTag", {
+        id: this.tagId,
+        name: this.tagName,
+        user_id: this.$store.state.user.id,
       });
       this.$emit("chargeTag");
       this.selected = true;

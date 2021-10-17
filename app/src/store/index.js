@@ -7,6 +7,7 @@ export default createStore({
     //card
     actualCard: {},
     cardsList: [],
+    cardsToReviseLength: 0,
     endCard: {
       recto: "Le deck est vide",
       end: true,
@@ -15,7 +16,7 @@ export default createStore({
     modifCard: false,
     modifComment: false,
     newCard: {
-      recto: "Une carte toute neuve !",
+      recto: "Une carte toute neuve :)",
       verso: "",
       streak: 0,
       next_revision: "",
@@ -28,6 +29,7 @@ export default createStore({
       verso_image: false,
       reverse: true,
     },
+    pickRandom: true,
 
     error: {
       pending: false,
@@ -44,8 +46,8 @@ export default createStore({
     },
     loading: false,
     serverAddress: {
-      // waran_revision: "http://195.110.59.46:3008",
-      waran_revision: "http://localhost:3008",
+      waran_revision: "http://195.110.59.46:3008",
+      // waran_revision: "http://localhost:3008",
     },
 
     //tag
@@ -70,8 +72,13 @@ export default createStore({
   },
   mutations: {
     changeUser(state, payload) {
-      state.newCard.user_id = payload.id;
-      state.headers.Authorization = payload.token;
+      try {
+        state.newCard.user_id = payload.id;
+        state.headers.Authorization = payload.token;
+      } catch (error) {
+        state.newCard.user_id = '';
+        state.headers.Authorization = '';
+      }
     },
     mutateKey(state, payload) {
       let mutate = payload.mutate;
@@ -92,7 +99,11 @@ export default createStore({
       else state[sKey] = "";
     },
     shiftKey(state, sKey) {
-      if (Array.isArray(state[sKey])) state[sKey].shift();
+      if (sKey === "cardsList" && state[sKey].length > 0)
+        state[sKey] = state[sKey].filter(
+          (item) => item.id !== state.actualCard.id
+        );
+      else if (Array.isArray(state[sKey])) state[sKey].shift();
       else state[sKey] = "";
     },
     refreshLength(state, sKey) {
@@ -175,6 +186,7 @@ export default createStore({
         serverRoute: "/User",
         data: { user: this.state.user },
         mutate: "user",
+        alert: true,
       });
     },
     postCardTags() {
@@ -196,7 +208,7 @@ export default createStore({
           method: "PUT",
           serverRoute: "/Card",
           data: { card: this.state.actualCard },
-          // mutate: "actualCard",
+          mutate: "cardsList",
         });
       }
     },
@@ -252,6 +264,7 @@ export default createStore({
         serverRoute: "/getUser",
         data: { user: this.state.user },
         mutate: "user",
+        alert: true,
       });
     },
     async revisionRequest(context, req) {
@@ -287,9 +300,11 @@ export default createStore({
               fct: "mutateKey",
               value: { mutate: "loading", body: false },
             });
+
+            return
           })
           .catch((error) => {
-            alert(error.msg);
+            if (req.alert) alert(error.msg);
             if (error.status !== 404) console.log(error);
             context.commit("triggError", {
               bool: true,

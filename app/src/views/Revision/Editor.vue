@@ -32,8 +32,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/global";
-
 .editor--main {
   width: 100%;
   & > .deck {

@@ -5,17 +5,19 @@ import store from "./store";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
-  faShare,
   faBold,
+  faCheck,
+  faCircle,
+  faHistory,
   faItalic,
-  faUnderline,
-  faUndo,
+  faShare,
   faStrikethrough,
   faTint,
-  faCircle,
-  faCheck,
   faTrashAlt,
+  faUnderline,
+  faUndo,
 } from "@fortawesome/free-solid-svg-icons";
+import { faHourglass, } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 import { CssDoodle } from "css-doodle";
@@ -25,19 +27,36 @@ import VueMathjax from "vue-mathjax-next";
 import DoubleCheckButton from "@/components/DoubleCheckButton.vue";
 
 library.add(
-  faShare,
   faBold,
+  faCheck,
+  faCircle,
+  faHistory,
+  faHourglass,
   faItalic,
-  faUnderline,
-  faUndo,
+  faShare,
   faStrikethrough,
   faTint,
-  faCircle,
-  faCheck,
-  faTrashAlt
+  faTrashAlt,
+  faUnderline,
+  faUndo,
 );
 
 const VueApp = createApp(App);
+
+VueApp.mixin({
+  methods: {
+    mutateKey(mutate, body) {
+      this.$store.dispatch("mutateStore", {
+        fct: "mutateKey",
+        value: {
+          mutate,
+          body,
+        },
+      });
+    },
+  },
+});
+
 VueApp.component("font-awesome-icon", FontAwesomeIcon);
 VueApp.component("css-doodle", CssDoodle);
 VueApp.component("vue-mathjax", VueMathjax);

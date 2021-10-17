@@ -1,9 +1,10 @@
-<template :key="chosenList.length">
+<template>
   <div class="tagsList_container">
     <p v-if="chosenList.length == 0">Aucun Tag</p>
     <div v-else class="tags_list">
       <Tag
         v-for="tag of chosenList"
+        @click="$emit('tagClick')"
         :key="tag.id"
         :tagId="tag.id"
         :tagName="tag.name"
@@ -110,13 +111,13 @@ export default {
       if (this.active) {
         this.$emit("active");
         this.activeKey = this.refreshKey + 1;
-        this.$store.dispatch("mutateStore", {
-          fct: "mutateKey",
-          value: {
-            mutate: "tagGestionRefreshKey",
-            body: this.refreshKey + 1,
-          },
-        });
+        this.mutateKey("tagGestionRefreshKey", this.refreshKey + 1);
+
+        if (this.chosenList.length == 0) {
+          // 'raccourci' pour activation de la fonctionnalité de base si liste vide (pas besoin de supprimer)
+          this.optionSelected = true;
+          this.$emit("forcedOption");
+        }
       }
     },
     refreshKey() {
@@ -130,7 +131,7 @@ export default {
 
 <style lang="scss">
 // Not scoped cause slot
-@import "@/styles/global";
+@import "../styles/variables";
 
 .tagsList_container {
   padding: 0.5rem;

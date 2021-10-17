@@ -16,7 +16,7 @@
         <font-awesome-icon :icon="['fas', 'share']" size="2x" />
       </button>
       <div class="main--content flex-grow-1">
-        <div class="readingZone">
+        <div v-if="cardMounted" class="readingZone">
           <vue-mathjax
             v-if="actualCard.recto_formula"
             :formula="actualCard.recto"
@@ -95,17 +95,17 @@
         <div class="level">Niveau: {{ actualCard.streak }}</div>
         <div class="calc-revision">Prochaine révision {{ nextRevision() }}</div>
         <div v-if="!isModifying && wasModified" class="multiButtons">
-          <button @click="modifState(true)"><span>Modifer</span></button>
+          <button @click="modifCard(true)"><span>Modifer</span></button>
           <button @click="postCard" class="default">
             <span>Valider</span>
           </button>
         </div>
         <div v-if="isModifying" class="multiButtons">
-          <button @click="saveCardChanges" class="default">
+          <button @click="modifCard(false)" class="default">
             <span>Terminer</span>
           </button>
-          <button @click="buildActualCard" class="icon">
-            <font-awesome-icon :icon="['fas', 'undo']" />
+          <button @click="reBuild" class="icon">
+            <font-awesome-icon :icon="['fas', 'history']" />
           </button>
         </div>
       </div>
@@ -120,9 +120,10 @@ export default {
   name: "Card",
   data() {
     return {
+      cardMounted: false,
+      originalCard: "",
       doodleSeed: "",
       recto: true,
-      initialStreak: "",
       streakSet: false,
       wasModified: false,
     };
@@ -140,25 +141,28 @@ export default {
     isModifying() {
       return this.$store.state.modifCard;
     },
+    cardsToReviseLength() {
+      return this.$store.state.cardsToReviseLength;
+    },
   },
   methods: {
     buildActualCard() {
       let bodyActualCard;
-      if (this.cardsList.length > 0) bodyActualCard = { ...this.cardsList[0] };
-      else bodyActualCard = { ...this.$store.state.newCard };
+      if (this.cardsList.length > 0) {
+        if (this.$store.state.pickRandom)
+          bodyActualCard = this.pickRandom({ ...this.cardsList });
+        else {
+          bodyActualCard = { ...this.cardsList[0] };
+          this.mutateKey("pickRandom", true);
+        }
+      } else bodyActualCard = { ...this.$store.state.newCard };
 
-      this.$store.dispatch("mutateStore", {
-        fct: "mutateKey",
-        value: {
-          mutate: "actualCard",
-          body: bodyActualCard,
-        },
-      });
-      this.initialStreak = bodyActualCard.streak;
-      if (!this.actualCardId) {
-        this.recto = false;
-        this.modifState(true);
-      } else this.modifState(false);
+      this.originalCard = bodyActualCard;
+
+      this.mutateKey("actualCard", bodyActualCard);
+    },
+    reBuild() {
+      this.mutateKey("actualCard", this.originalCard);
     },
     calculNextRevision() {
       const HOURS_SUITE = {
@@ -188,31 +192,19 @@ export default {
     },
     handleStreak(add) {
       this.streakSet = true;
-      if (add) this.mutateModifs("streak", this.actualCard.streak + add);
-      else this.mutateModifs("streak", this.initialStreak);
-      if (this.actualCard.streak < 0) this.mutateModifs("streak", 0);
+      if (add) this.mutateCardModifs("streak", this.actualCard.streak + add);
+      else this.mutateCardModifs("streak", this.originalCard.streak);
+      if (this.actualCard.streak < 0) this.mutateCardModifs("streak", 0);
       this.nextRevision();
     },
-    modifState(bool) {
+    modifCard(bool) {
       if (bool) this.wasModified = true;
-      this.$store.dispatch("mutateStore", {
-        fct: "mutateKey",
-        value: {
-          mutate: "modifCard",
-          body: bool,
-        },
-      });
+      this.mutateKey("modifCard", bool);
     },
-    mutateModifs(cardKey, value) {
+    mutateCardModifs(cardKey, value) {
       let cardModif = { ...this.$store.state.actualCard };
       cardModif[cardKey] = value;
-      this.$store.dispatch("mutateStore", {
-        fct: "mutateKey",
-        value: {
-          mutate: "actualCard",
-          body: cardModif,
-        },
-      });
+      this.mutateKey("actualCard", cardModif);
     },
     nextRevision() {
       let next = this.calculNextRevision();
@@ -230,27 +222,45 @@ export default {
     },
     async postCard() {
       if (this.actualCardId) {
+        if (
+          this.actualCard.recto &&
+          this.actualCard.verso &&
+          this.actualCard.streak > 0
+        )
+          this.mutateKey("cardsToReviseLength", --this.cardsToReviseLength);
         await this.$store.dispatch("putCard");
-        this.$store.dispatch("mutateStore", {
-          fct: "shiftKey",
-          value: "cardsList",
-        });
-      } else await this.$store.dispatch("postCard");
-      if (this.cardsList.length == 0) this.buildActualCard();
+      } else {
+        if (
+          this.actualCard.recto &&
+          this.actualCard.verso &&
+          this.actualCard.streak === 0
+        )
+          this.mutateKey("cardsToReviseLength", ++this.cardsToReviseLength);
+        await this.$store.dispatch("postCard");
+      }
+      this.$store.dispatch("mutateStore", {
+        fct: "shiftKey",
+        value: "cardsList",
+      });
     },
-    async saveCardChanges() {
-      // Modifier la carte sans échanger recto et verso
-      let cardReverse = this.actualCard.reverse;
-      this.mutateModifs("reverse", false);
-      this.modifState(false);
-      await this.$store
-        .dispatch("putCard")
-        .then(() => this.mutateModifs("reverse", cardReverse));
+    pickRandom() {
+      let list = this.cardsList;
+      return list[Math.floor(Math.random() * list.length)];
     },
   },
-  async beforeMount() {
+  async mounted() {
     await this.buildActualCard();
-    this.doodleSeed = Math.trunc(Math.random) * 1000;
+    if (!this.doodleSeed) this.doodleSeed = Math.trunc(Math.random) * 1000;
+    this.$emit("mounted");
+    setTimeout(() => {
+      this.cardMounted = true;
+    }, 200);
+    setTimeout(() => {
+      if (!this.actualCardId) {
+        this.recto = false;
+        this.modifCard(true);
+      } else this.modifCard(false);
+    }, 500);
   },
   unmounted() {
     this.$emit("modifying", false);

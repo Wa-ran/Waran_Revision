@@ -1,14 +1,27 @@
 <template>
   <div class="container">
-    <div>
+    <div class="container--gestion">
       <h3>Vos Tags :</h3>
 
       <TagsGestion
-        @active="setTagRequest('getAllUserTags')"
+        @active="
+          gestionActive = true;
+          setTagRequest('getAllUserTags');
+        "
         @mounted="submitTagRequest('getAllUserTags')"
-        @submitTagRequest="submitTagRequest"
+        @submitTagRequest="
+          submitTagRequest();
+          tagsListKey++;
+        "
         @deleteButton="setTagRequest('deleteTag')"
+        @tagClick="
+          if (!gestionActive) {
+            selectedList = 'tagsSelectedList';
+            modifSearchTag('add', true);
+          }
+        "
         :chooseList="'tagsList'"
+        :key="tagsListKey"
       >
         <template v-slot:default>
           <button @click="setTagRequest('postTag')">
@@ -29,7 +42,7 @@
       </TagsGestion>
     </div>
 
-    <div v-if="tagsListLength > 0">
+    <div v-if="tagsListLength > 0" class="container--gestion">
       <h3>Réviser par tags :</h3>
 
       <div v-if="tagsSelectedList.length > 1">
@@ -53,12 +66,24 @@
 
       <TagsGestion
         @active="
+          gestionActive = true;
           selectedList = 'tagsSelectedList';
           setTagRequest('getCardsToReviseByTags');
         "
-        @submitTagRequest="refreshTagSelection"
+        @submitTagRequest="
+          refreshTagSelection();
+          tagsSelectedListKey++;
+        "
         @deleteButton="handleTagSelection = 'remove'"
+        @tagClick="
+          if (!gestionActive) {
+            selectedList = 'tagsSelectedList';
+            modifSearchTag('remove', true);
+          }
+        "
+        @forcedOption="handleTagSelection = 'add'"
         :chooseList="'tagsSelectedList'"
+        :key="tagsSelectedListKey"
       >
         <div>
           <button @click="handleTagSelection = 'add'">
@@ -68,22 +93,31 @@
       </TagsGestion>
     </div>
 
-    <div v-if="tagsListLength > 0">
+    <div
+      v-if="tagsListLength > 0"
+      class="container--gestion"
+      :key="actualCard.id"
+    >
       <h3>Carte :</h3>
 
       <TagsGestion
         @active="
+          gestionActive = true;
           selectedList = 'cardTagsList';
           setTagRequest('postCardTags');
         "
         @mounted="if (actualCard.id) submitTagRequest('getCardTags');"
-        @submitTagRequest="submitTagRequest"
-        @deleteButton="
-          handleTagSelection = 'remove';
-          setTagRequest('deleteCardTag');
+        @submitTagRequest="
+          submitTagRequest();
+          cardTagsListKey++;
+        "
+        @deleteButton="setTagRequest('deleteCardTag')"
+        @forcedOption="
+          handleTagSelection = 'add';
+          setTagRequest('postCardTags');
         "
         :chooseList="'cardTagsList'"
-        :key="actualCard.id"
+        :key="cardTagsListKey"
       >
         <div>
           <button
@@ -110,6 +144,10 @@ export default {
   },
   data() {
     return {
+      tagsListKey: 0,
+      tagsSelectedListKey: 0,
+      cardTagsListKey: 0,
+      gestionActive: false,
       handleTagSelection: false,
       tagNameInput: "",
       selectedList: "",
@@ -143,19 +181,29 @@ export default {
     },
   },
   methods: {
+    async modifSearchTag(action, immediate = false) {
+      action = action ? action : this.handleTagSelection;
+      this.tagNameInput = { ...this.actualTag }.name;
+      if (this.actualTag.id) {
+        if (action == "add") {
+          this.mutateKey(this.selectedList, this.actualTag);
+        } else if (action == "remove") {
+          let newList = [];
+          for (let tag of this.$store.state[this.selectedList]) {
+            if (this.actualTag.id != tag.id) newList.unshift(tag);
+          }
+          this.mutateKey(this.selectedList, newList);
+        }
+      }
+      if (immediate) await this.submitTagRequest("getCardsToReviseByTags");
+    },
     async submitTagRequest(req = null) {
       req = req ? req : this.tagRequest;
       if (this.createOrModif) {
-        this.$store.dispatch("mutateStore", {
-          fct: "mutateKey",
-          value: {
-            mutate: "actualTag",
-            body: {
-              id: this.actualTag.id,
-              name: this.tagNameInput,
-              user_id: this.$store.state.user.id,
-            },
-          },
+        this.mutateKey("actualTag", {
+          id: this.actualTag.id,
+          name: this.tagNameInput,
+          user_id: this.$store.state.user.id,
         });
       }
       if (
@@ -167,13 +215,7 @@ export default {
       await this.$store.dispatch(req);
     },
     setTagRequest(req) {
-      this.$store.dispatch("mutateStore", {
-        fct: "mutateKey",
-        value: {
-          mutate: "tagRequest",
-          body: req,
-        },
-      });
+      this.mutateKey("tagRequest", req);
     },
     async refreshTagSelection() {
       if (this.tagsSelectedList.length == 0) {
@@ -188,42 +230,13 @@ export default {
       });
     },
     async changeSearchTagCond(cond) {
-      this.$store.dispatch("mutateStore", {
-        fct: "mutateKey",
-        value: {
-          mutate: "searchTagsCond",
-          body: cond,
-        },
-      });
+      this.mutateKey("searchTagsCond", cond);
       await this.submitTagRequest("getCardsToReviseByTags");
     },
   },
   watch: {
     actualTag() {
-      this.tagNameInput = { ...this.actualTag }.name;
-      if (this.actualTag.id) {
-        if (this.handleTagSelection == "add") {
-          this.$store.dispatch("mutateStore", {
-            fct: "mutateKey",
-            value: {
-              mutate: this.selectedList,
-              body: this.actualTag,
-            },
-          });
-        } else if (this.handleTagSelection == "remove") {
-          let newList = [];
-          for (let tag of this.$store.state[this.selectedList]) {
-            if (this.actualTag.id != tag.id) newList.unshift(tag);
-          }
-          this.$store.dispatch("mutateStore", {
-            fct: "mutateKey",
-            value: {
-              mutate: this.selectedList,
-              body: newList,
-            },
-          });
-        }
-      }
+      this.modifSearchTag();
     },
     tagRequest() {
       this.resetKey("actualTag");
@@ -233,7 +246,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/global";
+@import "../../styles/variables";
 
 h3 {
   margin-bottom: 0.5rem;
@@ -241,6 +254,11 @@ h3 {
 input {
   @include case_style;
   padding: 0.25rem 1rem;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
 }
 .tags_list {
   margin: 1rem 0;
