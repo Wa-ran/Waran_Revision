@@ -3,20 +3,35 @@ const dtbObj = require('./dtbObj');
 const HOURS_SUITE = {
   0: 0,
   1: 6,
-  2: 12,
-  3: 22,
-  4: 36,
-  5: 60,
-  6: 96,
-  7: 156,
-  8: 252,
-  9: 408,
-  10: 660,
-  11: 1068,
-  12: 1728,
-  13: 2796,
-  14: 4524,
-  15: 7320
+  2: 6,
+  3: 12,
+  4: 12,
+  5: 21,
+  6: 21,
+  7: 36,
+  8: 36,
+  9: 60,
+  10: 60,
+  11: 96,
+  12: 96,
+  13: 156,
+  14: 156,
+  15: 252,
+  16: 252,
+  17: 408,
+  18: 408,
+  19: 660,
+  20: 660,
+  21: 1068,
+  22: 1068,
+  23: 1728,
+  24: 1728,
+  25: 2796,
+  26: 2796,
+  27: 4524,
+  28: 4524,
+  29: 7320,
+  30: 7320
 };
 
 module.exports = class Card extends dtbObj {
@@ -48,8 +63,11 @@ module.exports = class Card extends dtbObj {
   inverseRectoVerso() {
     if (this.reverse) {
       let recto = this.recto;
+      let recto_comment = this.recto_comment;
       this.recto = this.verso;
       this.verso = recto;
+      this.recto_comment = this.verso_comment;
+      this.verso_comment = recto_comment;
     }
   };
 }
