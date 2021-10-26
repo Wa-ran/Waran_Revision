@@ -13,58 +13,19 @@
     <CheckButton
       @check="modifComment($event)"
       :desc="'Modifer le commentaire'"
-      :preChecked="false"
+      :preChecked="modifCommentState"
+      :key="modifCommentState"
     />
-    <div
-      v-if="tagsListLength > 0"
-      class="container--gestion"
-      :key="actualCard.id"
-    >
-      <h3>Carte :</h3>
-
-      <TagsGestion
-        @active="
-          gestionActive = true;
-          selectedList = 'cardTagsList';
-          setTagRequest('postCardTags');
-        "
-        @mounted="if (actualCard.id) submitTagRequest('getCardTags');"
-        @submitTagRequest="
-          submitTagRequest();
-          cardTagsListKey++;
-        "
-        @deleteButton="setTagRequest('deleteCardTag')"
-        @forcedOption="
-          handleTagSelection = 'add';
-          setTagRequest('postCardTags');
-        "
-        :chooseList="'cardTagsList'"
-        :key="cardTagsListKey"
-      >
-        <div>
-          <button
-            @click="
-              handleTagSelection = 'add';
-              setTagRequest('postCardTags');
-            "
-          >
-            <span>Ajouter un tag</span>
-          </button>
-        </div>
-      </TagsGestion>
-    </div>
   </div>
 </template>
 
 <script>
 import CheckButton from "@/components/CheckButton.vue";
-import TagsGestion from "@/components/TagsGestion.vue";
 
 export default {
   name: "CardEditor",
   components: {
     CheckButton,
-    TagsGestion,
   },
   props: {
     cardFace: { type: String, default: "recto" },
@@ -77,6 +38,12 @@ export default {
   computed: {
     actualCard() {
       return this.$store.state.actualCard;
+    },
+    modifCommentState() {
+      return this.$store.state.modifComment;
+    },
+    tagsListLength() {
+      return this.$store.state.tagsList.length;
     },
   },
   methods: {

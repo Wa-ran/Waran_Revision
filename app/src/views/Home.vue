@@ -87,6 +87,7 @@ export default {
         congrate.style.cssText = `top: ${headerHeight + 1}px;`;
         congrate.style.cssText += `
         opacity: 0;`;
+        window.scrollTo(0, 0);
         setTimeout(() => {
           congrate.style.cssText += `
         opacity: 1;`;
@@ -193,12 +194,14 @@ export default {
   #home * {
     max-width: 95vw;
   }
-  .home--main {
+  #home .home--main {
+    margin: auto;
     & > * {
       width: 100%;
       min-width: 33%;
       max-width: 95vw;
       margin: auto !important;
+      padding: 0;
       & > * {
         width: auto;
         margin: auto;
@@ -206,10 +209,10 @@ export default {
       }
     }
     & .central {
-      order: 2;
+      order: 1;
     }
     & .edit {
-      order: 1;
+      order: 2;
     }
     & .tagsZone {
       order: 3;

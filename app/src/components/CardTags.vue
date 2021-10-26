@@ -1,44 +1,110 @@
 <template>
   <div class="container">
-    <div v-if="actualCardTags.length > 0" class="container">
+    <div class="container--gestion">
       <h3>Tags de la carte :</h3>
-
-      <div class="tags_list">
-        <Tag
-          v-for="(tag, index) in actualCardTags"
-          :key="index"
-          :tagId="tag.id"
-          :tagName="tag.name"
-        />
-      </div>
+      <TagsGestion
+        v-if="tagsListLength > 0"
+        @mounted="if (actualCard.id) submitTagRequest('getCardTags');"
+        @submitTagRequest="submitTagRequest()"
+        @deleteButton="setTagRequest('deleteCardTag')"
+        @annulation="annulation"
+        @chooseListEmpty="setTagRequest('postCardTags')"
+        :chooseList="'cardTagsList'"
+      >
+        <div>
+          <button @click="setTagRequest('postCardTags')">
+            <span>Ajouter un tag</span>
+          </button>
+        </div>
+      </TagsGestion>
+      <div v-else>Vous n'avez créé aucun tag.</div>
     </div>
   </div>
 </template>
 
 <script>
-import cardInclination from "../mixins/cardInclination.vue";
-import Tag from "@/components/Tag.vue";
+import TagsGestion from "@/components/TagsGestion.vue";
 
 export default {
   name: "CardTags",
   components: {
-    Tag,
+    TagsGestion,
+  },
+  data() {
+    return {
+      timer: null,
+    };
   },
   computed: {
     actualCard() {
       return this.$store.state.actualCard;
     },
-    actualCardTags() {
-      return this.$store.state.actualCardTagsList;
+    actualTag() {
+      return this.$store.state.actualTag;
+    },
+    originList() {
+      return this.$store.state.originCardTagsList;
+    },
+    tagsListLength() {
+      return this.$store.state.tagsList.length;
+    },
+    tagRequest() {
+      return this.$store.state.tagRequest;
     },
   },
-  async mounted() {
-    this.$store.dispatch("mutateStore", {
-      fct: "resetKey",
-      value: "actualCardTagsList",
-    });
-    if (this.actualCard.id) await this.$store.dispatch("getCardTags");
+  methods: {
+    annulation() {
+      this.mutateKey("cardTagsList", this.originList);
+    },
+    async submitTagRequest(req = null) {
+      req = req ? req : this.tagRequest;
+      await this.$store.dispatch(req).then(() => {
+        if (this.timer) clearTimeout(this.timer);
+        this.timer = setTimeout(() => {
+          this.$store.dispatch("getCardTags");
+        }, 300);
+      });
+    },
+    setTagRequest(req) {
+      this.mutateKey("tagRequest", req);
+    },
   },
-  mixins: [cardInclination],
+  mounted() {
+    this.mutateKey("originCardTagsList", this.$store.state.cardTagsList);
+  },
+  unmounted() {
+    this.mutateKey("originCardTagsList", []);
+  },
+  watch: {
+    actualTag() {
+      if (this.actualTag.id && this.tagRequest == "postCardTags")
+        this.mutateKey("cardTagsList", this.actualTag);
+    },
+  },
 };
 </script>
+
+<style lang="scss" scoped>
+@import "../styles/variables";
+
+h3 {
+  margin-bottom: 0.5rem;
+}
+input {
+  @include case_style;
+  padding: 0.25rem 1rem;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+}
+.tags_list {
+  margin: 1rem 0;
+  display: flex;
+  flex-wrap: wrap;
+  & .tag {
+    margin: 0.5rem 1rem 0.5rem 0;
+  }
+}
+</style>

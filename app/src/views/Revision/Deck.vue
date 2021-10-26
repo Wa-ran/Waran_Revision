@@ -2,36 +2,44 @@
   <div class="container">
     <div class="indication">
       <div class="loading">
-        <Loader v-show="loading && actualCardId" :size="'2x'" />
+        <Loader :size="'2x'" />
       </div>
       <span v-if="isModifying">Aperçu :</span>
-      <span v-else
-        >Encore
-        <span style="font-weight: bold; padding: 0.25rem">{{
-          cardsToReviseLength
-        }}</span>
-        carte{{ cardsToReviseLength > 1 ? "s" : "" }} à réviser.</span
-      >
+      <div v-else>
+        <div>
+          Encore
+          <span class="bold">{{ cardsToReviseLength }}</span>
+          carte{{ cardsToReviseLength > 1 ? "s" : "" }} à réviser.
+        </div>
+        <div v-if="tagsSelectedListLength > 0">
+          <span class="bold italic">{{ cardsListLength }}</span> avec les tags
+          sélectionnés.
+        </div>
+      </div>
     </div>
 
     <div class="deck flex-grow-1">
-      <Card @mounted="loadingState" :key="cardsListLength" />
+      <Card :key="cardKey" />
 
       <div
-        v-for="card in cardsList.slice(0, 8)"
-        :key="card"
+        v-for="index in deckDisplay"
+        :key="index"
         class="card sub_card"
       ></div>
       <div class="card sub_card shadow"></div>
     </div>
 
-    <div v-if="!isModifying" class="deckManager">
+    <div
+      v-if="!isModifying"
+      @click.capture="loading = true"
+      class="deckManager"
+    >
       <div v-if="actualCardId">
         <button @click="createCard">
           <span>Nouvelle carte</span>
         </button>
       </div>
-      <div v-if="cardsListLength > 0">
+      <div v-if="cardsListLength > 1">
         <button @click="shiftCard">
           <span>Passer la carte</span>
         </button>
@@ -77,14 +85,20 @@ export default {
   },
   data() {
     return {
-      loading: false,
+      atLeastOne: false,
+      cardKey: 0,
+      cardTimer: null,
       hasSucceed: false,
-      stop: false,
+      loading: false,
+      shift: false,
+      shiftedCard: null,
+      stopCharge: false,
+      successTimer: null,
     };
   },
   computed: {
     actualCardId() {
-      return this.$store.state.actualCard.id;
+      return this.$store.getters.actualCardId;
     },
     cardsList() {
       return this.$store.state.cardsList;
@@ -95,40 +109,61 @@ export default {
     cardsToReviseLength() {
       return this.$store.state.cardsToReviseLength;
     },
+    deckDisplay() {
+      return this.$store.state.tagsSelectedList.length > 0
+        ? this.cardsListLength > 7
+          ? 7
+          : this.cardsListLength
+        : this.cardsToReviseLength > 7
+        ? 7
+        : this.cardsToReviseLength;
+    },
     isModifying() {
       return this.$store.state.modifCard;
+    },
+    tagsSelectedListLength() {
+      return this.$store.state.tagsSelectedList.length;
     },
   },
   methods: {
     async chargeDeck() {
-      if (this.$store.state.tagsSelectedList.length > 0)
-        await this.$store.dispatch("getCardsToReviseByTags");
-      else
-        await this.$store.dispatch("getCardsToRevise").then(() => {
-          setTimeout(() => {
-            this.mutateKey("cardsToReviseLength", this.cardsListLength);
-          }, 600);
-        });
-      this.loadingState();
+      if (this.tagsSelectedListLength > 0 && this.cardsListLength > 0)
+        await this.$store
+          .dispatch("getCardsToReviseByTags")
+          .then(() => this.revisionSuccess())
+          .then(() => ++this.cardKey);
+      else {
+        this.mutateKey("tagsSelectedList", []);
+        await this.$store
+          .dispatch("getCardsToRevise")
+          .then(() => this.revisionSuccess())
+          .then(() => ++this.cardKey);
+      }
     },
     createCard() {
       this.mutateKey("pickRandom", false);
       this.mutateKey("cardsList", this.$store.state.newCard);
+      ++this.cardKey;
     },
     async deleteCard() {
       this.$store.dispatch("mutateStore", {
         fct: "shiftKey",
         value: "cardsList",
       });
-      await this.$store.dispatch("deleteCard");
+      await this.$store.dispatch("deleteCard").then(() => ++this.cardKey);
       this.mutateKey("cardsToReviseLength", --this.cardsToReviseLength);
     },
-    async shiftCard() {
-      this.$store.dispatch("mutateStore", {
-        fct: "shiftKey",
-        value: "cardsList",
-      });
-      await this.revisionSuccess();
+    shiftCard() {
+      // this.$store.dispatch("mutateStore", {
+      //   fct: "shiftKey",
+      //   value: "cardsList",
+      // });
+      this.shift = true;
+      this.shiftedCard = this.actualCardId;
+      ++this.cardKey;
+      setTimeout(() => {
+        if (this.shift) this.shiftCard();
+      }, 200);
     },
     modifCard(bool) {
       if (bool) this.wasModified = true;
@@ -146,38 +181,38 @@ export default {
             translateY(${-index}px)
             rotateZ(${-index * 0.35}deg);
             opacity: 1;`;
-          if (index == 10 || index == cards.length - 1) break;
+          if (index == 8 || index == cards.length - 1) break;
         }
       });
     },
     async revisionSuccess() {
-      if (this.cardsListLength === 0 && !this.stop) {
-        setTimeout(() => {
-          if (this.cardsToReviseLength === 0 && !this.hasSucceed) {
+      if (this.successTimer) clearTimeout(this.successTimer);
+      this.successTimer = setTimeout(() => {
+        if (this.cardsListLength === 0 && !this.stopCharge) {
+          if (this.hasSucceed && this.tagsSelectedListLength == 0) {
             this.$emit("success");
-            this.hasSucceed = true;
-            this.stop = true;
-          } else {
+            this.stopCharge = true;
+          } else if (this.tagsSelectedListLength > 0) {
+            this.stopCharge = true;
+          } else if (this.cardsToReviseLength > 0) {
             this.chargeDeck();
           }
-        }, 350);
-      } else if (this.cardsListLength > 1) this.stop = false;
+        } else if (this.cardsListLength > 1) this.stopCharge = false;
+      }, 500);
     },
     loadingState() {
-      if (!this.loading) {
-        this.loading = true;
-        let cardLoader = document.querySelector(".indication .loading");
-        cardLoader.style.cssText = `transition: opacity 1s; opacity: 1;`;
-        setTimeout(() => {
+      let cardLoader = document.querySelector(".indication .loading");
+      cardLoader.style.cssText = `transition: opacity 0.3s; opacity: 1;`;
+      let stop = setInterval(() => {
+        if (!this.loading) {
           cardLoader.style.cssText += `opacity: 0;`;
-          setTimeout(() => {
-            this.loading = false;
-          }, 500);
-        }, 500);
-      }
+          clearInterval(stop);
+        }
+      }, 500);
     },
   },
   async mounted() {
+    this.loadingState();
     await this.chargeDeck()
       .then(() => {
         this.$emit("charged");
@@ -185,19 +220,36 @@ export default {
       .then(() => {
         this.paintDeck();
       });
-    // .then(() => {
-    //   this.loadingState();
-    // });
   },
   watch: {
     actualCardId() {
       this.paintDeck();
+      if (this.actualCardId != this.shiftedCard) {
+        this.shiftedCard = null;
+        this.shift = false;
+      }
     },
     cardsListLength() {
+      if (this.cardsListLength == 0) this.revisionSuccess();
+      else {
+        if (this.cardTimer) clearTimeout(this.cardTimer);
+        this.cardTimer = setTimeout(() => {
+          ++this.cardKey;
+        }, 200);
+      }
+    },
+    cardsToReviseLength() {
       this.paintDeck();
-      setTimeout(async () => {
-        await this.revisionSuccess();
-      }, 350);
+      if (this.cardsToReviseLength > 0) this.atLeastOne = true;
+      if (this.cardsToReviseLength == 0 && this.atLeastOne)
+        this.hasSucceed = true;
+      this.revisionSuccess();
+    },
+    cardKey() {
+      this.loading = false;
+    },
+    loading() {
+      if (this.loading) this.loadingState();
     },
   },
 
@@ -263,23 +315,19 @@ export default {
 .indication {
   margin: 0 auto;
   margin-bottom: 1.5rem;
-  padding-right: 100px;
+  padding-right: 75px;
   width: fit-content;
   display: flex;
+  position: relative;
   & span {
     padding: 0.5rem;
   }
 }
 
 .loading {
-  // position: absolute;
-  & > * {
-    // position: absolute;
-    bottom: 2rem;
-    left: 36%;
-    z-index: 101;
-    color: $pink;
-  }
+  position: absolute;
+  left: -2rem;
+  color: $pink;
 }
 
 @media screen and (max-width: 767px) {
@@ -288,6 +336,9 @@ export default {
   }
   .deckManager {
     margin-bottom: 0;
+  }
+  .indication {
+    padding-right: 0;
   }
 }
 </style>

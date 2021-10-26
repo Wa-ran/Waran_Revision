@@ -50,6 +50,15 @@ input, textarea, div[contenteditable="true"] {
   padding: 1rem;
   text-align: center;
 }
+.bold {
+  font-weight: bold;
+}
+.italic {
+  font-style: italic;
+}
+.underline {
+  text-decoration: underline;
+}
 
 button {
   @include case_style;
@@ -57,7 +66,15 @@ button {
   color: $white;
   min-width: max-content;
   max-width: 250px;
+  min-height: 28px;
   font-size: 1rem;
+  &.fa-icon {
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+  }
+}
+button:not(.disabled) {
   &.selected, &.default, &:hover, &:active {
     font-weight: bold;
   }
@@ -87,6 +104,19 @@ button {
     flex-grow: 1;
     padding: 0 0.5rem;
   }
+  &.fa-icon {
+    &:hover, &:focus, &:active {
+      background-color: transparent;
+      border: none;
+      box-shadow: none;
+    }
+    &:hover svg, &:focus svg {
+      color: $pink;
+    }
+    &:active svg {
+      color: $violet;
+    }
+  }
 }
 
 .multiButtons {
@@ -112,9 +142,12 @@ button {
   font-style: italic;
 }
 
-.tag {
+button.tag {
   border-radius: $card_rad;
   width: max-content;
+  & > span {
+    padding: 0;
+  }
 }
 
 header {
@@ -130,15 +163,6 @@ hr {
   border-top: solid 1px $pink;
   background-color: transparent;
   margin: 1rem;
-}
-
-.fa-icon {
-  &:hover svg, &:focus svg {
-    color: $pink;
-  }
-  &:active svg {
-    color: $violet;
-  }
 }
 
 .card {
@@ -168,22 +192,33 @@ hr {
 
     display: flex;
     flex-direction: column;
-    &>div {
-      width: 100%;
+    align-content: flex-start;
+    & > .content {
       margin: 0;
       background-color: rgba($color: $dark_blue, $alpha: 1);
       border: solid 1px $pink;
       text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.1rem;
+      flex-grow: 1;
+      position: relative;
     }
-    & .main--content {
+    & .content.main--content {
       width: auto;
+      max-width: 100%;
       padding: 0;
       padding-bottom: 1rem;
-      display: flex;
       flex-direction: column;
-      justify-content: center;
       align-content: center;
-      font-size: 1.1rem;
+      justify-content: flex-start;
+      overflow-y: scroll;
+      & > * {
+        margin: auto;
+        width: auto;
+        min-width: 85%;
+      }
     }
     & .flip-card {
       position: absolute;
@@ -192,29 +227,8 @@ hr {
       margin: 0;
       padding: 0;
       color: $white;
-      background-color: transparent;
-      border: none;
       &:hover {
         box-shadow: none;
-      }
-    }
-  }
-  & .verso {
-    // transform: rotateY(180deg);
-    display: flex;
-    & .main--content {
-      position: relative;
-      & .streakButtons {
-        position: absolute;
-        bottom: -0.5rem;
-        left: -2.5%;
-        width: 105%;
-        display: flex;
-        justify-content: space-between;
-        & button {
-          width: 30%;
-          word-wrap: normal;
-        }
       }
     }
   }
@@ -223,13 +237,12 @@ hr {
 .readingZone {
   height: fit-content;
   padding: 1rem;
-  overflow-x: hidden;
-  overflow-y: scroll;
-  &.comm--title {
+  & .comm--title {
     text-align: left;
     font-style: italic;
-    font-size: 0.9rem;
-    padding-top: 0.5rem;
+    & + * {
+      font-size: 0.9rem;
+    }
   }
   & p {
     margin: 0.5rem;

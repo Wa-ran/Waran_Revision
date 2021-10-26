@@ -1,5 +1,8 @@
 <template>
-  <div class="tagsList_container">
+  <div
+    @blur="if (!optionSelected) $emit('annulation');"
+    class="tagsList_container"
+  >
     <p v-if="chosenList.length == 0">Aucun Tag</p>
     <div v-else class="tags_list">
       <Tag
@@ -39,7 +42,12 @@
           <p>Sélectionnez un tag</p>
           <div class="multiButtons">
             <button @click="submitTagRequest"><span>Valider</span></button>
-            <button @click="optionSelected = false">
+            <button
+              @click="
+                optionSelected = false;
+                $emit('annulation');
+              "
+            >
               <span>Annuler</span>
             </button>
           </div>
@@ -116,9 +124,12 @@ export default {
         if (this.chosenList.length == 0) {
           // 'raccourci' pour activation de la fonctionnalité de base si liste vide (pas besoin de supprimer)
           this.optionSelected = true;
-          this.$emit("forcedOption");
+          this.$emit("chooseListEmpty");
         }
       }
+    },
+    optionSelected() {
+      this.$emit("optionSelected", this.optionSelected);
     },
     refreshKey() {
       if (this.activeKey != this.refreshKey) {

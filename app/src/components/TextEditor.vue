@@ -1,125 +1,89 @@
 <template>
-  <div class="deck">
-    <div class="card">
-      <div class="doodle">
-        <css-doodle>
-          @grid: 32; @size: 1px calc(35px + 70%); transform: rotate(@r(±90deg));
-          background: #e7576a; opacity: calc(1 - 1 / 1000 * @index);
-        </css-doodle>
+  <div class="container">
+    <div class="editor--options">
+      <div>
+        <button @click="normalContent" class="normal">
+          <span>N</span>
+        </button>
+        <button
+          @click="editContent('<span class=\'bold\'>', '</span>')"
+          class="icon"
+        >
+          <font-awesome-icon :icon="['fas', 'bold']" />
+        </button>
+        <button
+          @click="editContent('<span class=\'italic\'>', '</span>')"
+          class="icon"
+        >
+          <font-awesome-icon :icon="['fas', 'italic']" />
+        </button>
+        <button
+          @click="editContent('<span class=\'underline\'>', '</span>')"
+          class="icon"
+        >
+          <font-awesome-icon :icon="['fas', 'underline']" />
+        </button>
+        <button @click="editContent('<del>', '</del>')" class="icon">
+          <font-awesome-icon :icon="['fas', 'strikethrough']" />
+        </button>
       </div>
 
-      <div class="recto">
-        <div class="card--main flex-grow-1">
-          <div class="editor--options">
-            <button
-              @click="
-                editContent('<span style=\'font-weight: bold\'>', '</span>')
-              "
-              class="icon"
-            >
-              <font-awesome-icon :icon="['fas', 'bold']" />
-            </button>
-            <button
-              @click="
-                editContent('<span style=\'font-style: italic\'>', '</span>')
-              "
-              class="icon"
-            >
-              <font-awesome-icon :icon="['fas', 'italic']" />
-            </button>
-            <button
-              @click="
-                editContent(
-                  '<span style=\'text-decoration: underline\'>',
-                  '</span>'
-                )
-              "
-              class="icon"
-            >
-              <font-awesome-icon :icon="['fas', 'underline']" />
-            </button>
-            <button @click="editContent('<del>', '</del>')" class="icon">
-              <font-awesome-icon :icon="['fas', 'strikethrough']" />
-            </button>
-
-            <button
-              class="icon color cust_red"
-              @click="editContent('<span class=\'cust_red\'>', '</span>')"
-            >
-              <font-awesome-icon :icon="['fas', 'tint']" />
-            </button>
-            <button
-              class="icon color cust_orange"
-              @click="editContent('<span class=\'cust_orange\'>', '</span>')"
-            >
-              <font-awesome-icon :icon="['fas', 'tint']" />
-            </button>
-            <button
-              class="icon color cust_yellow"
-              @click="editContent('<span class=\'cust_yellow\'>', '</span>')"
-            >
-              <font-awesome-icon :icon="['fas', 'tint']" />
-            </button>
-            <button
-              class="icon color cust_green"
-              @click="editContent('<span class=\'cust_green\'>', '</span>')"
-            >
-              <font-awesome-icon :icon="['fas', 'tint']" />
-            </button>
-            <button
-              class="icon color cust_blue"
-              @click="editContent('<span class=\'cust_blue\'>', '</span>')"
-            >
-              <font-awesome-icon :icon="['fas', 'tint']" />
-            </button>
-            <button class="icon resetButton importantButton" @click="resetText">
-              <span>Reset</span>
-            </button>
-          </div>
-
-          <div class="editor--area">
-            <div v-if="modifComment" class="comm--title">Commentaire :</div>
-            <div
-              id="contentEditable"
-              v-html="textarea"
-              contenteditable="true"
-              autofocus
-            ></div>
-          </div>
-
-          <div class="multiButtons face">
-            <button
-              @click="changeFaceSelection('recto')"
-              :class="
-                faceSelected && faceSelected.match(/^recto/) ? 'default' : ''
-              "
-            >
-              <span>Recto</span>
-            </button>
-            <button
-              @click="changeFaceSelection('verso')"
-              :class="
-                faceSelected && faceSelected.match(/^verso/) ? 'default' : ''
-              "
-            >
-              <span>Verso</span>
-            </button>
-          </div>
-
-          <div class="undo">
-            <button
-              v-if="changeHist.length > 0"
-              @click="reverseChange"
-              class="icon"
-            >
-              <font-awesome-icon :icon="['fas', 'undo']" />
-            </button>
-            <!-- <button @click="mutateModifs" class="default">
-              <span>Valider</span>
-            </button> -->
-          </div>
-        </div>
+      <div>
+        <button
+          class="icon color cust_red"
+          @click="editContent('<span class=\'cust_red\'>', '</span>')"
+        >
+          <font-awesome-icon :icon="['fas', 'tint']" />
+        </button>
+        <button
+          class="icon color cust_orange"
+          @click="editContent('<span class=\'cust_orange\'>', '</span>')"
+        >
+          <font-awesome-icon :icon="['fas', 'tint']" />
+        </button>
+        <button
+          class="icon color cust_yellow"
+          @click="editContent('<span class=\'cust_yellow\'>', '</span>')"
+        >
+          <font-awesome-icon :icon="['fas', 'tint']" />
+        </button>
+        <button
+          class="icon color cust_green"
+          @click="editContent('<span class=\'cust_green\'>', '</span>')"
+        >
+          <font-awesome-icon :icon="['fas', 'tint']" />
+        </button>
+        <button
+          class="icon color cust_blue"
+          @click="editContent('<span class=\'cust_blue\'>', '</span>')"
+        >
+          <font-awesome-icon :icon="['fas', 'tint']" />
+        </button>
       </div>
+    </div>
+
+    <div class="editor--area">
+      <div v-if="modifComment" class="comm--title">Commentaire :</div>
+      <div
+        id="contentEditable"
+        v-html="textarea"
+        contenteditable="true"
+        autofocus
+      ></div>
+    </div>
+
+    <div class="undo">
+      <button class="resetButton importantButton" @click="resetText">
+        <span>Reset</span>
+      </button>
+
+      <button
+        v-if="changeHist.length > 0"
+        @click="reverseChange"
+        class="icon default"
+      >
+        <font-awesome-icon :icon="['fas', 'undo']" />
+      </button>
     </div>
   </div>
 </template>
@@ -127,9 +91,12 @@
 <script>
 export default {
   name: "TextEditor",
+  props: {
+    face: String,
+  },
   data() {
     return {
-      faceSelected: "recto",
+      faceSelected: "",
       changeHist: [],
       textarea: "",
     };
@@ -138,8 +105,14 @@ export default {
     faceContent() {
       return this.$store.state.actualCard[this.faceSelected];
     },
+    isModifying() {
+      return this.$store.state.modifCard;
+    },
     modifComment() {
       return this.$store.state.modifComment;
+    },
+    randomNum() {
+      return this.$store.state.randomNum;
     },
   },
   methods: {
@@ -151,33 +124,96 @@ export default {
         this.$emit("faceChange", face);
       });
     },
-    editContent(wrapStart, wrapEnd) {
+    wrapContent() {
+      let selection = window.getSelection();
+
       this.saveChange();
 
-      let selection = window.getSelection();
-      let node = window.getSelection().focusNode;
-      let elemNode;
-      if (node.nodeName == "#text") elemNode = node.parentNode;
-      else elemNode = node;
-
-      let rand = (Math.random() + 1).toString(36).substring(7);
-      let rand1 = "{1}" + rand;
-      let rand2 = "{2}" + rand;
+      let startNode = selection.anchorNode;
+      let endNode = selection.focusNode;
+      let rand1 = "{1}" + this.randomNum;
+      let rand2 = "{2}" + this.randomNum;
       // Insertion d'une chaine random pour retrouver la position de l'insertion
 
-      node.textContent =
-        node.textContent.substring(0, selection.anchorOffset) +
-        rand1 +
-        node.textContent.substring(
-          selection.anchorOffset,
-          selection.focusOffset
-        ) +
-        rand2 +
-        node.textContent.substring(selection.focusOffset);
+      if (startNode == endNode) {
+        let start = startNode.textContent.substring(
+          0,
+          selection.anchorOffset + 1
+        );
+        start = start.slice(0, start.lastIndexOf(" ") + 1);
+        let end = startNode.textContent.substring(selection.focusOffset - 1);
+        end = end.slice(end.indexOf(" "));
 
-      elemNode.innerHTML = elemNode.innerHTML
-        .replace(rand1, wrapStart)
-        .replace(rand2, wrapEnd);
+        let select = startNode.textContent.substring(
+          start.length,
+          startNode.textContent.length - end.length
+        );
+
+        startNode.textContent = start + rand1 + select + rand2 + end;
+      } else {
+        let start = startNode.textContent.substring(
+          0,
+          selection.anchorOffset + 1
+        );
+        startNode.textContent =
+          start.substring(0, start.lastIndexOf(" ") + 1) +
+          rand1 +
+          startNode.textContent.substring(start.lastIndexOf(" ") + 1);
+
+        let end = endNode.textContent.substring(0, selection.focusOffset - 1);
+        endNode.textContent =
+          end +
+          endNode.textContent.substring(
+            end.length,
+            endNode.textContent.indexOf(" ", end.length)
+          ) +
+          rand2 +
+          endNode.textContent.substring(
+            endNode.textContent.indexOf(" ", end.length)
+          );
+      }
+    },
+    editContent(wrapStart, wrapEnd) {
+      this.wrapContent();
+
+      document.getElementById("contentEditable").innerHTML = document
+        .getElementById("contentEditable")
+        .innerHTML.replace("{1}" + this.randomNum, wrapStart)
+        .replace("{2}" + this.randomNum, wrapEnd);
+    },
+    normalContent() {
+      this.wrapContent();
+
+      let edit = document.getElementById("contentEditable");
+      let editInn = edit.innerHTML;
+      let firstStart = editInn.indexOf(
+        "<span ",
+        editInn.indexOf("{1}" + this.randomNum)
+      );
+      let firstClose = editInn.indexOf(
+        "</span>",
+        editInn.indexOf("{1}" + this.randomNum)
+      );
+      let lastStart = editInn
+        .substring(0, editInn.indexOf("{2}" + this.randomNum))
+        .lastIndexOf("<span style");
+      let lastClose = editInn
+        .substring(0, editInn.indexOf("{2}" + this.randomNum))
+        .lastIndexOf("</span>");
+
+      let startDelete = Math.min(firstStart, firstClose, lastStart, lastClose);
+      let endDelete = Math.max(firstStart, firstClose, lastStart, lastClose);
+
+      edit.innerHTML =
+        editInn.substring(0, startDelete) +
+        editInn
+          .substring(startDelete, endDelete)
+          .replace(/(<\/?span([^<>])*>)/g, "") +
+        editInn.substring(endDelete);
+
+      edit.innerHTML = edit.innerHTML
+        .replace("{1}" + this.randomNum, "")
+        .replace("{2}" + this.randomNum, "");
     },
     resetText() {
       this.saveChange();
@@ -192,26 +228,37 @@ export default {
       this.mutateKey("actualCard", cardModif);
     },
     reverseChange() {
-      this.textarea = this.changeHist.pop();
+      if (this.changeHist.length === 1)
+        document.getElementById("contentEditable").innerHTML =
+          this.changeHist[0];
+      else
+        document.getElementById("contentEditable").innerHTML =
+          this.changeHist.pop();
       setTimeout(() => {
         this.mutateModifs();
       });
     },
     saveChange() {
-      setTimeout(() => {
-        if (document.querySelectorAll("#contentEditable").length > 0) {
-          if (
-            this.changeHist[this.changeHist.length] !=
+      if (document.querySelectorAll("#contentEditable").length > 0) {
+        if (
+          this.changeHist.length == 0 ||
+          this.changeHist[this.changeHist.length - 1].length !=
+            document.getElementById("contentEditable").innerHTML.length
+        ) {
+          this.changeHist.push(
             document.getElementById("contentEditable").innerHTML
-          ) {
-            this.changeHist.push(
-              document.getElementById("contentEditable").innerHTML
-            );
-            this.mutateModifs();
-          }
-          this.listenEdition();
+          );
+          this.mutateModifs();
         }
-      }, 350);
+        setTimeout(() => {
+          if (
+            this.changeHist[this.changeHist.length - 1].length ==
+            document.getElementById("contentEditable").innerHTML.length
+          )
+            this.listenEdition();
+          else this.saveChange();
+        }, 200);
+      }
     },
     listenEdition() {
       document
@@ -220,10 +267,25 @@ export default {
     },
   },
   mounted() {
+    this.faceSelected = this.face;
     this.textarea = this.faceContent;
-    this.saveChange();
+    setTimeout(() => {
+      this.saveChange();
+    }, 200);
+    document.getElementById("contentEditable").addEventListener("paste", () => {
+      setTimeout(() => {
+        this.resetText();
+        this.resetText();
+      });
+    });
   },
   watch: {
+    isModifying() {
+      if (!this.isModifying && !this.$store.state.validModifCard) {
+        document.getElementById("contentEditable").innerHTML =
+          this.changeHist[0];
+      }
+    },
     modifComment() {
       if (this.modifComment) {
         this.faceSelected += "_comment";
@@ -239,68 +301,82 @@ export default {
 <style lang="scss" scoped>
 @import "../styles/variables";
 
-.deck {
-  margin-bottom: 2rem;
-  & .card {
-    width: 95%;
-    height: auto;
-    margin: 1rem;
-    margin-top: 3rem;
-    margin: auto;
-
-    position: relative;
-  }
-  & .recto {
-    position: relative;
-    margin-bottom: 2rem;
-  }
-}
-
-.card--main {
+.container {
   position: relative;
-  height: fit-content;
-  min-width: fit-content;
+  min-height: 100%;
+  max-height: 100%;
+  min-width: 100%;
+  padding-bottom: 1rem;
+  display: flex;
   & .face {
     position: absolute;
     bottom: -0.5rem;
     left: -0.25rem;
   }
-  & .undo {
-    position: absolute;
-    bottom: -0.5rem;
-    right: -0.25rem;
-    & > button {
-      height: 26px;
+  .normal {
+    padding: 0;
+    & span {
+      font-size: 1.1rem;
+      margin: 0;
     }
+  }
+}
+.undo {
+  position: absolute;
+  top: -0.25rem;
+  right: -0.5rem;
+  & > button {
+    margin-left: auto;
+    padding: 0.2rem;
+    border-radius: 0.5rem;
+    & svg {
+      margin: 0 0.25rem;
+    }
+  }
+}
+.resetButton {
+  margin-top: -1px;
+  & span {
+    margin: 0;
   }
 }
 
 .editor--area {
-  padding: 2rem 1rem;
-  max-height: 300px;
+  max-height: 200px !important;
+  width: 100%;
+  padding: 1rem 0.5rem;
+  margin-top: 2rem;
   overflow-x: hidden;
   overflow-y: scroll;
 }
 #contentEditable {
-  min-height: 100%;
+  height: fit-content;
+  margin: auto;
+  padding: 1rem 0.5rem;
 }
 
 .editor--options {
   position: absolute;
-  top: -0.75rem;
+  top: -0.25rem;
   left: -0.5rem;
-  width: 105%;
+  width: 100%;
   display: flex;
   justify-content: flex-start;
+  flex-wrap: wrap;
   overflow-x: scroll;
-  & button,
-  .resetButton {
-    min-width: 30px;
-    border-radius: 0.5rem;
+  & > div {
+    width: 100%;
+    display: flex;
   }
-  & .resetButton {
-    min-width: 50px;
-    margin-left: 0.25rem;
+  & button {
+    min-width: 30px;
+    min-height: 23px;
+    border-radius: 0.5rem;
+    & > svg,
+    & > span {
+      margin: 0 0.25rem;
+      padding: 0;
+    }
   }
   & button.color:hover {
     background-color: currentColor;

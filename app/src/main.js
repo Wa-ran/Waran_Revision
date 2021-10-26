@@ -7,6 +7,8 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faBold,
   faCheck,
+  faChevronLeft,
+  faChevronRight,
   faCircle,
   faHistory,
   faItalic,
@@ -17,7 +19,7 @@ import {
   faUnderline,
   faUndo,
 } from "@fortawesome/free-solid-svg-icons";
-import { faHourglass, } from "@fortawesome/free-regular-svg-icons";
+import { faHourglass } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 import { CssDoodle } from "css-doodle";
@@ -29,6 +31,8 @@ import DoubleCheckButton from "@/components/DoubleCheckButton.vue";
 library.add(
   faBold,
   faCheck,
+  faChevronLeft,
+  faChevronRight,
   faCircle,
   faHistory,
   faHourglass,
@@ -38,7 +42,7 @@ library.add(
   faTint,
   faTrashAlt,
   faUnderline,
-  faUndo,
+  faUndo
 );
 
 const VueApp = createApp(App);

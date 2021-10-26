@@ -14,6 +14,7 @@ export default createStore({
     },
     firstDeckCard: {},
     modifCard: false,
+    validModifCard: false,
     modifComment: false,
     newCard: {
       recto: "Une carte toute neuve :)",
@@ -56,12 +57,13 @@ export default createStore({
       name: "",
       user_id: "",
     },
+    originCardTagsList: [],
     cardTagsList: [],
     searchTagsCond: "OR",
     tagsList: [],
     tagRequest: false,
     tagsSelectedList: [],
-
+    handleTagSelection: false,
     tagGestionRefreshKey: 0,
 
     user: {
@@ -69,6 +71,7 @@ export default createStore({
       pseudo: "",
       token: "",
     },
+    randomNum: null,
   },
   mutations: {
     changeUser(state, payload) {
@@ -76,8 +79,8 @@ export default createStore({
         state.newCard.user_id = payload.id;
         state.headers.Authorization = payload.token;
       } catch (error) {
-        state.newCard.user_id = '';
-        state.headers.Authorization = '';
+        state.newCard.user_id = "";
+        state.headers.Authorization = "";
       }
     },
     mutateKey(state, payload) {
@@ -99,8 +102,8 @@ export default createStore({
       else state[sKey] = "";
     },
     shiftKey(state, sKey) {
-      if (sKey === "cardsList" && state[sKey].length > 0)
-        state[sKey] = state[sKey].filter(
+      if (sKey === "cardsList" && state.cardsList.length > 0)
+        state.cardsList = state.cardsList.filter(
           (item) => item.id !== state.actualCard.id
         );
       else if (Array.isArray(state[sKey])) state[sKey].shift();
@@ -136,52 +139,52 @@ export default createStore({
       payload.value = payload.value ? payload.value : null;
       context.commit(payload.fct, payload.value);
     },
-    deleteCard() {
-      this.dispatch("revisionRequest", {
+    async deleteCard() {
+      await this.dispatch("revisionRequest", {
         method: "DELETE",
         serverRoute: "/Card",
         data: { card: this.state.actualCard },
         mutate: "cardsList",
       });
     },
-    deleteCardTag() {
-      this.dispatch("revisionRequest", {
+    async deleteCardTag() {
+      await this.dispatch("revisionRequest", {
         method: "DELETE",
         serverRoute: "/CardTags",
         data: { card: this.state.actualCard, tag: this.state.actualTag },
         mutate: "cardTagsList",
       });
     },
-    deleteTag() {
-      this.dispatch("revisionRequest", {
+    async deleteTag() {
+      await this.dispatch("revisionRequest", {
         method: "DELETE",
         serverRoute: "/Tag",
         data: { tag: this.state.actualTag },
         mutate: "tagsList",
       });
     },
-    postCard() {
+    async postCard() {
       if (!this.state.actualCard.user_id)
         this.state.actualCard.user_id = this.state.user.id;
-      this.dispatch("revisionRequest", {
+      await this.dispatch("revisionRequest", {
         method: "POST",
         serverRoute: "/Card",
         data: { card: this.state.actualCard },
         mutate: "cardsList",
       });
     },
-    postTag() {
+    async postTag() {
       if (!this.state.actualTag.user_id)
         this.state.actualTag.user_id = this.state.user.id;
-      this.dispatch("revisionRequest", {
+      await this.dispatch("revisionRequest", {
         method: "POST",
         serverRoute: "/Tag",
         data: { tag: this.state.actualTag },
         mutate: "tagsList",
       });
     },
-    postUser() {
-      this.dispatch("revisionRequest", {
+    async postUser() {
+      await this.dispatch("revisionRequest", {
         method: "POST",
         serverRoute: "/User",
         data: { user: this.state.user },
@@ -189,9 +192,9 @@ export default createStore({
         alert: true,
       });
     },
-    postCardTags() {
+    async postCardTags() {
       if (this.state.actualCard.id) {
-        this.dispatch("revisionRequest", {
+        await this.dispatch("revisionRequest", {
           method: "POST",
           serverRoute: "/CardTags",
           data: {
@@ -202,9 +205,9 @@ export default createStore({
         });
       }
     },
-    putCard() {
+    async putCard() {
       if (this.state.actualCard.id) {
-        this.dispatch("revisionRequest", {
+        await this.dispatch("revisionRequest", {
           method: "PUT",
           serverRoute: "/Card",
           data: { card: this.state.actualCard },
@@ -212,9 +215,9 @@ export default createStore({
         });
       }
     },
-    putTag() {
+    async putTag() {
       if (this.state.actualTag.id) {
-        this.dispatch("revisionRequest", {
+        await this.dispatch("revisionRequest", {
           method: "PUT",
           serverRoute: "/Tag",
           data: { tag: this.state.actualTag },
@@ -222,16 +225,24 @@ export default createStore({
         });
       }
     },
-    getCardsToRevise() {
-      this.dispatch("revisionRequest", {
+    async getCardsToRevise() {
+      await this.dispatch("revisionRequest", {
         method: "GET",
         serverRoute: "/CardsToRevise",
         data: "user/" + this.state.user.id,
         mutate: "cardsList",
+      }).then(() => {
+        this.dispatch("mutateStore", {
+          fct: "mutateKey",
+          value: {
+            mutate: "cardsToReviseLength",
+            body: this.state.cardsList.length - 1,
+          },
+        });
       });
     },
-    getCardsToReviseByTags() {
-      this.dispatch("revisionRequest", {
+    async getCardsToReviseByTags() {
+      await this.dispatch("revisionRequest", {
         method: "POST",
         serverRoute:
           "/getCardsToReviseByTags" + this.state.searchTagsCond.toUpperCase(),
@@ -242,24 +253,24 @@ export default createStore({
         mutate: "cardsList",
       });
     },
-    getAllUserTags() {
-      this.dispatch("revisionRequest", {
+    async getAllUserTags() {
+      await this.dispatch("revisionRequest", {
         method: "GET",
         serverRoute: "/AllUserTags",
         data: "user/" + this.state.user.id,
         mutate: "tagsList",
       });
     },
-    getCardTags() {
-      this.dispatch("revisionRequest", {
+    async getCardTags() {
+      await this.dispatch("revisionRequest", {
         method: "GET",
         serverRoute: "/CardTags",
         data: "card/" + this.state.actualCard.id,
         mutate: "cardTagsList",
       });
     },
-    getUser() {
-      this.dispatch("revisionRequest", {
+    async getUser() {
+      await this.dispatch("revisionRequest", {
         method: "POST",
         serverRoute: "/getUser",
         data: { user: this.state.user },
@@ -269,7 +280,7 @@ export default createStore({
     },
     async revisionRequest(context, req) {
       if (!this.state.error.pending) {
-        this.dispatch("mutateStore", {
+        await this.dispatch("mutateStore", {
           fct: "mutateKey",
           value: { mutate: "loading", body: true },
         });
@@ -295,13 +306,11 @@ export default createStore({
             if (req.mutate) {
               context.commit("refreshLength", req.mutate);
             }
-
+            // console.log(req.method + ' ' + req.mutate)
             this.dispatch("mutateStore", {
               fct: "mutateKey",
               value: { mutate: "loading", body: false },
             });
-
-            return
           })
           .catch((error) => {
             if (req.alert) alert(error.msg);
@@ -320,6 +329,16 @@ export default createStore({
       }
     },
   },
-  getters: {},
+  getters: {
+    actualCardId: (state) => {
+      let id;
+      try {
+        id = state.actualCard.id;
+      } catch (error) {
+        id = null;
+      }
+      return id;
+    },
+  },
   modules: {},
 });

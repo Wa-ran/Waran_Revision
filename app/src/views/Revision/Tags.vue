@@ -2,20 +2,18 @@
   <div class="container">
     <div class="container--gestion">
       <h3>Vos Tags :</h3>
-
+      {{ userTagSelected }}
       <TagsGestion
         @active="
-          gestionActive = true;
           setTagRequest('getAllUserTags');
+          userTagSelected = true;
         "
+        @optionSelected="userTagSelected = $event"
         @mounted="submitTagRequest('getAllUserTags')"
-        @submitTagRequest="
-          submitTagRequest();
-          tagsListKey++;
-        "
+        @submitTagRequest="submitTagRequest(null, (refreshKey = 'tagsListKey'))"
         @deleteButton="setTagRequest('deleteTag')"
         @tagClick="
-          if (!gestionActive) {
+          if (!modifCard && !userTagSelected) {
             selectedList = 'tagsSelectedList';
             modifSearchTag('add', true);
           }
@@ -42,7 +40,7 @@
       </TagsGestion>
     </div>
 
-    <div v-if="tagsListLength > 0" class="container--gestion">
+    <div v-if="tagsListLength > 0 && !modifCard" class="container--gestion">
       <h3>Réviser par tags :</h3>
 
       <div v-if="tagsSelectedList.length > 1">
@@ -66,66 +64,23 @@
 
       <TagsGestion
         @active="
-          gestionActive = true;
           selectedList = 'tagsSelectedList';
           setTagRequest('getCardsToReviseByTags');
         "
-        @submitTagRequest="
-          refreshTagSelection();
-          tagsSelectedListKey++;
-        "
-        @deleteButton="handleTagSelection = 'remove'"
+        @submitTagRequest="refreshTagSelection('tagsSelectedListKey')"
+        @deleteButton="mutateKey('handleTagSelection', 'remove')"
         @tagClick="
-          if (!gestionActive) {
+          if (!modifCard) {
             selectedList = 'tagsSelectedList';
             modifSearchTag('remove', true);
           }
         "
-        @forcedOption="handleTagSelection = 'add'"
+        @chooseListEmpty="mutateKey('handleTagSelection', 'add')"
         :chooseList="'tagsSelectedList'"
         :key="tagsSelectedListKey"
       >
         <div>
-          <button @click="handleTagSelection = 'add'">
-            <span>Ajouter un tag</span>
-          </button>
-        </div>
-      </TagsGestion>
-    </div>
-
-    <div
-      v-if="tagsListLength > 0"
-      class="container--gestion"
-      :key="actualCard.id"
-    >
-      <h3>Carte :</h3>
-
-      <TagsGestion
-        @active="
-          gestionActive = true;
-          selectedList = 'cardTagsList';
-          setTagRequest('postCardTags');
-        "
-        @mounted="if (actualCard.id) submitTagRequest('getCardTags');"
-        @submitTagRequest="
-          submitTagRequest();
-          cardTagsListKey++;
-        "
-        @deleteButton="setTagRequest('deleteCardTag')"
-        @forcedOption="
-          handleTagSelection = 'add';
-          setTagRequest('postCardTags');
-        "
-        :chooseList="'cardTagsList'"
-        :key="cardTagsListKey"
-      >
-        <div>
-          <button
-            @click="
-              handleTagSelection = 'add';
-              setTagRequest('postCardTags');
-            "
-          >
+          <button @click="mutateKey('handleTagSelection', 'add')">
             <span>Ajouter un tag</span>
           </button>
         </div>
@@ -147,10 +102,9 @@ export default {
       tagsListKey: 0,
       tagsSelectedListKey: 0,
       cardTagsListKey: 0,
-      gestionActive: false,
-      handleTagSelection: false,
       tagNameInput: "",
       selectedList: "",
+      userTagSelected: false,
     };
   },
   computed: {
@@ -166,6 +120,12 @@ export default {
       } catch (error) {
         return false;
       }
+    },
+    handleTagSelection() {
+      return this.$store.state.handleTagSelection;
+    },
+    modifCard() {
+      return this.$store.state.modifCard;
     },
     searchTagsCond() {
       return this.$store.state.searchTagsCond;
@@ -197,7 +157,7 @@ export default {
       }
       if (immediate) await this.submitTagRequest("getCardsToReviseByTags");
     },
-    async submitTagRequest(req = null) {
+    async submitTagRequest(req = null, refreshKey) {
       req = req ? req : this.tagRequest;
       if (this.createOrModif) {
         this.mutateKey("actualTag", {
@@ -212,16 +172,16 @@ export default {
       ) {
         req = "getCardsToRevise";
       }
-      await this.$store.dispatch(req);
+      await this.$store.dispatch(req).then(() => this[refreshKey]++);
     },
     setTagRequest(req) {
       this.mutateKey("tagRequest", req);
     },
-    async refreshTagSelection() {
+    async refreshTagSelection(key) {
       if (this.tagsSelectedList.length == 0) {
-        await this.submitTagRequest("getCardsToRevise");
-      } else await this.submitTagRequest();
-      this.handleTagSelection = false;
+        await this.submitTagRequest("getCardsToRevise", key);
+      } else await this.submitTagRequest(null, key);
+      this.mutateKey("handleTagSelection", false);
     },
     resetKey(key) {
       this.$store.dispatch("mutateStore", {
@@ -236,7 +196,7 @@ export default {
   },
   watch: {
     actualTag() {
-      this.modifSearchTag();
+      if (!this.modifCard) this.modifSearchTag();
     },
     tagRequest() {
       this.resetKey("actualTag");

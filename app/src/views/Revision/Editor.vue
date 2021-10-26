@@ -1,21 +1,23 @@
 <template>
   <div class="editor--main">
-    <TextEditor @faceChange="changeFace($event)" class="deck" />
+    <!-- <TextEditor @faceChange="changeFace($event)" class="deck" /> -->
     <h3>Options :</h3>
-    {{ faceSelected }}
     <CardEditor :cardFace="faceSelected" :key="faceSelected" />
+    <CardTags :key="$store.getters.actualCardId" />
   </div>
 </template>
 
 <script>
 import CardEditor from "@/components/CardEditor.vue";
-import TextEditor from "@/components/TextEditor.vue";
+// import TextEditor from "@/components/TextEditor.vue";
+import CardTags from "@/components/CardTags.vue";
 
 export default {
   name: "Editor",
   components: {
     CardEditor,
-    TextEditor,
+    // TextEditor,
+    CardTags,
   },
   data() {
     return {
@@ -27,6 +29,13 @@ export default {
       let newFace = face.replaceAll("_comment", "");
       if (this.faceSelected != newFace) this.faceSelected = newFace;
     },
+  },
+  mounted() {
+    if (!this.$store.state.randomNum)
+      this.mutateKey(
+        "randomNum",
+        (Math.random() + 1).toString(36).substring(7)
+      );
   },
 };
 </script>

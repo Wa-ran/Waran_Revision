@@ -1,5 +1,6 @@
 <template>
   <button
+    v-if="tagId"
     @click="changeActualTag"
     @blur="selected = false"
     :class="selected ? 'tag selected' : 'tag'"
