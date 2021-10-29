@@ -6,12 +6,14 @@ import store from "./store";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faBold,
+  faCaretDown,
   faCheck,
   faChevronLeft,
   faChevronRight,
   faCircle,
   faHistory,
   faItalic,
+  faQuestion,
   faShare,
   faStrikethrough,
   faTint,
@@ -30,6 +32,7 @@ import DoubleCheckButton from "@/components/DoubleCheckButton.vue";
 
 library.add(
   faBold,
+  faCaretDown,
   faCheck,
   faChevronLeft,
   faChevronRight,
@@ -37,6 +40,7 @@ library.add(
   faHistory,
   faHourglass,
   faItalic,
+  faQuestion,
   faShare,
   faStrikethrough,
   faTint,

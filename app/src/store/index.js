@@ -8,10 +8,6 @@ export default createStore({
     actualCard: {},
     cardsList: [],
     cardsToReviseLength: 0,
-    endCard: {
-      recto: "Le deck est vide",
-      end: true,
-    },
     firstDeckCard: {},
     modifCard: false,
     validModifCard: false,
@@ -29,8 +25,10 @@ export default createStore({
       recto_image: false,
       verso_image: false,
       reverse: true,
+      new: true,
     },
     pickRandom: true,
+    cardChrono: true,
 
     error: {
       pending: false,
@@ -47,8 +45,8 @@ export default createStore({
     },
     loading: false,
     serverAddress: {
-      waran_revision: "http://195.110.59.46:3008",
-      // waran_revision: "http://localhost:3008",
+      // waran_revision: "http://195.110.59.46:3008",
+      waran_revision: "http://localhost:3008",
     },
 
     //tag
@@ -101,13 +99,24 @@ export default createStore({
       if (Array.isArray(state[sKey])) state[sKey] = [];
       else state[sKey] = "";
     },
-    shiftKey(state, sKey) {
-      if (sKey === "cardsList" && state.cardsList.length > 0)
-        state.cardsList = state.cardsList.filter(
-          (item) => item.id !== state.actualCard.id
-        );
-      else if (Array.isArray(state[sKey])) state[sKey].shift();
-      else state[sKey] = "";
+    shiftKey(state, payload) {
+      if (payload == "newCard") {
+        state.cardsList.shift();
+      } else {
+        let sKey = payload.skey;
+        let findId = payload.findId ? payload.findId : state.actualCard.id;
+        if (sKey == "cardsList") {
+          let list = state.cardsList.filter((item) => item.id !== findId);
+          state.cardsList = list;
+        } else if (Array.isArray(state[sKey])) state[sKey].shift();
+        else state[sKey] = "";
+      }
+    },
+    enlistActualCard(state) {
+      if (state.actualCard.id) {
+        state.cardsList.filter((card) => card.id != state.actualCard.id);
+        state.cardsList.unshift({ ...state.actualCard });
+      }
     },
     refreshLength(state, sKey) {
       if (Array.isArray(state[sKey])) {
@@ -204,6 +213,20 @@ export default createStore({
           mutate: "cardTagsList",
         });
       }
+    },
+    async postCardWithTags() {
+      if (!this.state.actualCard.user_id)
+        this.state.actualCard.user_id = this.state.user.id;
+      await this.dispatch("revisionRequest", {
+        method: "POST",
+        serverRoute: "/CardWithTags",
+        data: {
+          card: this.state.actualCard,
+          tag: this.state.cardTagsList,
+          user: this.state.user,
+        },
+        mutate: "cardsList",
+      });
     },
     async putCard() {
       if (this.state.actualCard.id) {

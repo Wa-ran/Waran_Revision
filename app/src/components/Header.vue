@@ -39,8 +39,10 @@
       <div v-else class="container">
         <button @click="resetUser"><span>Déconnexion</span></button>
         <div class="welcome">
-          Bienvenue,
-          <span style="font-weight: bold">{{ stateUser.pseudo }}</span>
+          <div>
+            Bienvenue,
+            <span style="font-weight: bold">{{ stateUser.pseudo }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -109,8 +111,13 @@ export default {
     margin: auto 1rem auto 0;
   }
   & .welcome {
-    height: fit-content;
-    margin: auto 0.25rem;
+    display: flex;
+    justify-content: space-between;
+    flex-grow: 1;
+    & > * {
+      height: fit-content;
+      margin: auto 0.25rem;
+    }
   }
 }
 input {
@@ -125,7 +132,7 @@ input {
   .container {
     width: 100%;
     justify-content: center;
-    & > * {
+    & > *:not(button) {
       margin: 0.25rem;
     }
     & span {

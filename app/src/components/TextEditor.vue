@@ -130,45 +130,51 @@ export default {
       this.saveChange();
 
       let startNode = selection.anchorNode;
+      let startOffset = selection.anchorOffset;
       let endNode = selection.focusNode;
+      let endOffset = selection.focusOffset;
+      if (selection.focusOffset < selection.anchorOffset) {
+        startNode = selection.focusNode;
+        startOffset = selection.focusOffset;
+        endNode = selection.anchorNode;
+        endOffset = selection.anchorOffset;
+      }
       let rand1 = "{1}" + this.randomNum;
       let rand2 = "{2}" + this.randomNum;
       // Insertion d'une chaine random pour retrouver la position de l'insertion
 
-      if (startNode == endNode) {
-        let start = startNode.textContent.substring(
-          0,
-          selection.anchorOffset + 1
-        );
-        start = start.slice(0, start.lastIndexOf(" ") + 1);
-        let end = startNode.textContent.substring(selection.focusOffset - 1);
-        end = end.slice(end.indexOf(" "));
+      let start = startNode.textContent.slice(0, startOffset);
+      start = startNode.textContent.slice(0, start.lastIndexOf(" ") + 1);
+      // if (start.slice(0, 1) === " ") start = start.slice(1);
 
-        let select = startNode.textContent.substring(
+      if (startNode == endNode) {
+        let end = startNode.textContent.slice(endOffset - 1);
+        // if (end.slice([end.length] - 1) === " ") end = end.slice(0, end.length - 2);
+        if (end.indexOf(" ") !== -1) end = end.slice(end.indexOf(" "));
+        else end = "";
+
+        let select = startNode.textContent.slice(
           start.length,
           startNode.textContent.length - end.length
         );
 
         startNode.textContent = start + rand1 + select + rand2 + end;
       } else {
-        let start = startNode.textContent.substring(
-          0,
-          selection.anchorOffset + 1
-        );
         startNode.textContent =
-          start.substring(0, start.lastIndexOf(" ") + 1) +
+          start.slice(0, start.lastIndexOf(" ")) +
           rand1 +
-          startNode.textContent.substring(start.lastIndexOf(" ") + 1);
+          startNode.textContent.slice(start.lastIndexOf(" ") + 1);
 
-        let end = endNode.textContent.substring(0, selection.focusOffset - 1);
+        let end = endNode.textContent.slice(0, endOffset);
+        if (end.slice([end.length]) === " ") end = end.slice(0, end.length - 1);
         endNode.textContent =
           end +
-          endNode.textContent.substring(
+          endNode.textContent.slice(
             end.length,
             endNode.textContent.indexOf(" ", end.length)
           ) +
           rand2 +
-          endNode.textContent.substring(
+          endNode.textContent.slice(
             endNode.textContent.indexOf(" ", end.length)
           );
       }
@@ -195,21 +201,21 @@ export default {
         editInn.indexOf("{1}" + this.randomNum)
       );
       let lastStart = editInn
-        .substring(0, editInn.indexOf("{2}" + this.randomNum))
+        .slice(0, editInn.indexOf("{2}" + this.randomNum))
         .lastIndexOf("<span style");
       let lastClose = editInn
-        .substring(0, editInn.indexOf("{2}" + this.randomNum))
+        .slice(0, editInn.indexOf("{2}" + this.randomNum))
         .lastIndexOf("</span>");
 
       let startDelete = Math.min(firstStart, firstClose, lastStart, lastClose);
       let endDelete = Math.max(firstStart, firstClose, lastStart, lastClose);
 
       edit.innerHTML =
-        editInn.substring(0, startDelete) +
+        editInn.slice(0, startDelete) +
         editInn
-          .substring(startDelete, endDelete)
+          .slice(startDelete, endDelete)
           .replace(/(<\/?span([^<>])*>)/g, "") +
-        editInn.substring(endDelete);
+        editInn.slice(endDelete);
 
       edit.innerHTML = edit.innerHTML
         .replace("{1}" + this.randomNum, "")
@@ -228,12 +234,15 @@ export default {
       this.mutateKey("actualCard", cardModif);
     },
     reverseChange() {
-      if (this.changeHist.length === 1)
+      if (this.changeHist.length <= 2) {
+        if (this.changeHist.length > 1) this.changeHist.pop();
         document.getElementById("contentEditable").innerHTML =
           this.changeHist[0];
-      else
+      } else {
+        this.changeHist.pop();
         document.getElementById("contentEditable").innerHTML =
           this.changeHist.pop();
+      }
       setTimeout(() => {
         this.mutateModifs();
       });
@@ -351,6 +360,7 @@ export default {
 }
 #contentEditable {
   height: fit-content;
+  min-height: 80%;
   margin: auto;
   padding: 1rem 0.5rem;
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" :style="antiHour ? 'transform: rotateY(180deg)' : ''">
     <div class="loader">
       <font-awesome-icon
         :icon="['far', 'hourglass']"
@@ -19,6 +19,10 @@ export default {
     size: {
       type: String,
       default: "",
+    },
+    antiHour: {
+      type: Boolean,
+      default: false,
     },
   },
 };

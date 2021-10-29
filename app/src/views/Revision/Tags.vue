@@ -2,7 +2,7 @@
   <div class="container">
     <div class="container--gestion">
       <h3>Vos Tags :</h3>
-      {{ userTagSelected }}
+
       <TagsGestion
         @active="
           setTagRequest('getAllUserTags');

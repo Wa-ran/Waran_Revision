@@ -4,8 +4,10 @@
       <h3>Tags de la carte :</h3>
       <TagsGestion
         v-if="tagsListLength > 0"
-        @mounted="if (actualCard.id) submitTagRequest('getCardTags');"
-        @submitTagRequest="submitTagRequest()"
+        @mounted="
+          if (actualCard.id && !firstMount) submitTagRequest('getCardTags');
+        "
+        @submitTagRequest="if (actualCard.id) submitTagRequest();"
         @deleteButton="setTagRequest('deleteCardTag')"
         @annulation="annulation"
         @chooseListEmpty="setTagRequest('postCardTags')"
@@ -32,6 +34,7 @@ export default {
   },
   data() {
     return {
+      firstMount: true,
       timer: null,
     };
   },
@@ -70,6 +73,7 @@ export default {
     },
   },
   mounted() {
+    this.firstMount = false;
     this.mutateKey("originCardTagsList", this.$store.state.cardTagsList);
   },
   unmounted() {

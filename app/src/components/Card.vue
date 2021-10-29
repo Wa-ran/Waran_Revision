@@ -1,27 +1,41 @@
 <template>
   <div :key="actualCardId" class="card">
     <div class="doodle">
-      <css-doodle :seed="doodleSeed" :key="1">
+      <css-doodle :seed="doodleSeed">
         @grid: 32; @size: 1px calc(35px + 70%); transform: rotate(@r(±90deg));
-        background: #e7576a; opacity: calc(1 - 1 / 1000 * @index);
+        background: #e7576a; opacity: calc(1 - 1 / 900 * @index);
       </css-doodle>
     </div>
 
     <div v-if="recto" class="recto">
       <button
-        v-if="!actualCard.end && !isModifying"
+        v-if="cardReveal && !isModifying"
         @click="recto = false"
-        class="fa-icon flip-card"
+        class="fa-icon flip-card highlight"
       >
         <font-awesome-icon :icon="['fas', 'share']" size="2x" />
       </button>
-      <div class="content flex-grow-1">
-        <div v-if="cardMounted" class="readingZone">
-          <vue-mathjax
-            v-if="actualCard.recto_formula"
-            :formula="actualCard.recto"
-          />
-          <span v-else v-html="actualCard.recto"></span>
+
+      <div
+        :class="
+          cardReveal ? 'plain content flex-grow-1' : 'content flex-grow-1'
+        "
+      >
+        <div v-if="cardReveal">
+          <div class="readingZone">
+            <vue-mathjax
+              v-if="actualCard.recto_formula"
+              :formula="actualCard.recto"
+            />
+            <span v-else v-html="actualCard.recto"></span>
+          </div>
+          <CardChrono v-if="cardChronoState && !noChrono" />
+        </div>
+
+        <div v-else>
+          <button @click="cardReveal = true" class="question fa-icon">
+            <font-awesome-icon :icon="['fas', 'question']" size="4x" />
+          </button>
         </div>
       </div>
     </div>
@@ -30,7 +44,7 @@
       <button
         v-if="actualCardId && !isModifying"
         @click="recto = true"
-        class="fa-icon flip-card"
+        class="fa-icon flip-card highlight"
       >
         <font-awesome-icon :icon="['fas', 'share']" size="2x" />
       </button>
@@ -52,7 +66,7 @@
 
         <hr v-if="actualCard.recto_comment" />
 
-        <div v-if="actualCard.recto_comment" class="readingZone">
+        <div v-if="actualCard.recto_comment" class="readingZone comment">
           <div class="comm--title">Commentaire :</div>
           <p v-html="actualCard.recto_comment"></p>
         </div>
@@ -77,7 +91,7 @@
 
         <hr v-if="actualCard.verso_comment" />
 
-        <div v-if="actualCard.verso_comment" class="readingZone">
+        <div v-if="actualCard.verso_comment" class="readingZone comment">
           <div class="comm--title">Commentaire :</div>
           <p v-html="actualCard.verso_comment"></p>
         </div>
@@ -176,21 +190,24 @@
 
 <script>
 // import cardInclination from "../mixins/cardInclination.vue";
+import CardChrono from "@/components/CardChrono.vue";
 import Tag from "@/components/Tag.vue";
 import TextEditor from "@/components/TextEditor.vue";
 
 export default {
   name: "Card",
   components: {
+    CardChrono,
     Tag,
     TextEditor,
   },
   data() {
     return {
-      cardMounted: false,
+      cardReveal: false,
       displayScrollTag: false,
       doodleSeed: "",
       modifFocus: "recto",
+      noChrono: false,
       originalCard: "",
       recto: true,
       scrollTagPos: "right",
@@ -221,6 +238,9 @@ export default {
     cardsToReviseLength() {
       return this.$store.state.cardsToReviseLength;
     },
+    cardChronoState() {
+      return this.$store.state.cardChrono;
+    },
   },
   methods: {
     buildActualCard() {
@@ -232,7 +252,9 @@ export default {
           bodyActualCard = { ...this.cardsList[0] };
           this.mutateKey("pickRandom", true);
         }
-      } else bodyActualCard = { ...this.$store.state.newCard };
+      } else {
+        bodyActualCard = { ...this.$store.state.newCard };
+      }
 
       this.originalCard = bodyActualCard;
 
@@ -319,27 +341,52 @@ export default {
       else return "le " + next.getDate() + "/" + (1 + next.getMonth());
     },
     async postCard() {
-      this.$store.dispatch("mutateStore", {
-        fct: "shiftKey",
-        value: "cardsList",
-      });
-      if (this.actualCardId) {
-        if (
-          this.actualCard.recto &&
-          this.actualCard.verso &&
-          this.actualCard.streak > 0
-        )
-          this.mutateKey("cardsToReviseLength", this.cardsToReviseLength - 1);
-        await this.$store.dispatch("putCard");
-      } else {
-        if (
-          this.actualCard.recto &&
-          this.actualCard.verso &&
-          this.actualCard.streak === 0
-        )
-          this.mutateKey("cardsToReviseLength", this.cardsToReviseLength + 1);
-        await this.$store.dispatch("postCard");
+      let streak = this.actualCard.streak;
+      let findId = this.actualCardId;
+      if (this.actualCard.recto && this.actualCard.verso) {
+        if (!this.actualCardId) {
+          await this.$store
+            .dispatch(
+              this.cardTagsListLength === 0 ? "postCard" : "postCardWithTags"
+            )
+            .then(() => {
+              if (streak === 0)
+                this.mutateKey(
+                  "cardsToReviseLength",
+                  this.cardsToReviseLength + 1
+                );
+            });
+        } else if (
+          JSON.stringify(this.originalCard) ==
+            JSON.stringify(this.actualCard) &&
+          streak === 0
+        ) {
+          this.inversecard();
+          this.$emit("buildNew");
+        } else if (streak === 0) {
+          this.inversecard();
+          this.$store.dispatch("mutateStore", { fct: "enlistActualCard" });
+          this.$emit("buildNew");
+        } else {
+          await this.$store.dispatch("putCard").then(() => {
+            this.mutateKey("cardsToReviseLength", this.cardsToReviseLength - 1);
+            this.$store.dispatch("mutateStore", {
+              fct: "shiftKey",
+              value: { skey: "cardsList", findId },
+            });
+          });
+        }
       }
+    },
+    inversecard() {
+      let invertedCard = { ...this.actualCard };
+      let recto = invertedCard.recto;
+      let recto_comment = invertedCard.recto_comment;
+      invertedCard.recto = invertedCard.verso;
+      invertedCard.verso = recto;
+      invertedCard.recto_comment = invertedCard.verso_comment;
+      invertedCard.verso_comment = recto_comment;
+      this.mutateKey("actualCard", invertedCard);
     },
     pickRandom() {
       let list = this.cardsList;
@@ -375,19 +422,19 @@ export default {
     await this.buildActualCard();
     if (!this.doodleSeed) this.doodleSeed = Math.trunc(Math.random) * 1000;
     this.$emit("mounted");
-    setTimeout(() => {
-      this.cardMounted = true;
-    }, 200);
+    this.cardReveal = !this.cardChronoState;
     setTimeout(() => {
       if (
         !this.actualCardId &&
         this.$store.state.tagsSelectedList.length == 0
       ) {
+        this.cardReveal = true;
         this.recto = false;
         this.modifCard(true);
       } else this.modifCard(false);
     }, 500);
-    this.$store.dispatch("getCardTags");
+    if (this.actualCardId) this.$store.dispatch("getCardTags");
+    else this.mutateKey("cardTagsList", []);
   },
   unmounted() {
     this.$emit("modifying", false);
@@ -396,16 +443,18 @@ export default {
     streakSet() {
       this.wasModified = true;
     },
-    cardTagsListLength() {
-      setTimeout(() => {
-        if (!this.recto && this.cardTagsListLength > 0) this.scrollTag();
-      });
-    },
     recto() {
-      if (!this.recto)
+      if (!this.recto && this.cardTagsListLength > 0)
         setTimeout(() => {
           this.scrollTag();
         });
+    },
+    cardChronoState() {
+      if (!this.cardChronoState) this.cardReveal = !this.cardChronoState;
+      else this.noChrono = true;
+    },
+    cardReveal() {
+      this.$emit("cardReveal", this.cardReveal);
     },
   },
   // mixins: [cardInclination],

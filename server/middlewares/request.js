@@ -192,6 +192,19 @@ exports.postCardTags = async (req) => {
     })
 };
 
+exports.postCardWithTags = async (req) => {
+  await this.postCard(req)
+    .then(() => {
+      return dtbFct.selectLastUserCard(req.user)
+    })
+    .then(async (dtbCard) => {
+      req.card = createObj("card", dtbCard);
+      for await (tag of req.tag) {
+        dtbFct.createCardTag(req.card, tag)
+      };
+    })
+};
+
 exports.deleteCardTags = async (req) => {
   await dtbFct.deleteCardTag(req.card, req.tag)
 };

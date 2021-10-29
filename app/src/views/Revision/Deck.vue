@@ -4,6 +4,7 @@
       <div class="loading">
         <Loader :size="'2x'" />
       </div>
+
       <span v-if="isModifying">Aperçu :</span>
       <div v-else>
         <div>
@@ -19,7 +20,11 @@
     </div>
 
     <div class="deck flex-grow-1">
-      <Card :key="cardKey" />
+      <Card
+        @cardReveal="cardReveal = $event"
+        @buildNew="shiftCard"
+        :key="cardKey"
+      />
 
       <div
         v-for="index in deckDisplay"
@@ -87,13 +92,14 @@ export default {
     return {
       atLeastOne: false,
       cardKey: 0,
-      cardTimer: null,
+      cardReveal: false,
+      cardDebounce: null,
       hasSucceed: false,
       loading: false,
-      shift: false,
+      shiftLoop: false,
       shiftedCard: null,
       stopCharge: false,
-      successTimer: null,
+      successDebounce: null,
     };
   },
   computed: {
@@ -126,44 +132,62 @@ export default {
     },
   },
   methods: {
+    chargeCard(newCard = false) {
+      if (this.cardDebounce) clearTimeout(this.cardDebounce);
+      this.cardDebounce = setTimeout(() => {
+        if (!newCard)
+          try {
+            if (this.$store.state.cardsList[0].new == true)
+              this.$store.dispatch("mutateStore", {
+                fct: "shiftKey",
+                value: "newCard",
+              });
+          } catch (error) {
+            ++this.cardKey;
+          }
+        ++this.cardKey;
+      }, 200);
+    },
     async chargeDeck() {
       if (this.tagsSelectedListLength > 0 && this.cardsListLength > 0)
         await this.$store
           .dispatch("getCardsToReviseByTags")
-          .then(() => this.revisionSuccess())
-          .then(() => ++this.cardKey);
+          .then(() => this.revisionSuccess());
       else {
         this.mutateKey("tagsSelectedList", []);
         await this.$store
           .dispatch("getCardsToRevise")
-          .then(() => this.revisionSuccess())
-          .then(() => ++this.cardKey);
+          .then(() => this.revisionSuccess());
       }
     },
     createCard() {
       this.mutateKey("pickRandom", false);
       this.mutateKey("cardsList", this.$store.state.newCard);
-      ++this.cardKey;
+      this.chargeCard(true);
     },
     async deleteCard() {
-      this.$store.dispatch("mutateStore", {
-        fct: "shiftKey",
-        value: "cardsList",
-      });
-      await this.$store.dispatch("deleteCard").then(() => ++this.cardKey);
-      this.mutateKey("cardsToReviseLength", --this.cardsToReviseLength);
+      await this.$store
+        .dispatch("deleteCard")
+        .then(() => {
+          this.$store.dispatch("mutateStore", {
+            fct: "shiftKey",
+            value: { skey: "cardsList" },
+          });
+        })
+        .then(() => {
+          this.mutateKey("cardsToReviseLength", --this.cardsToReviseLength);
+        });
     },
     shiftCard() {
-      // this.$store.dispatch("mutateStore", {
-      //   fct: "shiftKey",
-      //   value: "cardsList",
-      // });
-      this.shift = true;
-      this.shiftedCard = this.actualCardId;
-      ++this.cardKey;
-      setTimeout(() => {
-        if (this.shift) this.shiftCard();
-      }, 200);
+      if (this.cardReveal) {
+        if (this.cardsListLength > 1) this.shiftLoop = true;
+        else this.shiftLoop = false;
+        this.shiftedCard = this.actualCardId;
+        this.chargeCard();
+        setTimeout(() => {
+          if (this.shiftLoop) this.shiftCard();
+        }, 200);
+      } else this.loading = false;
     },
     modifCard(bool) {
       if (bool) this.wasModified = true;
@@ -186,19 +210,17 @@ export default {
       });
     },
     async revisionSuccess() {
-      if (this.successTimer) clearTimeout(this.successTimer);
-      this.successTimer = setTimeout(() => {
+      if (this.successDebounce) clearTimeout(this.successDebounce);
+      this.successDebounce = setTimeout(() => {
         if (this.cardsListLength === 0 && !this.stopCharge) {
-          if (this.hasSucceed && this.tagsSelectedListLength == 0) {
+          if (this.hasSucceed && this.tagsSelectedListLength == 0)
             this.$emit("success");
-            this.stopCharge = true;
-          } else if (this.tagsSelectedListLength > 0) {
-            this.stopCharge = true;
-          } else if (this.cardsToReviseLength > 0) {
-            this.chargeDeck();
-          }
+          this.stopCharge = true;
+          if (this.cardsToReviseLength > 0) this.chargeDeck();
+          else this.createCard();
         } else if (this.cardsListLength > 1) this.stopCharge = false;
-      }, 500);
+        this.chargeCard();
+      });
     },
     loadingState() {
       let cardLoader = document.querySelector(".indication .loading");
@@ -226,17 +248,11 @@ export default {
       this.paintDeck();
       if (this.actualCardId != this.shiftedCard) {
         this.shiftedCard = null;
-        this.shift = false;
+        this.shiftLoop = false;
       }
     },
     cardsListLength() {
       if (this.cardsListLength == 0) this.revisionSuccess();
-      else {
-        if (this.cardTimer) clearTimeout(this.cardTimer);
-        this.cardTimer = setTimeout(() => {
-          ++this.cardKey;
-        }, 200);
-      }
     },
     cardsToReviseLength() {
       this.paintDeck();

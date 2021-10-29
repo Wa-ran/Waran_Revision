@@ -1,10 +1,7 @@
 <template>
   <div class="check--button">
-    <div>
-      <button
-        @click="handleCheck"
-        :class="checked ? 'icon default' : 'icon unchecked'"
-      >
+    <div @click="handleCheck">
+      <button :class="checked ? 'icon default' : 'icon unchecked'">
         <font-awesome-icon :icon="['fas', 'check']" size="xs" />
       </button>
       <div>{{ desc }}</div>

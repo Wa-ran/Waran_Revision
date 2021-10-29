@@ -2,19 +2,22 @@
   <main id="home">
     <Header />
 
-    <div v-show="userId" id="firstLoad">
-      <Loader :size="'5x'" />
-    </div>
-    <div v-show="success && !hasSucceed" id="revisionSuccess">
-      <div class="container">
-        <span>Bravo, vous avez révisé toutes vos cartes !</span>
-        <button @click="endCongratulate()">Yeah ! :D</button>
+    <div class="modal">
+      <div v-show="userId" id="firstLoad">
+        <Loader :size="'5x'" />
+      </div>
+      <div v-show="success && !hasSucceed" id="revisionSuccess">
+        <div class="container">
+          <span>Bravo, vous avez révisé toutes vos cartes !</span>
+          <button @click="endCongratulate()">Yeah ! :D</button>
+        </div>
       </div>
     </div>
 
     <div v-if="userId" :key="userId" class="home--main flex-grow-1">
       <div class="tagsZone">
         <Tags />
+        <UserOptions />
       </div>
 
       <div class="central">
@@ -25,6 +28,8 @@
         <Editor id="cardEditor" v-if="isModifying" />
       </div>
     </div>
+
+    <footer></footer>
   </main>
 </template>
 
@@ -35,6 +40,7 @@ import Tags from "@/views/Revision/Tags.vue";
 
 import Loader from "@/components/Loader.vue";
 import Header from "@/components/Header.vue";
+import UserOptions from "@/components/UserOptions.vue";
 
 export default {
   name: "Home",
@@ -44,6 +50,7 @@ export default {
     Header,
     Loader,
     Tags,
+    UserOptions,
   },
   data() {
     return {
@@ -67,9 +74,7 @@ export default {
   },
   methods: {
     stopLoad() {
-      let headerHeight = document.querySelector("#home > header").scrollHeight;
       let loader = document.getElementById("firstLoad");
-      loader.style.cssText = `top: ${headerHeight + 1}px;`;
       setTimeout(() => {
         loader.style.cssText += `
           opacity: 0;`;
@@ -81,10 +86,7 @@ export default {
     congratulate() {
       this.success = true;
       setTimeout(() => {
-        let headerHeight =
-          document.querySelector("#home > header").scrollHeight;
         let congrate = document.getElementById("revisionSuccess");
-        congrate.style.cssText = `top: ${headerHeight + 1}px;`;
         congrate.style.cssText += `
         opacity: 0;`;
         window.scrollTo(0, 0);
@@ -100,6 +102,11 @@ export default {
         this.success = false;
         this.hasSucceed = true;
       }, 1000);
+    },
+    mounted() {
+      let headerHeight = document.querySelector("#home > header").scrollHeight;
+      let modal = document.querySelector("modal");
+      modal.style.cssText = `top: ${headerHeight + 1}px;`;
     },
   },
 };
@@ -142,8 +149,7 @@ export default {
   }
 }
 
-#firstLoad,
-#revisionSuccess {
+.modal > * {
   position: absolute;
   left: 0;
   z-index: 1000;
@@ -154,9 +160,8 @@ export default {
   box-shadow: inset 0 0 80px 50px $violet;
   transition: opacity 0.5s;
   & > .container {
-    position: absolute;
-    top: 100px;
-    width: 100%;
+    min-width: 100%;
+    margin-top: 100px;
   }
 }
 #firstLoad {
@@ -164,12 +169,9 @@ export default {
 }
 #revisionSuccess {
   & > * {
-    position: absolute;
-    width: 100%;
     text-align: center;
     font-style: italic;
     font-size: 1.25rem;
-    top: 30%;
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
@@ -187,11 +189,18 @@ export default {
 
 .tagsZone {
   display: flex;
-  flex-wrap: wrap-reverse;
+  flex-wrap: wrap;
+  > .container {
+    min-width: 100%;
+  }
+}
+
+footer {
+  margin-top: 2rem;
 }
 
 @media screen and (max-width: 767px) {
-  #home * {
+  #home *:not(header) > * {
     max-width: 95vw;
   }
   #home .home--main {

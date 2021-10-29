@@ -95,7 +95,7 @@ button:not(.disabled) {
     box-shadow: 0 0 2px 2px $pink;
   }
   &:active {
-    background-color: $violet;
+    background-color: $pink;
   }
   &.icon svg{
     margin: 0 0.5rem;
@@ -105,16 +105,20 @@ button:not(.disabled) {
     padding: 0 0.5rem;
   }
   &.fa-icon {
+    color: $pink;
     &:hover, &:focus, &:active {
       background-color: transparent;
       border: none;
       box-shadow: none;
     }
-    &:hover svg, &:focus svg {
-      color: $pink;
+    &:hover svg, &:focus svg, :active svg {
+      color: $white;
     }
-    &:active svg {
-      color: $violet;
+    &.fa-icon.highlight {
+      color: $white;
+      &:hover svg, &:focus svg, :active svg {
+        color: $pink;
+      }     
     }
   }
 }
@@ -168,7 +172,7 @@ hr {
 .card {
   border: solid 1px $pink;
   border-radius: $card_rad;
-  background-color: $violet;
+  background: linear-gradient(0deg, $dark_blue 0%, $violet 80%, $violet 100%);
   z-index: 100;
   position: relative;
   min-width: 300px;
@@ -232,11 +236,50 @@ hr {
       }
     }
   }
+  & .recto .content {
+    &:not(.plain) {
+      background: radial-gradient(circle at 50% 215px, transparent 45px, $dark_blue 46px);
+    }
+    & .question {
+      border: solid 1px $pink;
+      border-radius: 100%;
+      width: 92px;
+      height: 92px;
+      margin-top: 169px;
+      &:hover {
+        border-color: $white;
+      }
+      & > * {
+        margin: auto;
+      }
+    }
+    & > * {
+      height: 100%;
+      width: 100%;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      & > * {
+        height: fit-content;
+        margin: auto;
+      }
+      & .chrono {
+        margin: 0 auto;
+        color: $pink;
+      }
+    }
+  }
 }
 
 .readingZone {
   height: fit-content;
   padding: 1rem;
+  &.comment {
+    margin-top: 0 !important;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
   & .comm--title {
     text-align: left;
     font-style: italic;
@@ -259,7 +302,7 @@ hr {
 .doodle {
   position: absolute;
   width: 100%;
-  height: calc(100% + 2px);
+  height: 100%;
   overflow: hidden;
   border-radius: $card_rad;
   z-index: -1;

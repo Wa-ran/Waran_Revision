@@ -2,7 +2,7 @@
   <div>
     <CheckButton
       @check="setCardParams('reverse', $event)"
-      :desc="'Inversion de la carte'"
+      :desc="'Inverser question/réponse à chaque révision'"
       :preChecked="actualCard.reverse"
     />
     <CheckButton
