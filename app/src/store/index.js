@@ -45,8 +45,8 @@ export default createStore({
     },
     loading: false,
     serverAddress: {
-      waran_revision: "http://195.110.59.46:3008",
-      // waran_revision: "http://localhost:3008",
+      // waran_revision: "http://195.110.59.46:3008",
+      waran_revision: "http://localhost:3008",
     },
 
     //tag
