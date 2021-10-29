@@ -65,7 +65,7 @@
     <div class="editor--area">
       <div v-if="modifComment" class="comm--title">Commentaire :</div>
       <div
-        id="contentEditable"
+        class="contentEditable"
         v-html="textarea"
         contenteditable="true"
         autofocus
@@ -102,6 +102,9 @@ export default {
     };
   },
   computed: {
+    contEdit() {
+      return document.getElementsByClassName("contentEditable")[0];
+    },
     faceContent() {
       return this.$store.state.actualCard[this.faceSelected];
     },
@@ -182,97 +185,92 @@ export default {
     editContent(wrapStart, wrapEnd) {
       this.wrapContent();
 
-      document.getElementById("contentEditable").innerHTML = document
-        .getElementById("contentEditable")
-        .innerHTML.replace("{1}" + this.randomNum, wrapStart)
+      this.contEdit.innerHTML = this.contEdit.innerHTML
+        .replace("{1}" + this.randomNum, wrapStart)
         .replace("{2}" + this.randomNum, wrapEnd);
     },
     normalContent() {
       this.wrapContent();
 
-      let edit = document.getElementById("contentEditable");
-      let editInn = edit.innerHTML;
-      let firstStart = editInn.indexOf(
+      let firstStart = this.contEdit.innerHTML.indexOf(
         "<span ",
-        editInn.indexOf("{1}" + this.randomNum)
+        this.contEdit.innerHTML.indexOf("{1}" + this.randomNum)
       );
-      let firstClose = editInn.indexOf(
+      let firstClose = this.contEdit.innerHTML.indexOf(
         "</span>",
-        editInn.indexOf("{1}" + this.randomNum)
+        this.contEdit.innerHTML.indexOf("{1}" + this.randomNum)
       );
-      let lastStart = editInn
-        .slice(0, editInn.indexOf("{2}" + this.randomNum))
+      let lastStart = this.contEdit.innerHTML
+        .slice(0, this.contEdit.innerHTML.indexOf("{2}" + this.randomNum))
         .lastIndexOf("<span style");
-      let lastClose = editInn
-        .slice(0, editInn.indexOf("{2}" + this.randomNum))
+      let lastClose = this.contEdit.innerHTML
+        .slice(0, this.contEdit.innerHTML.indexOf("{2}" + this.randomNum))
         .lastIndexOf("</span>");
 
       let startDelete = Math.min(firstStart, firstClose, lastStart, lastClose);
       let endDelete = Math.max(firstStart, firstClose, lastStart, lastClose);
 
-      edit.innerHTML =
-        editInn.slice(0, startDelete) +
-        editInn
+      let content =
+        this.contEdit.innerHTML.slice(0, startDelete) +
+        this.contEdit.innerHTML
           .slice(startDelete, endDelete)
           .replace(/(<\/?span([^<>])*>)/g, "") +
-        editInn.slice(endDelete);
+        this.contEdit.innerHTML.slice(endDelete);
 
-      edit.innerHTML = edit.innerHTML
+      this.contEdit.innerHTML = content
         .replace("{1}" + this.randomNum, "")
         .replace("{2}" + this.randomNum, "");
     },
     resetText() {
       this.saveChange();
 
-      let text = document.getElementById("contentEditable");
+      let text = this.contEdit;
       text.innerHTML = text.textContent;
     },
     mutateModifs() {
-      let newContent = document.getElementById("contentEditable").innerHTML;
       let cardModif = { ...this.$store.state.actualCard };
-      cardModif[this.faceSelected] = newContent;
+      cardModif[this.faceSelected] = this.optiContent();
       this.mutateKey("actualCard", cardModif);
+    },
+    optiContent() {
+      return this.contEdit.innerHTML
+        .replace(/<div>/, "<br>")
+        .replace(/<\/div>/, "");
     },
     reverseChange() {
       if (this.changeHist.length <= 2) {
         if (this.changeHist.length > 1) this.changeHist.pop();
-        document.getElementById("contentEditable").innerHTML =
-          this.changeHist[0];
+        this.contEdit.innerHTML = this.changeHist[0];
       } else {
         this.changeHist.pop();
-        document.getElementById("contentEditable").innerHTML =
-          this.changeHist.pop();
+        this.contEdit.innerHTML = this.changeHist.pop();
       }
       setTimeout(() => {
         this.mutateModifs();
       });
     },
     saveChange() {
-      if (document.querySelectorAll("#contentEditable").length > 0) {
-        if (
-          this.changeHist.length == 0 ||
-          this.changeHist[this.changeHist.length - 1].length !=
-            document.getElementById("contentEditable").innerHTML.length
-        ) {
-          this.changeHist.push(
-            document.getElementById("contentEditable").innerHTML
-          );
-          this.mutateModifs();
-        }
-        setTimeout(() => {
-          if (
-            this.changeHist[this.changeHist.length - 1].length ==
-            document.getElementById("contentEditable").innerHTML.length
-          )
-            this.listenEdition();
-          else this.saveChange();
-        }, 200);
+      if (
+        this.changeHist.length == 0 ||
+        this.changeHist[this.changeHist.length - 1].length !=
+          this.contEdit.innerHTML.length
+      ) {
+        this.changeHist.push(this.contEdit.innerHTML);
+        this.mutateModifs();
       }
+      setTimeout(() => {
+        if (
+          this.changeHist[this.changeHist.length - 1].length ==
+          this.contEdit.innerHTML.length
+        )
+          this.listenEdition();
+        else this.saveChange();
+      }, 200);
     },
     listenEdition() {
-      document
-        .getElementById("contentEditable")
-        .addEventListener("keyup", () => this.saveChange(), { once: true });
+      this.contEdit.addEventListener("keyup", () => this.saveChange(), {
+        once: true,
+      });
     },
   },
   mounted() {
@@ -281,7 +279,7 @@ export default {
     setTimeout(() => {
       this.saveChange();
     }, 200);
-    document.getElementById("contentEditable").addEventListener("paste", () => {
+    this.contEdit.addEventListener("paste", () => {
       setTimeout(() => {
         this.resetText();
         this.resetText();
@@ -291,8 +289,7 @@ export default {
   watch: {
     isModifying() {
       if (!this.isModifying && !this.$store.state.validModifCard) {
-        document.getElementById("contentEditable").innerHTML =
-          this.changeHist[0];
+        this.contEdit.innerHTML = this.changeHist[0];
       }
     },
     modifComment() {
@@ -358,7 +355,7 @@ export default {
   overflow-x: hidden;
   overflow-y: scroll;
 }
-#contentEditable {
+.contentEditable {
   height: fit-content;
   min-height: 80%;
   margin: auto;
