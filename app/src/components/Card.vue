@@ -53,7 +53,12 @@
         v-if="isModifying && modifFocus == 'recto'"
         class="editorZone content"
       >
-        <TextEditor v-if="modifFocus == 'recto'" :face="'recto'" />
+        <TextEditor
+          v-if="modifFocus == 'recto'"
+          :face="textEditorFace"
+          @faceChange="textEditorFace = $event"
+          :key="textEditorFace.length"
+        />
       </div>
       <div v-else @click="changeFace('recto')" class="content main--content">
         <div class="readingZone">
@@ -78,7 +83,12 @@
         v-if="isModifying && modifFocus == 'verso'"
         class="editorZone content"
       >
-        <TextEditor v-if="modifFocus == 'verso'" :face="'verso'" />
+        <TextEditor
+          v-if="modifFocus == 'verso'"
+          :face="textEditorFace"
+          @faceChange="textEditorFace = $event"
+          :key="textEditorFace.length"
+        />
       </div>
       <div v-else @click="changeFace('verso')" class="content main--content">
         <div class="readingZone">
@@ -213,6 +223,7 @@ export default {
       scrollTagPos: "right",
       scrollTagStop: false,
       streakSet: false,
+      textEditorFace: "recto",
       wasModified: false,
     };
   },
@@ -313,6 +324,7 @@ export default {
     },
     changeFace(face) {
       this.modifFocus = face;
+      this.textEditorFace = face;
       this.mutateKey("modifComment", false);
     },
     modifCard(bool) {

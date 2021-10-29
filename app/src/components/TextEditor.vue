@@ -119,14 +119,6 @@ export default {
     },
   },
   methods: {
-    changeFaceSelection(face) {
-      this.faceSelected = null;
-      setTimeout(() => {
-        this.faceSelected = face;
-        this.textarea = this.faceContent;
-        this.$emit("faceChange", face);
-      });
-    },
     wrapContent() {
       let selection = window.getSelection();
 
@@ -296,9 +288,9 @@ export default {
       if (this.modifComment) {
         this.faceSelected += "_comment";
       } else {
-        this.faceSelected = this.faceSelected.replaceAll("_comment", "");
+        this.faceSelected = this.faceSelected.replace(/_comment/, "");
       }
-      this.changeFaceSelection(this.faceSelected);
+      this.$emit("faceChange", this.faceSelected);
     },
   },
 };

@@ -56,7 +56,7 @@ export default {
       this.mutateKey("actualCard", card);
     },
   },
-  mounted() {
+  unmounted() {
     this.modifComment(false);
   },
 };
