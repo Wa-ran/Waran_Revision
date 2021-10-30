@@ -68,7 +68,6 @@
         class="contentEditable"
         v-html="textarea"
         contenteditable="true"
-        autofocus
       ></div>
     </div>
 
@@ -283,14 +282,6 @@ export default {
       if (!this.isModifying && !this.$store.state.validModifCard) {
         this.contEdit.innerHTML = this.changeHist[0];
       }
-    },
-    modifComment() {
-      if (this.modifComment) {
-        this.faceSelected += "_comment";
-      } else {
-        this.faceSelected = this.faceSelected.replace(/_comment/, "");
-      }
-      this.$emit("faceChange", this.faceSelected);
     },
   },
 };

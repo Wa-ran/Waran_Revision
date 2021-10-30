@@ -56,8 +56,7 @@
         <TextEditor
           v-if="modifFocus == 'recto'"
           :face="textEditorFace"
-          @faceChange="textEditorFace = $event"
-          :key="textEditorFace.length"
+          :key="textEditorKey"
         />
       </div>
       <div v-else @click="changeFace('recto')" class="content main--content">
@@ -86,8 +85,7 @@
         <TextEditor
           v-if="modifFocus == 'verso'"
           :face="textEditorFace"
-          @faceChange="textEditorFace = $event"
-          :key="textEditorFace.length"
+          :key="textEditorKey"
         />
       </div>
       <div v-else @click="changeFace('verso')" class="content main--content">
@@ -224,6 +222,7 @@ export default {
       scrollTagStop: false,
       streakSet: false,
       textEditorFace: "recto",
+      textEditorKey: 0,
       wasModified: false,
     };
   },
@@ -251,6 +250,9 @@ export default {
     },
     cardChronoState() {
       return this.$store.state.cardChrono;
+    },
+    modifComment() {
+      return this.$store.state.modifComment;
     },
   },
   methods: {
@@ -326,6 +328,7 @@ export default {
       this.modifFocus = face;
       this.textEditorFace = face;
       this.mutateKey("modifComment", false);
+      ++this.textEditorKey;
     },
     modifCard(bool) {
       if (bool) {
@@ -368,17 +371,14 @@ export default {
                   this.cardsToReviseLength + 1
                 );
             });
-        } else if (
-          JSON.stringify(this.originalCard) ==
-            JSON.stringify(this.actualCard) &&
-          streak === 0
-        ) {
-          this.inversecard();
-          this.$emit("buildNew");
         } else if (streak === 0) {
-          this.inversecard();
-          this.$store.dispatch("mutateStore", { fct: "enlistActualCard" });
-          this.$emit("buildNew");
+          await this.inversecard()
+            .then(() => {
+              this.$store.dispatch("mutateStore", { fct: "enlistActualCard" });
+            })
+            .then(() => {
+              this.$emit("buildNew");
+            });
         } else {
           await this.$store.dispatch("putCard").then(() => {
             this.mutateKey("cardsToReviseLength", this.cardsToReviseLength - 1);
@@ -390,7 +390,7 @@ export default {
         }
       }
     },
-    inversecard() {
+    async inversecard() {
       let invertedCard = { ...this.actualCard };
       let recto = invertedCard.recto;
       let recto_comment = invertedCard.recto_comment;
@@ -398,7 +398,7 @@ export default {
       invertedCard.verso = recto;
       invertedCard.recto_comment = invertedCard.verso_comment;
       invertedCard.verso_comment = recto_comment;
-      this.mutateKey("actualCard", invertedCard);
+      await this.mutateKey("actualCard", invertedCard);
     },
     pickRandom() {
       let list = this.cardsList;
@@ -467,6 +467,14 @@ export default {
     },
     cardReveal() {
       this.$emit("cardReveal", this.cardReveal);
+    },
+    modifComment() {
+      if (this.modifComment) {
+        this.textEditorFace += "_comment";
+      } else {
+        this.textEditorFace = this.textEditorFace.replace(/_comment/, "");
+      }
+      ++this.textEditorKey;
     },
   },
   // mixins: [cardInclination],
