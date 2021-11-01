@@ -92,6 +92,9 @@ module.exports = async (req, res, next) => {
       else res.sendStatus(200)
     })
     .catch((error) => {
+      console.log('_________________________________________')
+      console.log(fctName);
+      console.log(new Date(Date.now()));
       console.log(error);
       res.status(500).json(error.custMsg)
     })
