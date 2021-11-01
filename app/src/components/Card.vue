@@ -256,7 +256,7 @@ export default {
     },
   },
   methods: {
-    buildActualCard() {
+    async buildActualCard() {
       let bodyActualCard;
       if (this.cardsList.length > 0) {
         if (this.$store.state.pickRandom)
@@ -431,22 +431,26 @@ export default {
     },
   },
   async mounted() {
-    await this.buildActualCard();
-    if (!this.doodleSeed) this.doodleSeed = Math.trunc(Math.random) * 1000;
-    this.$emit("mounted");
     this.cardReveal = !this.cardChronoState;
-    setTimeout(() => {
-      if (
-        !this.actualCardId &&
-        this.$store.state.tagsSelectedList.length == 0
-      ) {
-        this.cardReveal = true;
-        this.recto = false;
-        this.modifCard(true);
-      } else this.modifCard(false);
-    }, 500);
-    if (this.actualCardId) this.$store.dispatch("getCardTags");
-    else this.mutateKey("cardTagsList", []);
+    if (!this.doodleSeed) this.doodleSeed = Math.trunc(Math.random) * 1000;
+    await this.buildActualCard()
+      .then(() => {
+        if (
+          !this.actualCardId &&
+          this.$store.state.tagsSelectedList.length == 0
+        ) {
+          this.cardReveal = true;
+          this.recto = false;
+          this.modifCard(true);
+        } else this.modifCard(false);
+      })
+      .then(() => {
+        if (this.actualCardId) this.$store.dispatch("getCardTags");
+        else this.mutateKey("cardTagsList", []);
+      })
+      .then(() => {
+        this.$emit("mounted");
+      });
   },
   unmounted() {
     this.$emit("modifying", false);

@@ -31,8 +31,19 @@
         </div>
 
         <form v-if="displayForm" class="container">
-          <input v-model="pseudo" type="pseudo" placeholder="Pseudo" />
-          <input v-model="password" type="password" placeholder="Password" />
+          <input
+            v-model="pseudo"
+            placeholder="Pseudo"
+            autocomplete="username"
+            @change="autofillTest"
+          />
+          <input
+            v-model="password"
+            type="password"
+            placeholder="Password"
+            autocomplete="current-password"
+            @change="autofillTest"
+          />
         </form>
       </div>
 
@@ -54,6 +65,7 @@ export default {
   name: "Header",
   data() {
     return {
+      autofill: 0,
       displayForm: false,
       pseudo: "",
       password: "",
@@ -68,6 +80,13 @@ export default {
     },
   },
   methods: {
+    autofillTest(event) {
+      if (this.autofill === 0) this.autofill = event.timeStamp;
+      else if (event.timeStamp - this.autofill < 200) {
+        this.autofill = 0;
+        if (this.pseudo && this.password) this.submitUser();
+      } else this.autofill = 0;
+    },
     async submitUser() {
       this.mutateKey("user", {
         id: this.$store.state.user.id,
@@ -79,9 +98,10 @@ export default {
         await this.$store.dispatch("getUser");
       else {
         await this.$store.dispatch("postUser").then(() => {
-          this.displayForm = false;
+          this.$store.dispatch("getUser");
           // alert("Inscription réussie !");
         });
+        this.autofill = 0;
       }
     },
     resetUser() {
@@ -92,6 +112,18 @@ export default {
     },
   },
   watch: {
+    // displayForm() {
+    // setTimeout(() => {
+    //   document
+    //     .querySelector("header input[type = 'password']")
+    //     .addEventListener("animationstart", (e) => {
+    //       if (e.animationName.match(/onAutoFillStart/)) {
+    //         return this.submitUser();
+    //       } else if (e.animationName.match(/onAutoFillCancel/)) return;
+    //     });
+    // });
+    // }
+    // },
     stateUserId() {
       this.$store.dispatch("mutateStore", {
         fct: "changeUser",
@@ -126,6 +158,36 @@ input {
   max-width: 200px;
   padding: 0.25rem;
   border-bottom: solid 1px;
+
+  //   &[type="password"] {
+  //     &:-webkit-autofill {
+  //       // Expose a hook for JavaScript when auto fill is shown.
+  //       // JavaScript can capture 'animationstart' events
+  //       animation-name: onAutoFillStart;
+  //     }
+
+  //     &:not(:-webkit-autofill) {
+  //       // Expose a hook for JS onAutoFillCancel
+  //       // JavaScript can capture 'animationstart' events
+  //       animation-name: onAutoFillCancel;
+  //     }
+  //   }
+  // }
+  // @keyframes onAutoFillStart {
+  //   from {
+  //     /**/
+  //   }
+  //   to {
+  //     /**/
+  //   }
+  // }
+  // @keyframes onAutoFillCancel {
+  //   from {
+  //     /**/
+  //   }
+  //   to {
+  //     /**/
+  //   }
 }
 
 @media screen and (max-width: 767px) {
