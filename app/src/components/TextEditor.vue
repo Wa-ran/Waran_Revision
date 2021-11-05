@@ -218,15 +218,37 @@ export default {
       let text = this.contEdit;
       text.innerHTML = text.textContent;
     },
-    mutateModifs() {
+    mutateModifs(last = false) {
       let cardModif = { ...this.$store.state.actualCard };
-      cardModif[this.faceSelected] = this.optiContent();
+      if (last) cardModif[this.faceSelected] = this.lastOptiContent();
+      else cardModif[this.faceSelected] = this.optiContent();
       this.mutateKey("actualCard", cardModif);
     },
     optiContent() {
       return this.contEdit.innerHTML
         .replace(/<div>/, "<br>")
         .replace(/<\/div>/, "");
+    },
+    lastOptiContent() {
+      let opti;
+      if (this.contEdit.textContent.match(/\S/) === -1) this.opti == null;
+      else {
+        opti = this.optiContent();
+        opti = opti
+          .replace(/<div>/g, "<br>")
+          .replace(/<\/div>/g, "")
+          .replace(/&nbsp;/g, "");
+        while (
+          opti.slice(opti.length - 4) == "<br>" ||
+          opti.slice(opti.length - 1) == " "
+        ) {
+          opti =
+            opti.slice(opti.length - 4) == "<br>"
+              ? opti.slice(0, opti.length - 4)
+              : opti.slice(0, opti.length - 1);
+        }
+      }
+      return opti;
     },
     reverseChange() {
       if (this.changeHist.length <= 2) {
@@ -276,6 +298,9 @@ export default {
         this.resetText();
       });
     });
+  },
+  unmounted() {
+    this.mutateModifs(true);
   },
   watch: {
     isModifying() {
@@ -357,11 +382,17 @@ export default {
   & > div {
     width: 100%;
     display: flex;
+    &:first-child {
+      margin-bottom: -1px;
+    }
   }
   & button {
     min-width: 30px;
     min-height: 23px;
     border-radius: 0.5rem;
+    &:not(:last-child) {
+      margin-right: -1px;
+    }
     & > svg,
     & > span {
       margin: 0 0.25rem;

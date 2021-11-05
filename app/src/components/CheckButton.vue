@@ -52,12 +52,11 @@ button.icon {
 
 .check--button {
   display: flex;
-  & * {
-    margin: 0.2rem;
-  }
   & > div {
-    margin-left: 0.3rem;
     display: flex;
+  }
+  & button {
+    margin-right: 0.5rem;
   }
 }
 .unchecked {

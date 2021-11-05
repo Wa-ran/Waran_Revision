@@ -10,7 +10,7 @@
         "
         @optionSelected="userTagSelected = $event"
         @mounted="submitTagRequest('getAllUserTags')"
-        @submitTagRequest="submitTagRequest(null, (refreshKey = 'tagsListKey'))"
+        @submitTagRequest="submitTagRequest(null, 'tagsListKey')"
         @deleteButton="setTagRequest('deleteTag')"
         @tagClick="
           if (!modifCard && !userTagSelected) {
@@ -227,5 +227,8 @@ input {
   & .tag {
     margin: 0.5rem 1rem 0.5rem 0;
   }
+}
+.multiButtons {
+  justify-content: center;
 }
 </style>

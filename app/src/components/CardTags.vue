@@ -51,6 +51,9 @@ export default {
     tagsListLength() {
       return this.$store.state.tagsList.length;
     },
+    tagsSelectedList() {
+      return this.$store.state.tagsSelectedList;
+    },
     tagRequest() {
       return this.$store.state.tagRequest;
     },
@@ -74,6 +77,9 @@ export default {
   },
   mounted() {
     this.firstMount = false;
+    if (this.tagsSelectedList.length > 0 && !this.actualCard.id) {
+      this.mutateKey("cardTagsList", this.tagsSelectedList);
+    }
     this.mutateKey("originCardTagsList", this.$store.state.cardTagsList);
   },
   unmounted() {
@@ -81,8 +87,14 @@ export default {
   },
   watch: {
     actualTag() {
-      if (this.actualTag.id && this.tagRequest == "postCardTags")
-        this.mutateKey("cardTagsList", this.actualTag);
+      if (this.actualTag.id)
+        if (this.tagRequest == "postCardTags")
+          this.mutateKey("cardTagsList", this.actualTag);
+        else if (this.tagRequest == "deleteCardTag")
+          this.$store.dispatch("mutateStore", {
+            fct: "filterList",
+            value: { sKey: "cardTagsList", findId: this.actualTag.id },
+          });
     },
   },
 };

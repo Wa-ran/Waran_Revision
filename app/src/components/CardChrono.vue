@@ -20,26 +20,24 @@ export default {
   },
   methods: {
     chrono() {
-      setTimeout(() => {
-        let container = document.querySelector(".chrono");
-        let glass = document.querySelector(".chrono--loader");
-        let points = document.querySelectorAll(".parkour > *");
-        glass.style.cssText = `
+      let container = document.querySelector(".chrono");
+      let glass = document.querySelector(".chrono--loader");
+      let points = document.querySelectorAll(".parkour > *");
+      glass.style.cssText = `
           transition: transform ${points.length}s linear, opacity 0.5s ${
-          points.length - 1
-        }s;
+        points.length - 1
+      }s;
           transform: translateX(-${
             container.scrollWidth - glass.scrollWidth
           }px);
           opacity: 0;
           `;
-        for (let index of points.keys()) {
-          points[index].style.cssText = `
+      for (let index of points.keys()) {
+        points[index].style.cssText = `
             transition: all 0.3s ${points.length - index - 0.6}s;
             opacity: 0;`;
-        }
-        points[0].style.cssText += "transform: scale(0)";
-      });
+      }
+      points[0].style.cssText += "transform: scale(0)";
     },
   },
   mounted() {

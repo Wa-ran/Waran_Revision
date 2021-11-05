@@ -53,11 +53,22 @@ const VueApp = createApp(App);
 
 VueApp.mixin({
   methods: {
-    mutateKey(mutate, body) {
+    mutateStore(fct, value) {
+      this.$store.dispatch("mutateStore", {
+        fct,
+        value,
+      });
+    },
+  },
+});
+
+VueApp.mixin({
+  methods: {
+    mutateKey(sKey, body) {
       this.$store.dispatch("mutateStore", {
         fct: "mutateKey",
         value: {
-          mutate,
+          sKey,
           body,
         },
       });

@@ -9,6 +9,8 @@ module.exports = async (req, res, next) => {
   let fctName = method + req.params.fctName;
   let data = {};
   let token = null;
+  data["assets"] = req.body.assets;
+  delete req.body.assets;
 
   const verifIdByToken = (obj) => {
     if (token && ((obj.user_id && obj.user_id !== token.tokenId) || (!obj.user_id && obj.id !== token.tokenId))) {
@@ -19,7 +21,7 @@ module.exports = async (req, res, next) => {
 
   const checkToken = async () => {
     // Checked if token needed (not login or signup)
-    if (!(method === 'post' && Object.keys(req.body).length === 1 && Object.keys(req.body)[0] === 'user')) {
+    if ((fctName !== "postUser" && fctName !== "postgetUser")) {
       token = verifToken(req.headers.authorization);
       return
     }
@@ -81,7 +83,7 @@ module.exports = async (req, res, next) => {
           };
         }
         else {
-          if (method === 'get' && verifIdByToken(obj)) {
+          if (method === 'get' && !verifIdByToken(response)) {
             throw 'Token invalide'
           };
           result = response.parseToJS();
@@ -92,10 +94,10 @@ module.exports = async (req, res, next) => {
       else res.sendStatus(200)
     })
     .catch((error) => {
-      console.log('_________________________________________')
       console.log(fctName);
-      console.log(new Date(Date.now()));
+      console.log(new Date(Date.now()).toString());
       console.log(error);
+      console.log('_________________________________________')
       res.status(500).json(error.custMsg)
     })
 };

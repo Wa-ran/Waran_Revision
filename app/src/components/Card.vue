@@ -1,5 +1,5 @@
 <template>
-  <div :key="actualCardId" class="card">
+  <div class="card">
     <div class="doodle">
       <css-doodle :seed="doodleSeed">
         @grid: 32; @size: 1px calc(35px + 70%); transform: rotate(@r(±90deg));
@@ -9,19 +9,15 @@
 
     <div v-if="recto" class="recto">
       <button
-        v-if="cardReveal && !isModifying"
+        v-if="!isModifying"
         @click="recto = false"
         class="fa-icon flip-card highlight"
       >
         <font-awesome-icon :icon="['fas', 'share']" size="2x" />
       </button>
 
-      <div
-        :class="
-          cardReveal ? 'plain content flex-grow-1' : 'content flex-grow-1'
-        "
-      >
-        <div v-if="cardReveal">
+      <div class="plain content flex-grow-1">
+        <div>
           <div class="readingZone">
             <vue-mathjax
               v-if="actualCard.recto_formula"
@@ -29,13 +25,7 @@
             />
             <span v-else v-html="actualCard.recto"></span>
           </div>
-          <CardChrono v-if="cardChronoState && !noChrono" />
-        </div>
-
-        <div v-else>
-          <button @click="cardReveal = true" class="question fa-icon">
-            <font-awesome-icon :icon="['fas', 'question']" size="4x" />
-          </button>
+          <CardChrono v-if="cardChronoState && !noChrono && cardRevealState" />
         </div>
       </div>
     </div>
@@ -71,7 +61,6 @@
         <hr v-if="actualCard.recto_comment" />
 
         <div v-if="actualCard.recto_comment" class="readingZone comment">
-          <div class="comm--title">Commentaire :</div>
           <p v-html="actualCard.recto_comment"></p>
         </div>
       </div>
@@ -100,7 +89,7 @@
         <hr v-if="actualCard.verso_comment" />
 
         <div v-if="actualCard.verso_comment" class="readingZone comment">
-          <div class="comm--title">Commentaire :</div>
+          <!-- <div class="comm--title">Commentaire :</div> -->
           <p v-html="actualCard.verso_comment"></p>
         </div>
       </div>
@@ -120,7 +109,7 @@
         </button>
 
         <div class="tags--container">
-          <div class="tags--list" :key="cardTagsListLength">
+          <div class="tags--list" :key="$store.state.cardTagsListKey">
             <Tag
               v-for="tag of cardTagsList"
               :key="tag.id"
@@ -211,7 +200,7 @@ export default {
   },
   data() {
     return {
-      cardReveal: false,
+      cardLoad: false,
       displayScrollTag: false,
       doodleSeed: "",
       modifFocus: "recto",
@@ -236,6 +225,9 @@ export default {
     cardsList() {
       return this.$store.state.cardsList;
     },
+    cardRevealState() {
+      return this.$store.state.cardReveal;
+    },
     cardTagsList() {
       return this.$store.state.cardTagsList;
     },
@@ -246,7 +238,7 @@ export default {
       return this.$store.state.modifCard;
     },
     cardsToReviseLength() {
-      return this.$store.state.cardsToReviseLength;
+      return this.$store.state.cardsToRevise.length;
     },
     cardChronoState() {
       return this.$store.state.cardChrono;
@@ -258,15 +250,16 @@ export default {
   methods: {
     async buildActualCard() {
       let bodyActualCard;
-      if (this.cardsList.length > 0) {
-        if (this.$store.state.pickRandom)
+      if (this.cardsList.length > 0 && !this.$store.state.newCardCreation) {
+        if (!this.$store.state.reviseByOrder && this.$store.state.pickRandom)
           bodyActualCard = this.pickRandom({ ...this.cardsList });
         else {
           bodyActualCard = { ...this.cardsList[0] };
-          this.mutateKey("pickRandom", true);
         }
       } else {
         bodyActualCard = { ...this.$store.state.newCard };
+        this.mutateKey("newCardCreation", false);
+        this.mutateKey("cardReveal", true);
       }
 
       this.originalCard = bodyActualCard;
@@ -360,37 +353,20 @@ export default {
       let findId = this.actualCardId;
       if (this.actualCard.recto && this.actualCard.verso) {
         if (!this.actualCardId) {
-          await this.$store
-            .dispatch(
-              this.cardTagsListLength === 0 ? "postCard" : "postCardWithTags"
-            )
-            .then(() => {
-              if (streak === 0)
-                this.mutateKey(
-                  "cardsToReviseLength",
-                  this.cardsToReviseLength + 1
-                );
-            });
+          await this.$store.dispatch("postCard").then(() => {
+            if (streak === 0) this.$store.dispatch("getLastCard");
+          });
         } else if (streak === 0) {
-          await this.inversecard()
-            .then(() => {
-              this.$store.dispatch("mutateStore", { fct: "enlistActualCard" });
-            })
-            .then(() => {
-              this.$emit("buildNew");
-            });
+          this.inverseCard();
+          this.$emit("buildNew");
         } else {
           await this.$store.dispatch("putCard").then(() => {
-            this.mutateKey("cardsToReviseLength", this.cardsToReviseLength - 1);
-            this.$store.dispatch("mutateStore", {
-              fct: "shiftKey",
-              value: { skey: "cardsList", findId },
-            });
+            this.mutateStore("filterList", { sKey: "cardsList", findId });
           });
         }
       }
     },
-    async inversecard() {
+    inverseCard() {
       let invertedCard = { ...this.actualCard };
       let recto = invertedCard.recto;
       let recto_comment = invertedCard.recto_comment;
@@ -398,7 +374,14 @@ export default {
       invertedCard.verso = recto;
       invertedCard.recto_comment = invertedCard.verso_comment;
       invertedCard.verso_comment = recto_comment;
-      await this.mutateKey("actualCard", invertedCard);
+      this.mutateStore("filterList", {
+        sKey: "cardsList",
+        findId: this.actualCardId,
+      });
+      this.mutateStore("mutateKey", {
+        sKey: "cardsList",
+        body: invertedCard,
+      });
     },
     pickRandom() {
       let list = this.cardsList;
@@ -431,7 +414,6 @@ export default {
     },
   },
   async mounted() {
-    this.cardReveal = !this.cardChronoState;
     if (!this.doodleSeed) this.doodleSeed = Math.trunc(Math.random) * 1000;
     await this.buildActualCard()
       .then(() => {
@@ -439,10 +421,13 @@ export default {
           !this.actualCardId &&
           this.$store.state.tagsSelectedList.length == 0
         ) {
-          this.cardReveal = true;
+          this.mutateKey("cardReveal", true);
           this.recto = false;
           this.modifCard(true);
         } else this.modifCard(false);
+        if (this.actualCardId) {
+          this.mutateKey("cardReveal", !this.cardChronoState);
+        }
       })
       .then(() => {
         if (this.actualCardId) this.$store.dispatch("getCardTags");
@@ -460,17 +445,14 @@ export default {
       this.wasModified = true;
     },
     recto() {
-      if (!this.recto && this.cardTagsListLength > 0)
-        setTimeout(() => {
-          this.scrollTag();
-        });
+      setTimeout(() => {
+        if (!this.recto && this.cardTagsListLength > 0) this.scrollTag();
+      });
     },
     cardChronoState() {
-      if (!this.cardChronoState) this.cardReveal = !this.cardChronoState;
+      if (!this.cardChronoState)
+        this.mutateKey("cardReveal", !this.cardChronoState);
       else this.noChrono = true;
-    },
-    cardReveal() {
-      this.$emit("cardReveal", this.cardReveal);
     },
     modifComment() {
       if (this.modifComment) {

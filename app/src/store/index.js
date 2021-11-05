@@ -7,11 +7,14 @@ export default createStore({
     //card
     actualCard: {},
     cardsList: [],
-    cardsToReviseLength: 0,
+    cardsListKey: 0,
+    cardsToRevise: [],
+    cardsToReviseKey: 0,
     firstDeckCard: {},
     modifCard: false,
     validModifCard: false,
     modifComment: false,
+    newCardCreation: false,
     newCard: {
       recto: "Une carte toute neuve :)",
       verso: "",
@@ -28,7 +31,9 @@ export default createStore({
       new: true,
     },
     pickRandom: true,
+    reviseByOrder: false,
     cardChrono: true,
+    cardReveal: false,
 
     error: {
       pending: false,
@@ -45,8 +50,8 @@ export default createStore({
     },
     loading: false,
     serverAddress: {
-      waran_revision: "http://195.110.59.46:3008",
-      // waran_revision: "http://localhost:3008",
+      // waran_revision: "http://195.110.59.46:3008",
+      waran_revision: "http://localhost:3008",
     },
 
     //tag
@@ -56,11 +61,15 @@ export default createStore({
       user_id: "",
     },
     originCardTagsList: [],
+    originCardTagsListKey: 0,
     cardTagsList: [],
-    searchTagsCond: "OR",
+    cardTagsListKey: 0,
+    searchTagsCond: "AND",
     tagsList: [],
+    tagsListKey: 0,
     tagRequest: false,
     tagsSelectedList: [],
+    tagsSelectedListKey: 0,
     handleTagSelection: false,
     tagGestionRefreshKey: 0,
 
@@ -82,8 +91,8 @@ export default createStore({
       }
     },
     mutateKey(state, payload) {
-      let mutate = payload.mutate;
-      delete payload.mutate;
+      let mutate = payload.sKey;
+      delete payload.sKey;
       if (Array.isArray(state[mutate]) && !Array.isArray(payload.body)) {
         if (state[mutate].length > 0) {
           for (let elem of state[mutate]) {
@@ -99,32 +108,17 @@ export default createStore({
       if (Array.isArray(state[sKey])) state[sKey] = [];
       else state[sKey] = "";
     },
-    shiftKey(state, payload) {
-      if (payload == "newCard") {
-        state.cardsList.shift();
-      } else {
-        let sKey = payload.skey;
-        let findId = payload.findId ? payload.findId : state.actualCard.id;
-        if (sKey == "cardsList") {
-          let list = state.cardsList.filter((item) => item.id !== findId);
-          state.cardsList = list;
-        } else if (Array.isArray(state[sKey])) state[sKey].shift();
-        else state[sKey] = "";
-      }
+    shiftKey(state, sKey) {
+      if (Array.isArray(state[sKey])) state[sKey].shift();
+      else state[sKey] = "";
     },
-    enlistActualCard(state) {
-      if (state.actualCard.id) {
-        state.cardsList.filter((card) => card.id != state.actualCard.id);
-        state.cardsList.unshift({ ...state.actualCard });
-      }
+    filterList(state, payload) {
+      let sKey = payload.sKey;
+      let findId = payload.findId;
+      state[sKey] = state[sKey].filter((item) => item.id !== findId);
     },
-    refreshLength(state, sKey) {
-      if (Array.isArray(state[sKey])) {
-        state[sKey].push("");
-        setTimeout(() => {
-          state[sKey].pop();
-        });
-      }
+    refreshKey(state, sKey) {
+      ++state[sKey + "Key"];
     },
     deleteSearchTag(state) {
       let index = 0;
@@ -133,6 +127,14 @@ export default createStore({
           return state.tagsSelectedList.slice(index, 1);
         index++;
       }
+    },
+    prepareDeck(state) {
+      state.cardsList.sort(function (a, b) {
+        if (a.order === b.order) {
+          return b.id - a.id;
+        }
+        return b.order - a.order;
+      });
     },
     triggError(state, payload) {
       if (payload.status !== 404) {
@@ -147,6 +149,14 @@ export default createStore({
     mutateStore(context, payload) {
       payload.value = payload.value ? payload.value : null;
       context.commit(payload.fct, payload.value);
+      if (
+        payload.value &&
+        payload.value.sKey &&
+        payload.value.sKey == "cardsList"
+      ) {
+        payload.value.sKey = "cardsToRevise";
+        context.commit(payload.fct, payload.value);
+      }
     },
     async deleteCard() {
       await this.dispatch("revisionRequest", {
@@ -178,7 +188,14 @@ export default createStore({
       await this.dispatch("revisionRequest", {
         method: "POST",
         serverRoute: "/Card",
-        data: { card: this.state.actualCard },
+        data: {
+          card: this.state.actualCard,
+          tag: this.state.cardTagsList,
+          user: this.state.user,
+          assets: {
+            order: this.state.actualCard.deck_order,
+          },
+        },
         mutate: "cardsList",
       });
     },
@@ -214,26 +231,27 @@ export default createStore({
         });
       }
     },
-    async postCardWithTags() {
-      if (!this.state.actualCard.user_id)
-        this.state.actualCard.user_id = this.state.user.id;
-      await this.dispatch("revisionRequest", {
-        method: "POST",
-        serverRoute: "/CardWithTags",
-        data: {
-          card: this.state.actualCard,
-          tag: this.state.cardTagsList,
-          user: this.state.user,
-        },
-        mutate: "cardsList",
-      });
-    },
     async putCard() {
       if (this.state.actualCard.id) {
         await this.dispatch("revisionRequest", {
           method: "PUT",
           serverRoute: "/Card",
           data: { card: this.state.actualCard },
+          mutate: "cardsList",
+        });
+      }
+    },
+    async putCardOrder() {
+      if (this.state.actualCard.id) {
+        await this.dispatch("revisionRequest", {
+          method: "PUT",
+          serverRoute: "/CardOrder",
+          data: {
+            card: this.state.actualCard,
+            assets: {
+              order: this.state.actualCard.deck_order,
+            },
+          },
           mutate: "cardsList",
         });
       }
@@ -248,6 +266,14 @@ export default createStore({
         });
       }
     },
+    async getLastCard() {
+      await this.dispatch("revisionRequest", {
+        method: "GET",
+        serverRoute: "/LastCard",
+        data: "user/" + this.state.user.id,
+        mutate: "cardsList",
+      });
+    },
     async getCardsToRevise() {
       await this.dispatch("revisionRequest", {
         method: "GET",
@@ -258,8 +284,8 @@ export default createStore({
         this.dispatch("mutateStore", {
           fct: "mutateKey",
           value: {
-            mutate: "cardsToReviseLength",
-            body: this.state.cardsList.length - 1,
+            sKey: "cardsToRevise",
+            body: this.state.cardsList,
           },
         });
       });
@@ -305,7 +331,7 @@ export default createStore({
       if (!this.state.error.pending) {
         await this.dispatch("mutateStore", {
           fct: "mutateKey",
-          value: { mutate: "loading", body: true },
+          value: { sKey: "loading", body: true },
         });
         await revisionAPI
           .request(
@@ -318,7 +344,7 @@ export default createStore({
           .then((response) => {
             if (response) {
               let result = {};
-              result["mutate"] = req.mutate;
+              result["sKey"] = req.mutate;
               result["body"] = response;
               this.dispatch("mutateStore", {
                 fct: "mutateKey",
@@ -327,12 +353,16 @@ export default createStore({
             }
 
             if (req.mutate) {
-              context.commit("refreshLength", req.mutate);
+              this.dispatch("mutateStore", {
+                fct: "refreshKey",
+                value: req.mutate,
+              });
+              if (req.mutate == "cardsList") context.commit("prepareDeck");
             }
             // console.log(req.method + ' ' + req.mutate)
             this.dispatch("mutateStore", {
               fct: "mutateKey",
-              value: { mutate: "loading", body: false },
+              value: { sKey: "loading", body: false },
             });
           })
           .catch((error) => {
@@ -345,7 +375,7 @@ export default createStore({
             });
             this.dispatch("mutateStore", {
               fct: "mutateKey",
-              value: { mutate: "loading", body: false },
+              value: { sKey: "loading", body: false },
             });
             throw error;
           });

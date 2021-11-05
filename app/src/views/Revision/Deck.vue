@@ -1,50 +1,43 @@
 <template>
   <div class="container">
     <div class="indication">
-      <div class="loading">
-        <Loader :size="'2x'" />
-      </div>
-
       <span v-if="isModifying">Aperçu :</span>
+
       <div v-else>
         <div>
           Encore
-          <span class="bold">{{ cardsToReviseLength }}</span>
-          carte{{ cardsToReviseLength > 1 ? "s" : "" }} à réviser.
+          <span class="bold">{{ cardsToRevise.length }}</span>
+          carte{{ cardsToRevise.length > 1 ? "s" : "" }} à réviser.
         </div>
         <div v-if="tagsSelectedListLength > 0">
-          <span class="bold italic">{{ cardsListLength }}</span> avec les tags
+          <span class="bold italic">{{ cardsList.length }}</span> avec les tags
           sélectionnés.
         </div>
       </div>
     </div>
 
     <div class="deck flex-grow-1">
-      <Card
-        @cardReveal="cardReveal = $event"
-        @buildNew="shiftCard"
-        :key="cardKey"
-      />
+      <CardHider v-if="!cardRevealState" />
+      <Card v-if="cardKey > 0" @buildNew="shiftCard" :key="cardKey" />
 
       <div
         v-for="index in deckDisplay"
         :key="index"
-        class="card sub_card"
+        :class="
+          index == deckDisplay.length - 1
+            ? 'card sub_card shadow'
+            : 'card sub_card'
+        "
       ></div>
-      <div class="card sub_card shadow"></div>
     </div>
 
-    <div
-      v-if="!isModifying"
-      @click.capture="loading = true"
-      class="deckManager"
-    >
+    <div v-if="!isModifying" class="deckManager">
       <div v-if="actualCardId">
         <button @click="createCard">
           <span>Nouvelle carte</span>
         </button>
       </div>
-      <div v-if="cardsListLength > 1">
+      <div v-if="cardsList.length > 1 && cardRevealState">
         <button @click="shiftCard">
           <span>Passer la carte</span>
         </button>
@@ -68,11 +61,11 @@
           <span>Annuler</span>
         </button>
       </div>
-      <div>
+      <!-- <div>
         <button @click="chargeDeck">
           <span>Recharger le deck</span>
         </button>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -80,22 +73,20 @@
 <script>
 // import cardInclination from "@/mixins/cardInclination.vue";
 import Card from "@/components/Card.vue";
-import Loader from "@/components/Loader.vue";
+import CardHider from "@/components/CardHider.vue";
 
 export default {
   name: "Deck",
   components: {
     Card,
-    Loader,
+    CardHider,
   },
   data() {
     return {
       atLeastOne: false,
       cardKey: 0,
-      cardReveal: false,
       cardDebounce: null,
       hasSucceed: false,
-      loading: false,
       shiftLoop: false,
       shiftedCard: null,
       stopCharge: false,
@@ -110,46 +101,49 @@ export default {
       return this.$store.state.cardsList;
     },
     cardsListLength() {
-      return this.cardsList.length;
+      return this.$store.state.cardsList.length;
+    },
+    cardRevealState() {
+      return this.$store.state.cardReveal;
+    },
+    cardsToRevise() {
+      return this.$store.state.cardsToRevise;
     },
     cardsToReviseLength() {
-      return this.$store.state.cardsToReviseLength;
+      return this.$store.state.cardsToRevise.length;
     },
     deckDisplay() {
       return this.$store.state.tagsSelectedList.length > 0
-        ? this.cardsListLength > 7
+        ? this.cardsList.length > 7
           ? 7
-          : this.cardsListLength
-        : this.cardsToReviseLength > 7
+          : this.cardsList.length
+        : this.cardsToRevise.length > 7
         ? 7
-        : this.cardsToReviseLength;
+        : this.cardsToRevise.length;
     },
     isModifying() {
       return this.$store.state.modifCard;
+    },
+    storeLoading() {
+      return this.$store.state.loading;
+    },
+    reviseByOrder() {
+      return this.$store.state.reviseByOrder;
     },
     tagsSelectedListLength() {
       return this.$store.state.tagsSelectedList.length;
     },
   },
   methods: {
-    chargeCard(newCard = false) {
+    chargeCard() {
       if (this.cardDebounce) clearTimeout(this.cardDebounce);
       this.cardDebounce = setTimeout(() => {
-        if (!newCard)
-          try {
-            if (this.$store.state.cardsList[0].new == true)
-              this.$store.dispatch("mutateStore", {
-                fct: "shiftKey",
-                value: "newCard",
-              });
-          } catch (error) {
-            ++this.cardKey;
-          }
-        ++this.cardKey;
+        if (this.storeLoading) this.chargeCard();
+        else ++this.cardKey;
       }, 200);
     },
     async chargeDeck() {
-      if (this.tagsSelectedListLength > 0 && this.cardsListLength > 0)
+      if (this.tagsSelectedListLength > 0 && this.cardsList.length > 0)
         await this.$store
           .dispatch("getCardsToReviseByTags")
           .then(() => this.revisionSuccess());
@@ -161,36 +155,30 @@ export default {
       }
     },
     createCard() {
-      this.mutateKey("pickRandom", false);
-      this.mutateKey("cardsList", this.$store.state.newCard);
-      this.chargeCard(true);
+      this.mutateKey("newCardCreation", true);
+      this.chargeCard();
     },
     async deleteCard() {
-      await this.$store
-        .dispatch("deleteCard")
-        .then(() => {
-          this.$store.dispatch("mutateStore", {
-            fct: "shiftKey",
-            value: { skey: "cardsList" },
-          });
-        })
-        .then(() => {
-          this.mutateKey("cardsToReviseLength", --this.cardsToReviseLength);
+      await this.$store.dispatch("deleteCard").then(() => {
+        this.$store.dispatch("mutateStore", {
+          fct: "filterList",
+          value: { sKey: "cardsList", findId: this.actualCardId },
         });
+      });
     },
     shiftCard() {
-      if (this.cardReveal) {
-        if (this.cardsListLength > 1) this.shiftLoop = true;
+      this.modifCard(false);
+      if (this.cardRevealState) {
+        if (this.cardsList.length > 1) this.shiftLoop = true;
         else this.shiftLoop = false;
         this.shiftedCard = this.actualCardId;
         this.chargeCard();
         setTimeout(() => {
           if (this.shiftLoop) this.shiftCard();
         }, 200);
-      } else this.loading = false;
+      }
     },
     modifCard(bool) {
-      if (bool) this.wasModified = true;
       this.mutateKey("modifCard", bool);
     },
     paintDeck() {
@@ -212,29 +200,20 @@ export default {
     async revisionSuccess() {
       if (this.successDebounce) clearTimeout(this.successDebounce);
       this.successDebounce = setTimeout(() => {
-        if (this.cardsListLength === 0 && !this.stopCharge) {
+        if (this.cardsList.length === 0 && !this.stopCharge) {
           if (this.hasSucceed && this.tagsSelectedListLength == 0)
             this.$emit("success");
           this.stopCharge = true;
-          if (this.cardsToReviseLength > 0) this.chargeDeck();
+          if (this.cardsToRevise.length > 0) this.chargeDeck();
           else this.createCard();
-        } else if (this.cardsListLength > 1) this.stopCharge = false;
-        this.chargeCard();
+        } else if (this.cardsList.length > 1) {
+          this.stopCharge = false;
+          this.chargeCard();
+        } else this.chargeCard();
       });
-    },
-    loadingState() {
-      let cardLoader = document.querySelector(".indication .loading");
-      cardLoader.style.cssText = `transition: opacity 0.3s; opacity: 1;`;
-      let stop = setInterval(() => {
-        if (!this.loading) {
-          cardLoader.style.cssText += `opacity: 0;`;
-          clearInterval(stop);
-        }
-      }, 500);
     },
   },
   async mounted() {
-    this.loadingState();
     await this.chargeDeck()
       .then(() => {
         this.$emit("charged");
@@ -252,23 +231,19 @@ export default {
       }
     },
     cardsListLength() {
-      if (this.cardsListLength == 0) this.revisionSuccess();
+      if (this.cardsList.length == 0) this.revisionSuccess();
     },
     cardsToReviseLength() {
       this.paintDeck();
-      if (this.cardsToReviseLength > 0) this.atLeastOne = true;
-      if (this.cardsToReviseLength == 0 && this.atLeastOne)
+      if (this.cardsToRevise.length > 0) this.atLeastOne = true;
+      if (this.cardsToRevise.length == 0 && this.atLeastOne)
         this.hasSucceed = true;
       this.revisionSuccess();
     },
-    cardKey() {
-      this.loading = false;
-    },
-    loading() {
-      if (this.loading) this.loadingState();
+    reviseByOrder() {
+      this.chargeCard();
     },
   },
-
   // mixins: [cardInclination],
 };
 </script>
@@ -288,8 +263,12 @@ export default {
   justify-content: center;
   align-content: center;
   position: relative;
-  & .card,
-  & .loading {
+  & .card:first-child {
+    z-index: 101;
+    position: relative;
+  }
+  & .card {
+    position: absolute;
     margin: auto;
     // min-width: 350px;
     // min-height: 65vh;
@@ -304,7 +283,6 @@ export default {
 }
 .sub_card {
   opacity: 0;
-  position: absolute;
 }
 
 .deckManager {
@@ -338,12 +316,6 @@ export default {
   & span {
     padding: 0.5rem;
   }
-}
-
-.loading {
-  position: absolute;
-  left: -2rem;
-  color: $pink;
 }
 
 @media screen and (max-width: 767px) {

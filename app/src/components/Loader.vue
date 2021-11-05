@@ -29,6 +29,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.container {
+  height: fit-content;
+  width: fit-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .loader {
   width: fit-content;
   height: fit-content;

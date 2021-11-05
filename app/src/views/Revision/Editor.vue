@@ -1,7 +1,7 @@
 <template>
   <div class="editor--main">
     <!-- <TextEditor @faceChange="changeFace($event)" class="deck" /> -->
-    <h3>Options :</h3>
+    <h3>Paramètres de la carte :</h3>
     <CardEditor :cardFace="faceSelected" :key="faceSelected" />
     <CardTags :key="$store.getters.actualCardId" />
   </div>

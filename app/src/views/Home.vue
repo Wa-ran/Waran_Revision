@@ -2,7 +2,7 @@
   <main id="home">
     <Header />
 
-    <betaMajInfo v-if="!userId" />
+    <ChangeLog v-if="!userId" />
 
     <div class="modal">
       <div v-show="userId" id="firstLoad">
@@ -40,7 +40,7 @@ import Deck from "@/views/Revision/Deck.vue";
 import Editor from "@/views/Revision/Editor.vue";
 import Tags from "@/views/Revision/Tags.vue";
 
-import betaMajInfo from "@/components/betaMajInfo.vue";
+import ChangeLog from "@/components/ChangeLog.vue";
 import Loader from "@/components/Loader.vue";
 import Header from "@/components/Header.vue";
 import UserOptions from "@/components/UserOptions.vue";
@@ -51,7 +51,7 @@ export default {
     Deck,
     Editor,
     Header,
-    betaMajInfo,
+    ChangeLog,
     Loader,
     Tags,
     UserOptions,
