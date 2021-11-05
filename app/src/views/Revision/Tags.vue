@@ -29,12 +29,13 @@
             <span>Modifier un Tag</span>
           </button>
         </template>
-        <template v-slot:input>
+        <template v-if="createOrModif" v-slot:input>
           <input
-            v-if="createOrModif"
             v-model="tagNameInput"
             autofocus
-            placeholder="Sélectionnez"
+            :placeholder="
+              tagRequest == 'postTag' ? 'Nouveau tag' : 'Sélectionnez un tag'
+            "
           />
         </template>
       </TagsGestion>
@@ -116,7 +117,8 @@ export default {
     },
     createOrModif() {
       try {
-        return this.tagRequest.match(/[post|put]Tag|/g);
+        let req = "" + this.tagRequest;
+        return req.match(/([post|put]Tag)/g) ? true : false;
       } catch (error) {
         return false;
       }

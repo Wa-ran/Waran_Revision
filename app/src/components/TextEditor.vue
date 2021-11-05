@@ -68,6 +68,7 @@
         class="contentEditable"
         v-html="textarea"
         contenteditable="true"
+        @blur="mutateModifs(true)"
       ></div>
     </div>
 
@@ -298,9 +299,6 @@ export default {
         this.resetText();
       });
     });
-  },
-  unmounted() {
-    this.mutateModifs(true);
   },
   watch: {
     isModifying() {

@@ -147,16 +147,16 @@ export default createStore({
   },
   actions: {
     mutateStore(context, payload) {
-      payload.value = payload.value ? payload.value : null;
-      context.commit(payload.fct, payload.value);
-      if (
-        payload.value &&
-        payload.value.sKey &&
-        payload.value.sKey == "cardsList"
-      ) {
-        payload.value.sKey = "cardsToRevise";
-        context.commit(payload.fct, payload.value);
+      if (payload.value.sKey && payload.value.sKey == "cardsList") {
+        setTimeout(() => {
+          payload.value.sKey = "cardsToRevise";
+          this.dispatch("mutateStore", {
+            fct: payload.fct,
+            value: payload.value,
+          });
+        });
       }
+      context.commit(payload.fct, payload.value || null);
     },
     async deleteCard() {
       await this.dispatch("revisionRequest", {

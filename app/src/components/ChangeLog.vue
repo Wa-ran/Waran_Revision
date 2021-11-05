@@ -25,17 +25,19 @@ export default {
     return {
       logs: [
         {
-          date: "02/11/21",
+          date: "05/11/21",
           bugs: [
             '<span class="bold">Hotfix</span> : Les modifications sur des cartes existantes avec un niveau de 0 n\'étaient (toujours) pas bien prises en comptes !',
             "<span class=\"bold\">SuperHotfix</span> : lorsque vous n'aviez plus qu'une carte, le site se bloquait !!",
             '<span class="bold">UltraHotfix</span> : l\'inscription ne marchait pas !!! x_x',
             "Un commentaire vide est automatiquement supprimé.",
+            "La dernière carte (à réviser ou en création) ne disparaissait pas.",
+            "L'éditeur de texte n'enregistrait pas la dernière modification.",
           ],
           improvements: [
             "Moins d'appels au serveur (économie de bande passante).",
             "Optimisation du code (le site est plus rapide).",
-            "Je peux changer l'apparence du text des changelogs :-)",
+            "Je peux changer l'apparence du texte des changelogs :-)",
           ],
           todo: [
             "Problèmes avec les formules mathématiques.",
@@ -85,15 +87,12 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  padding: 1rem;
-  & > div {
-    padding-left: 1rem;
-  }
+  padding: 0.5rem 5%;
 }
 
 @media (min-width: 767px) {
   .container {
-    margin-left: 5rem;
+    margin-left: 5%;
   }
 }
 </style>

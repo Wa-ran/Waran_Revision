@@ -52,10 +52,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.container {
-  padding: 1rem;
-  & > div {
-    padding-left: 1rem;
+@media screen and (max-width: 767px) {
+  ul {
+    padding-left: 1.5rem;
   }
 }
 </style>

@@ -39,7 +39,6 @@
           <div>
             <slot name="input"></slot>
           </div>
-          <p>Sélectionnez un tag</p>
           <div class="multiButtons">
             <button @click="submitTagRequest"><span>Valider</span></button>
             <button
