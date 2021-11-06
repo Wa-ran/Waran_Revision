@@ -1,5 +1,5 @@
 <template>
-  <header>
+  <header @keyup.enter.capture="submitForm">
     <div class="container">
       <div v-if="!stateUser.id" class="container">
         <button
@@ -86,6 +86,13 @@ export default {
         this.autofill = 0;
         if (this.pseudo && this.password) this.submitUser();
       } else this.autofill = 0;
+    },
+    submitForm() {
+      if (!this.pseudo)
+        document.querySelector("header input[placeholder='Pseudo']").focus();
+      else if (!this.password)
+        document.querySelector("header input[placeholder='Password']").focus();
+      else this.submitUser();
     },
     async submitUser() {
       this.mutateKey("user", {
