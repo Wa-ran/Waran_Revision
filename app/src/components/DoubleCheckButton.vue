@@ -32,7 +32,7 @@ export default {
 @import "../styles/variables";
 
 button.checked {
-  box-shadow: inset 0 0 0 2px $black, 0 0 2px 2px $white;
+  box-shadow: inset 0 0 0 2px $dark_bgc, 0 0 2px 2px $white;
   border-color: $white;
   &:hover {
     background-color: $white;

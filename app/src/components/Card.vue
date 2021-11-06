@@ -47,9 +47,14 @@
           v-if="modifFocus == 'recto'"
           :face="textEditorFace"
           :key="textEditorKey"
+          @tabClick="changeFace('verso')"
         />
       </div>
-      <div v-else @click="changeFace('recto')" class="content main--content">
+      <div
+        v-else
+        @click="changeFace('recto')"
+        class="content main--content flex-grow-1"
+      >
         <div class="readingZone">
           <vue-mathjax
             v-if="actualCard.recto_formula"
@@ -77,7 +82,11 @@
           :key="textEditorKey"
         />
       </div>
-      <div v-else @click="changeFace('verso')" class="content main--content">
+      <div
+        v-else
+        @click="changeFace('verso')"
+        class="content main--content flex-grow-1"
+      >
         <div class="readingZone">
           <vue-mathjax
             v-if="actualCard.verso_formula"
@@ -109,7 +118,10 @@
         </button>
 
         <div class="tags--container">
-          <div class="tags--list" :key="$store.state.cardTagsListKey">
+          <div
+            class="tags--list flex-grow-1"
+            :key="$store.state.cardTagsListKey"
+          >
             <Tag
               v-for="tag of cardTagsList"
               :key="tag.id"
@@ -449,6 +461,9 @@ export default {
         if (!this.recto && this.cardTagsListLength > 0) this.scrollTag();
       });
     },
+    cardTagsListLength() {
+      if (!this.recto && this.cardTagsListLength > 0) this.scrollTag();
+    },
     cardChronoState() {
       if (!this.cardChronoState)
         this.mutateKey("cardReveal", !this.cardChronoState);
@@ -479,6 +494,10 @@ export default {
   padding: 2px 0;
   display: flex;
   & > button {
+    padding: 0 0.1rem;
+    border: none;
+    outline: none;
+    background-color: transparent;
     & svg {
       color: $highlight;
       margin: 0;
@@ -502,6 +521,7 @@ export default {
   background-color: transparent;
   border: none;
   display: flex;
+  justify-content: center;
   min-width: fit-content;
   height: fit-content;
   overflow: visible;

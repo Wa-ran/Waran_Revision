@@ -21,12 +21,10 @@
       <Card v-if="cardKey > 0" @buildNew="shiftCard" :key="cardKey" />
 
       <div
-        v-for="index in deckDisplay"
+        v-for="(card, index) in deckDisplay"
         :key="index"
         :class="
-          index == deckDisplay.length - 1
-            ? 'card sub_card shadow'
-            : 'card sub_card'
+          index == deckDisplay - 1 ? 'card sub_card shadow' : 'card sub_card'
         "
       ></div>
     </div>
@@ -174,7 +172,8 @@ export default {
     },
     shiftCard() {
       this.modifCard(false);
-      if (this.cardRevealState) {
+      if (this.cardRevealState && !this.reviseByOrder) {
+        // ____
         if (this.cardsList.length > 1) this.shiftLoop = true;
         else this.shiftLoop = false;
         this.shiftedCard = this.actualCardId;
@@ -198,7 +197,7 @@ export default {
             translateX(${-index * 3}px)
             translateY(${-index}px)
             rotateZ(${-index * 0.35}deg);
-            opacity: 1;`;
+            opacity: ${1 - index / 12};`;
           if (index == 8 || index == cards.length - 1) break;
         }
       });
@@ -284,7 +283,7 @@ export default {
     max-height: 600px;
   }
   & .shadow {
-    box-shadow: -2px -2px 25px 2px rgba(0, 0, 0, 0.55);
+    box-shadow: -1px -1px 25px 2px rgba(0, 0, 0, 0.75);
   }
 }
 .sub_card {

@@ -54,15 +54,15 @@ export default {
     min-height: 1.1rem;
     max-height: 1.1rem;
     &.highlight {
-      color: $black;
+      color: $dark_bgc;
       background-color: $highlight;
-      box-shadow: inset 0 0 0 2px $black;
+      box-shadow: inset 0 0 0 2px $dark_bgc;
       border: solid 1px $highlight;
     }
     &.white {
-      color: $black;
-      background-color: $black;
-      box-shadow: inset 0 0 0 2px $black;
+      color: $dark_bgc;
+      background-color: $dark_bgc;
+      box-shadow: inset 0 0 0 2px $dark_bgc;
       border: solid 1px $highlight;
       &:hover,
       &:focus {
@@ -71,7 +71,7 @@ export default {
     }
     &:hover,
     &:focus {
-      border: solid 2px $white;
+      border: solid 1px $white;
       background-color: $white;
     }
     & > svg {

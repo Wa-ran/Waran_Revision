@@ -61,13 +61,16 @@ export default {
   methods: {
     annulation() {
       this.mutateKey("cardTagsList", this.originList);
+      this.mutateKey("actualTag", {});
     },
     async submitTagRequest(req = null) {
       req = req ? req : this.tagRequest;
       await this.$store.dispatch(req).then(() => {
         if (this.timer) clearTimeout(this.timer);
         this.timer = setTimeout(() => {
-          this.$store.dispatch("getCardTags");
+          this.$store.dispatch("getCardTags").then(() => {
+            this.mutateKey("actualTag", {});
+          });
         }, 300);
       });
     },

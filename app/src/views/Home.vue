@@ -160,7 +160,7 @@ export default {
   min-width: 100%;
   min-height: 100%;
   padding: 0;
-  background-color: $black;
+  background-color: $dark_bgc;
   box-shadow: inset 0 0 80px 50px $bgc;
   transition: opacity 0.5s;
   & > .container {

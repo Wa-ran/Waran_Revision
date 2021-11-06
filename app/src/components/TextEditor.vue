@@ -53,16 +53,6 @@
       </div>
     </div>
 
-    <div class="editor--area">
-      <div v-if="modifComment" class="comm--title">Commentaire :</div>
-      <div
-        class="contentEditable"
-        v-html="textarea"
-        contenteditable="true"
-        @blur="mutateModifs(true)"
-      ></div>
-    </div>
-
     <div class="undo">
       <button class="resetButton importantButton" @click="resetText">
         <span>Reset</span>
@@ -75,6 +65,17 @@
       >
         <font-awesome-icon :icon="['fas', 'undo']" />
       </button>
+    </div>
+
+    <div class="editor--area">
+      <div v-if="modifComment" class="comm--title">Commentaire :</div>
+      <div
+        class="contentEditable"
+        v-html="textarea"
+        contenteditable="true"
+        @blur="mutateModifs(true)"
+        @keydown.tab="tabHandle"
+      ></div>
     </div>
   </div>
 </template>
@@ -303,10 +304,20 @@ export default {
         once: true,
       });
     },
+    tabHandle() {
+      if (document.activeElement == this.contEdit) this.$emit("tabClick");
+    },
   },
   mounted() {
     this.faceSelected = this.face;
     this.textarea = this.faceContent;
+
+    if (!window.matchMedia("(screen and max-width: 767px)").matches) {
+      setTimeout(() => {
+        this.contEdit.focus();
+      });
+    }
+
     setTimeout(() => {
       this.saveChange();
     }, 200);
@@ -333,7 +344,8 @@ export default {
 .container {
   position: relative;
   min-height: 100%;
-  max-height: 100%;
+  height: fit-content;
+  max-height: 300px;
   min-width: 100%;
   padding-bottom: 1rem;
   display: flex;
@@ -371,18 +383,24 @@ export default {
 }
 
 .editor--area {
-  max-height: 200px !important;
-  width: 100%;
-  padding: 1rem 0.5rem;
+  position: absolute;
+  top: 0;
+  bottom: 1rem;
+  left: 0;
+  right: 0;
+  max-height: 100% !important;
+  // width: 100%;
+  padding: 0 0.5rem;
   margin-top: 2rem;
   overflow-x: hidden;
   overflow-y: scroll;
 }
 .contentEditable {
   height: fit-content;
-  min-height: 80%;
+  min-height: 100%;
   margin: auto;
   padding: 1rem 0.5rem;
+  outline: none;
 }
 
 .editor--options {
@@ -418,7 +436,7 @@ export default {
   & button.color:hover {
     background-color: currentColor;
     & svg {
-      color: $black;
+      color: $dark_bgc;
     }
   }
 }

@@ -111,7 +111,7 @@ button {
   max-width: 1.15rem;
 }
 input {
-  background-color: $black;
+  background-color: $dark_bgc;
   height: auto;
   padding: 0.25rem;
 }
