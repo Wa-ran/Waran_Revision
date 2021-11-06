@@ -90,11 +90,11 @@ export default {
       if (this.actualTag.id)
         if (this.tagRequest == "postCardTags")
           this.mutateKey("cardTagsList", this.actualTag);
-        else if (this.tagRequest == "deleteCardTag")
-          this.$store.dispatch("mutateStore", {
-            fct: "filterList",
-            value: { sKey: "cardTagsList", findId: this.actualTag.id },
-          });
+      // else if (this.tagRequest == "deleteCardTag")
+      //   this.$store.dispatch("mutateStore", {
+      //     fct: "filterList",
+      //     value: { sKey: "cardTagsList", findId: this.actualTag.id },
+      //   });
     },
   },
 };

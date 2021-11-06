@@ -71,7 +71,7 @@ export default {
   height: 5px;
   width: 5px;
   border-radius: 100%;
-  background-color: $pink;
+  background-color: $highlight;
   margin: 0 10px;
 }
 </style>

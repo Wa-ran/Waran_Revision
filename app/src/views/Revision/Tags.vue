@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" @blur="mutateKey('actualTag', {})">
     <div class="container--gestion">
       <h3>Vos Tags :</h3>
 
@@ -155,6 +155,7 @@ export default {
             if (this.actualTag.id != tag.id) newList.unshift(tag);
           }
           this.mutateKey(this.selectedList, newList);
+          this.mutateKey("actualTag", {});
         }
       }
       if (immediate) await this.submitTagRequest("getCardsToReviseByTags");

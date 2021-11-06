@@ -5,56 +5,47 @@
         <button @click="normalContent" class="normal">
           <span>N</span>
         </button>
-        <button
-          @click="editContent('<span class=\'bold\'>', '</span>')"
-          class="icon"
-        >
+        <button @click="editContent('<span class=\'bold\'>', '</span>')">
           <font-awesome-icon :icon="['fas', 'bold']" />
         </button>
-        <button
-          @click="editContent('<span class=\'italic\'>', '</span>')"
-          class="icon"
-        >
+        <button @click="editContent('<span class=\'italic\'>', '</span>')">
           <font-awesome-icon :icon="['fas', 'italic']" />
         </button>
-        <button
-          @click="editContent('<span class=\'underline\'>', '</span>')"
-          class="icon"
-        >
+        <button @click="editContent('<span class=\'underline\'>', '</span>')">
           <font-awesome-icon :icon="['fas', 'underline']" />
         </button>
-        <button @click="editContent('<del>', '</del>')" class="icon">
+        <button @click="editContent('<del>', '</del>')">
           <font-awesome-icon :icon="['fas', 'strikethrough']" />
         </button>
       </div>
 
       <div>
         <button
-          class="icon color cust_red"
+          class="color cust_red"
           @click="editContent('<span class=\'cust_red\'>', '</span>')"
         >
           <font-awesome-icon :icon="['fas', 'tint']" />
         </button>
         <button
-          class="icon color cust_orange"
+          class="color cust_orange"
           @click="editContent('<span class=\'cust_orange\'>', '</span>')"
         >
           <font-awesome-icon :icon="['fas', 'tint']" />
         </button>
         <button
-          class="icon color cust_yellow"
+          class="color cust_yellow"
           @click="editContent('<span class=\'cust_yellow\'>', '</span>')"
         >
           <font-awesome-icon :icon="['fas', 'tint']" />
         </button>
         <button
-          class="icon color cust_green"
+          class="color cust_green"
           @click="editContent('<span class=\'cust_green\'>', '</span>')"
         >
           <font-awesome-icon :icon="['fas', 'tint']" />
         </button>
         <button
-          class="icon color cust_blue"
+          class="color cust_blue"
           @click="editContent('<span class=\'cust_blue\'>', '</span>')"
         >
           <font-awesome-icon :icon="['fas', 'tint']" />
@@ -80,7 +71,7 @@
       <button
         v-if="changeHist.length > 0"
         @click="reverseChange"
-        class="icon default"
+        class="highlight"
       >
         <font-awesome-icon :icon="['fas', 'undo']" />
       </button>
@@ -125,9 +116,35 @@ export default {
       this.saveChange();
 
       let startNode = selection.anchorNode;
+      let test = startNode;
+      try {
+        while (
+          !test.classList ||
+          Object.entries(test.classList)[0].indexOf("contentEditable") == -1
+        ) {
+          test = test.parentElement;
+          if (test == document) return;
+        }
+      } catch (error) {
+        return;
+      }
       let startOffset = selection.anchorOffset;
+
       let endNode = selection.focusNode;
+      test = endNode;
+      try {
+        while (
+          !test.classList ||
+          Object.entries(test.classList)[0].indexOf("contentEditable") == -1
+        ) {
+          test = test.parentElement;
+          if (test == document) return;
+        }
+      } catch (error) {
+        return;
+      }
       let endOffset = selection.focusOffset;
+
       if (selection.focusOffset < selection.anchorOffset) {
         startNode = selection.focusNode;
         startOffset = selection.focusOffset;
@@ -347,7 +364,7 @@ export default {
   }
 }
 .resetButton {
-  margin-top: -1px;
+  margin-bottom: -1px;
   & span {
     margin: 0;
   }
@@ -388,6 +405,7 @@ export default {
     min-width: 30px;
     min-height: 23px;
     border-radius: 0.5rem;
+    padding: 0;
     &:not(:last-child) {
       margin-right: -1px;
     }
@@ -400,7 +418,7 @@ export default {
   & button.color:hover {
     background-color: currentColor;
     & svg {
-      color: $dark_blue;
+      color: $black;
     }
   }
 }

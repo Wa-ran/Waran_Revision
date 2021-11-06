@@ -160,8 +160,8 @@ export default {
   min-width: 100%;
   min-height: 100%;
   padding: 0;
-  background-color: $dark_blue;
-  box-shadow: inset 0 0 80px 50px $violet;
+  background-color: $black;
+  box-shadow: inset 0 0 80px 50px $bgc;
   transition: opacity 0.5s;
   & > .container {
     min-width: 100%;
@@ -169,7 +169,7 @@ export default {
   }
 }
 #firstLoad {
-  color: $pink;
+  color: $highlight;
 }
 #revisionSuccess {
   & > * {

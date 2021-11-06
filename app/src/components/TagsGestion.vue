@@ -21,13 +21,16 @@
 
       <div v-if="active">
         <div v-if="!optionSelected" @click="optionSelected = true">
-          <div>
+          <div @click="deletion = false">
             <slot></slot>
           </div>
 
           <button
             v-if="chosenList.length > 0"
-            @click="$emit('deleteButton')"
+            @click="
+              $emit('deleteButton');
+              deletion = true;
+            "
             class="importantButton"
           >
             <font-awesome-icon :icon="['fas', 'trash-alt']" />
@@ -39,8 +42,27 @@
           <div>
             <slot name="input"></slot>
           </div>
+
           <div class="multiButtons">
-            <button @click="submitTagRequest"><span>Valider</span></button>
+            <DoubleCheckButton
+              v-if="deletion"
+              @checkedClick="submitTagRequest"
+              class="importantButton"
+            >
+              <template v-slot:default>
+                <font-awesome-icon :icon="['fas', 'trash-alt']" />
+                <span class="flex-grow-1">Valider</span>
+              </template>
+              <template v-slot:checked>
+                <font-awesome-icon :icon="['fas', 'trash-alt']" />
+                <span class="flex-grow-1">Supprimer ?</span>
+              </template>
+            </DoubleCheckButton>
+
+            <button v-else @click="submitTagRequest">
+              <span>Valider</span>
+            </button>
+
             <button
               @click="
                 optionSelected = false;
@@ -68,11 +90,13 @@
 </template>
 
 <script>
+import DoubleCheckButton from "@/components/DoubleCheckButton.vue";
 import Tag from "@/components/Tag.vue";
 
 export default {
   name: "TagsGestion",
   components: {
+    DoubleCheckButton,
     Tag,
   },
   props: {
@@ -82,6 +106,7 @@ export default {
     return {
       active: false,
       activeKey: 0,
+      deletion: false,
       optionSelected: false,
     };
   },

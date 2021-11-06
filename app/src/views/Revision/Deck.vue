@@ -6,8 +6,8 @@
       <div v-else>
         <div>
           Encore
-          <span class="bold">{{ cardsToRevise.length }}</span>
-          carte{{ cardsToRevise.length > 1 ? "s" : "" }} à réviser.
+          <span class="bold">{{ cardsToReviseList.length }}</span>
+          carte{{ cardsToReviseList.length > 1 ? "s" : "" }} à réviser.
         </div>
         <div v-if="tagsSelectedListLength > 0">
           <span class="bold italic">{{ cardsList.length }}</span> avec les tags
@@ -49,8 +49,14 @@
       </div>
       <div v-if="actualCardId">
         <DoubleCheckButton @checkedClick="deleteCard" class="importantButton">
-          <font-awesome-icon :icon="['fas', 'trash-alt']" />
-          <span class="flex-grow-1">Supprimer la carte</span>
+          <template v-slot:default>
+            <font-awesome-icon :icon="['fas', 'trash-alt']" />
+            <span class="flex-grow-1">Supprimer la carte</span>
+          </template>
+          <template v-slot:checked>
+            <font-awesome-icon :icon="['fas', 'trash-alt']" />
+            <span class="flex-grow-1">Supprimer ?</span>
+          </template>
         </DoubleCheckButton>
       </div>
     </div>
@@ -106,20 +112,20 @@ export default {
     cardRevealState() {
       return this.$store.state.cardReveal;
     },
-    cardsToRevise() {
-      return this.$store.state.cardsToRevise;
+    cardsToReviseList() {
+      return this.$store.state.cardsToReviseList;
     },
-    cardsToReviseLength() {
-      return this.$store.state.cardsToRevise.length;
+    cardsToReviseListLength() {
+      return this.$store.state.cardsToReviseList.length;
     },
     deckDisplay() {
       return this.$store.state.tagsSelectedList.length > 0
         ? this.cardsList.length > 7
           ? 7
           : this.cardsList.length
-        : this.cardsToRevise.length > 7
+        : this.cardsToReviseList.length > 7
         ? 7
-        : this.cardsToRevise.length;
+        : this.cardsToReviseList.length;
     },
     isModifying() {
       return this.$store.state.modifCard;
@@ -204,7 +210,7 @@ export default {
           if (this.hasSucceed && this.tagsSelectedListLength == 0)
             this.$emit("success");
           this.stopCharge = true;
-          if (this.cardsToRevise.length > 0) this.chargeDeck();
+          if (this.cardsToReviseList.length > 0) this.chargeDeck();
           else this.createCard();
         } else if (this.cardsList.length > 1) {
           this.stopCharge = false;
@@ -233,10 +239,10 @@ export default {
     cardsListLength() {
       if (this.cardsList.length == 0) this.revisionSuccess();
     },
-    cardsToReviseLength() {
+    cardsToReviseListLength() {
       this.paintDeck();
-      if (this.cardsToRevise.length > 0) this.atLeastOne = true;
-      if (this.cardsToRevise.length == 0 && this.atLeastOne)
+      if (this.cardsToReviseList.length > 0) this.atLeastOne = true;
+      if (this.cardsToReviseList.length == 0 && this.atLeastOne)
         this.hasSucceed = true;
       this.revisionSuccess();
     },

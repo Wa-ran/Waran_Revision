@@ -1,7 +1,7 @@
 <template>
   <div class="check--button">
     <div @click="handleCheck">
-      <button :class="checked ? 'icon default' : 'icon unchecked'">
+      <button :class="checked ? 'icon highlight' : 'icon white'">
         <font-awesome-icon :icon="['fas', 'check']" size="xs" />
       </button>
       <div>{{ desc }}</div>
@@ -38,28 +38,45 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-button.icon {
-  padding: 0.25rem;
-  border-radius: 100%;
-  min-width: 1.1rem;
-  max-width: 1.1rem;
-  min-height: 1.1rem;
-  max-height: 1.1rem;
-  & > svg {
-    margin: 0;
-  }
-}
+@import "../styles/variables";
 
 .check--button {
   display: flex;
   & > div {
     display: flex;
   }
-  & button {
+  button.icon {
     margin-right: 0.5rem;
+    padding: 0.25rem;
+    border-radius: 100%;
+    min-width: 1.1rem;
+    max-width: 1.1rem;
+    min-height: 1.1rem;
+    max-height: 1.1rem;
+    &.highlight {
+      color: $black;
+      background-color: $highlight;
+      box-shadow: inset 0 0 0 2px $black;
+      border: solid 1px $highlight;
+    }
+    &.white {
+      color: $black;
+      background-color: $black;
+      box-shadow: inset 0 0 0 2px $black;
+      border: solid 1px $highlight;
+      &:hover,
+      &:focus {
+        color: transparent;
+      }
+    }
+    &:hover,
+    &:focus {
+      border: solid 2px $white;
+      background-color: $white;
+    }
+    & > svg {
+      margin: 0;
+    }
   }
-}
-.unchecked {
-  color: transparent;
 }
 </style>

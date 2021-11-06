@@ -2,9 +2,10 @@
   <button
     @click="doubleCheck($event)"
     @blur="checked = false"
-    :class="checked ? 'checked' : 'default'"
+    :class="checked ? 'checked' : 'highlight white-active'"
   >
-    <slot></slot>
+    <slot v-if="!checked"></slot>
+    <slot v-else name="checked"></slot>
   </button>
 </template>
 
@@ -26,3 +27,15 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+@import "../styles/variables";
+
+button.checked {
+  box-shadow: inset 0 0 0 2px $black, 0 0 2px 2px $white;
+  border-color: $white;
+  &:hover {
+    background-color: $white;
+  }
+}
+</style>

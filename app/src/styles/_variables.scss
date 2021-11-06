@@ -1,12 +1,13 @@
-$dark_blue: #211a4c;
-$pink: #e7576a;
-$violet: rgb(49, 17, 75);
+$black: #211a4c;
+$highlight: #e7576a;
+$bgc: rgb(49, 17, 75);
 $white: rgb(247, 236, 248);
 
 $colors: (
-  'cust_pink' $pink,
-  'cust_violet' $violet,
+  'cust_highlight' $highlight,
+  'cust_bgc' $bgc,
   'cust_white' $white,
+  'cust_black' $black,
   'cust_red' red,
   'cust_orange' orange,
   'cust_yellow' yellow,
@@ -30,8 +31,8 @@ $card_rad: 1rem;
 };
 
 @mixin case_style {
-  background-color: $dark_blue;
-  border: solid 1px $pink;
+  background-color: $black;
+  border: solid 1px $highlight;
   padding: 0.15rem 0;
   display: flex;
   justify-content: center;

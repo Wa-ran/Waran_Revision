@@ -11,7 +11,7 @@
       <button
         v-if="!isModifying"
         @click="recto = false"
-        class="fa-icon flip-card highlight"
+        class="icon flip-card white"
       >
         <font-awesome-icon :icon="['fas', 'share']" size="2x" />
       </button>
@@ -34,7 +34,7 @@
       <button
         v-if="actualCardId && !isModifying"
         @click="recto = true"
-        class="fa-icon flip-card highlight"
+        class="icon flip-card white"
       >
         <font-awesome-icon :icon="['fas', 'share']" size="2x" />
       </button>
@@ -103,7 +103,7 @@
           v-if="displayScrollTag"
           @mousedown="scrollTag('right')"
           @mouseup="scrollTagStop = true"
-          :class="scrollTagPos == 'right' ? 'disabled fa-icon' : 'fa-icon'"
+          :class="scrollTagPos == 'right' ? 'disabled icon' : 'icon'"
         >
           <font-awesome-icon :icon="['fas', 'chevron-left']" size="lg" />
         </button>
@@ -124,7 +124,7 @@
           v-if="displayScrollTag"
           @mousedown="scrollTag('left')"
           @mouseup="scrollTagStop = true"
-          :class="scrollTagPos == 'left' ? 'disabled fa-icon' : 'fa-icon'"
+          :class="scrollTagPos == 'left' ? 'disabled icon' : 'icon'"
         >
           <font-awesome-icon :icon="['fas', 'chevron-right']" size="lg" />
         </button>
@@ -158,7 +158,7 @@
 
         <div v-if="!isModifying && wasModified" class="multiButtons">
           <button @click="modifCard(true)"><span>Modifer</span></button>
-          <button @click="postCard" class="default">
+          <button @click="postCard" class="highlight">
             <span>Valider</span>
           </button>
         </div>
@@ -172,11 +172,11 @@
               modifCard(false);
               mutateKey('validModifCard', false);
             "
-            class="default"
+            class="highlight"
           >
             <span>Terminer</span>
           </button>
-          <button @click="reBuild" class="icon">
+          <button @click="reBuild" class="undoAll">
             <font-awesome-icon :icon="['fas', 'history']" />
           </button>
         </div>
@@ -237,8 +237,8 @@ export default {
     isModifying() {
       return this.$store.state.modifCard;
     },
-    cardsToReviseLength() {
-      return this.$store.state.cardsToRevise.length;
+    cardsToReviseListLength() {
+      return this.$store.state.cardsToReviseList.length;
     },
     cardChronoState() {
       return this.$store.state.cardChrono;
@@ -480,7 +480,7 @@ export default {
   display: flex;
   & > button {
     & svg {
-      color: $pink;
+      color: $highlight;
       margin: 0;
     }
     &:not(.disabled):hover svg,
@@ -550,6 +550,9 @@ export default {
     position: absolute;
     bottom: -0.5rem;
     left: -0.25rem;
+  }
+  & .undoAll > svg {
+    margin: 0;
   }
 }
 </style>

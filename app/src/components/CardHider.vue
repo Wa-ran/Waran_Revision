@@ -12,7 +12,7 @@
         <div class="porthole">
           <Loader
             :size="'4x'"
-            class="cardLoader"
+            class="cardLoader highlight"
             :style="
               cardLoad
                 ? 'opacity: 1; transform: scale(1)'
@@ -21,7 +21,7 @@
           />
           <button
             @click="mutateKey('cardReveal', true)"
-            class="cardQuestion fa-icon"
+            class="cardQuestion icon highlight"
             :style="
               cardLoad
                 ? 'opacity: 0; transform: scale(0)'

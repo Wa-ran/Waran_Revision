@@ -4,7 +4,7 @@ html {
   height: 100%;
   width: 100%;
   overflow-x: hidden;
-  background-color: $violet;
+  background-color: $bgc;
   color: $white;
   word-wrap: break-word;
   & * {
@@ -22,11 +22,11 @@ html {
   height: 0;
 }
 ::-webkit-scrollbar-track {
-  background: $dark_blue;
-  border-left: solid 1px $pink;
+  background: $black;
+  border-left: solid 1px $highlight;
 }
 ::-webkit-scrollbar-thumb {
-  background: $pink;
+  background: $highlight;
   border-radius: 5px;
 }
 
@@ -68,57 +68,77 @@ button {
   max-width: 250px;
   min-height: 28px;
   font-size: 1rem;
-  &.fa-icon {
-    background-color: transparent;
-    border: none;
-    box-shadow: none;
-  }
-}
-button:not(.disabled) {
-  &.selected, &.default, &:hover, &:active {
-    font-weight: bold;
-  }
-  &.selected, &.default {
-    background-color: $pink;
-    color: $violet;
-  }
-  &.default {
-    box-shadow: inset 0 0 0 2px $dark_blue;
-  }
-  &:hover, &.default:hover, &.checked {
-    background-color: $white;
-    color: $dark-blue;
-    box-shadow: inset 0 0 0 1px $dark_blue;
-  }
-  &.checked {
-    font-weight: bold;
-    box-shadow: 0 0 2px 2px $pink;
-  }
-  &:active {
-    background-color: $pink;
-  }
-  &.icon svg{
-    margin: 0 0.5rem;
-  }
+  border-radius: 0.25rem;
+  padding: 0 0.75rem;
   & > span {
-    flex-grow: 1;
-    padding: 0 0.5rem;
+    margin: auto;
   }
-  &.fa-icon {
-    color: $pink;
+  &:not(.disabled) {
+    &.selected, &.highlight, &.checked, &:hover, &:focus, &:active {
+      font-weight: bold;
+      box-shadow: inset 0 0 0 1px $black;
+    }
     &:hover, &:focus, &:active {
+      background-color: $highlight;
+      color: $black;
+      z-index: 101;
+    }
+    &:hover {
+      border: solid 1px $white;
+      outline: solid 1px $white;
+    }
+    &.highlight {
+      background-color: $highlight;
+      color: $black;
+      box-shadow: inset 0 0 0 2px $black;
+      &:hover, &:focus, &:active {
+        box-shadow: inset 0 0 0 1px $black;
+      }
+      &-active:hover, &-active:focus, &-active:active {
+        background-color: $highlight;
+      }
+    }
+    &.white {
+      background-color: $white;
+      color: $black;
+      &-active:hover, &-active:focus, &-active:active {
+        background-color: $white;
+        box-shadow: inset 0 0 0 1px $black;
+      }
+    }
+    &.checked {
+      box-shadow: 0 0 2px 2px $highlight;
+    }
+    & > span {
+      flex-grow: 1;
+      padding: 0 0.5rem;
+    }
+    &.icon svg{
+      margin: 0 0.5rem;
+    }
+    &.icon {
+      color: $highlight;
       background-color: transparent;
       border: none;
       box-shadow: none;
-    }
-    &:hover svg, &:focus svg, :active svg {
-      color: $white;
-    }
-    &.fa-icon.highlight {
-      color: $white;
-      &:hover svg, &:focus svg, :active svg {
-        color: $pink;
-      }     
+      &:hover, &:focus, &:active {
+        border: none;
+        box-shadow: none;
+        background-color: transparent;
+        outline: none;
+      }
+      &.highlight {
+        color: $highlight;
+        &:hover, &:focus, &:active {
+          color: $white;
+        }
+      }
+      &.white {
+        color: $white;
+        &:hover, &:focus, &:active {
+          color: $highlight;
+        }
+      }
     }
   }
 }
@@ -130,8 +150,16 @@ button:not(.disabled) {
   & button {
     margin: 0;
     flex-grow: 1;
+    &:not(:first-child) {
+      margin-left: -1px;
+      border-radius: 0 0.25rem 0.25rem 0;
+    }
     &:not(:last-child) {
-      border-right: none;
+      margin-right: -1px;
+      border-radius: 0.25rem 0 0 0.25rem;
+    }
+    &:last-child {
+      margin-left: 0;
     }
   }
 }
@@ -146,17 +174,9 @@ button:not(.disabled) {
   font-style: italic;
 }
 
-button.tag {
-  border-radius: $card_rad;
-  width: max-content;
-  & > span {
-    padding: 0;
-  }
-}
-
 header {
-  background-color: $dark_blue;
-  border-bottom: solid 1px $pink;
+  background-color: $black;
+  border-bottom: solid 1px $highlight;
   padding: .5rem 1rem;
   margin-bottom: 1rem;
 }
@@ -164,15 +184,15 @@ header {
 hr {
   height: 0;
   border: none;
-  border-top: solid 1px $pink;
+  border-top: solid 1px $highlight;
   background-color: transparent;
   margin: 1rem;
 }
 
 .card {
-  border: solid 1px $pink;
+  border: solid 1px $highlight;
   border-radius: $card_rad;
-  background: linear-gradient(0deg, $dark_blue 0%, $violet 80%, $violet 100%);
+  background: linear-gradient(0deg, $black 0%, $bgc 80%, $bgc 100%);
   z-index: 100;
   position: relative;
   min-width: 300px;
@@ -200,8 +220,8 @@ hr {
     align-content: flex-start;
     & > .content {
       margin: 0;
-      background-color: rgba($color: $dark_blue, $alpha: 1);
-      border: solid 1px $pink;
+      background-color: rgba($color: $black, $alpha: 1);
+      border: solid 1px $highlight;
       text-align: center;
       display: flex;
       justify-content: center;
@@ -228,7 +248,7 @@ hr {
     & .flip-card {
       position: absolute;
       top: -0.5rem;
-      right: -0.25rem;
+      right: -0.75rem;
       margin: 0;
       padding: 0;
       color: $white;
@@ -239,13 +259,13 @@ hr {
   }
   & .recto .content {
     &:not(.plain) {
-      background: radial-gradient(circle at 50% 215px, transparent 45px, $dark_blue 46px);
+      background: radial-gradient(circle at 50% 215px, transparent 45px, $black 46px);
     }
     & .porthole {
       position: relative;
-      border: solid 1px $pink;
+      border: solid 1px $highlight;
       border-radius: 100%;
-      color: $pink;
+      color: $highlight;
       width: 92px;
       height: 92px;
       margin-top: 169px;
@@ -275,7 +295,7 @@ hr {
       }
       & .chrono {
         margin: 0 auto;
-        color: $pink;
+        color: $highlight;
       }
     }
   }
@@ -297,7 +317,7 @@ hr {
   }
   & + hr {
     width: 80%;
-    border-top: solid 1px $pink;
+    border-top: solid 1px $highlight;
     margin: 0 auto;
   }
 }
@@ -347,7 +367,7 @@ css-doodle {
   // );
   // --pattern-9: (
   //   @grid: 1 / 100%;
-  //   background-color: $violet;
+  //   background-color: $bgc;
   //   background-image: @doodle(
   //     :doodle {
   //       @grid: 1 / 10000px;

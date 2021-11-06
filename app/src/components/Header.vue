@@ -5,26 +5,26 @@
         <button
           v-if="!displayForm"
           @click="displayForm = 'inscription'"
-          :class="displayForm == 'inscription' ? 'default' : ''"
+          :class="displayForm == 'inscription' ? 'highlight' : ''"
         >
           <span>Inscription</span>
         </button>
         <button
           v-if="!displayForm"
           @click="displayForm = 'connexion'"
-          class="default"
+          class="highlight"
         >
           <span>Connexion</span>
         </button>
 
         <div v-if="displayForm" class="container">
-          <span v-if="displayForm == 'connexion'">Connexion :</span>
-          <span v-else>Inscription :</span>
+          <h2 v-if="displayForm == 'connexion'">Connexion :</h2>
+          <h2 v-else>Inscription :</h2>
           <div class="multiButtons">
             <button @click="displayForm = false">
               <span>Annuler</span>
             </button>
-            <button @click="submitUser" class="default">
+            <button @click="submitUser" class="highlight">
               <span>Valider</span>
             </button>
           </div>
@@ -149,6 +149,12 @@ export default {
   & > * {
     margin: auto 1rem auto 0;
   }
+  h2 {
+    margin-right: 2rem;
+    font-weight: normal;
+    font-size: 1.1rem;
+    text-decoration: underline;
+  }
   & .welcome {
     display: flex;
     justify-content: space-between;
@@ -165,36 +171,6 @@ input {
   max-width: 200px;
   padding: 0.25rem;
   border-bottom: solid 1px;
-
-  //   &[type="password"] {
-  //     &:-webkit-autofill {
-  //       // Expose a hook for JavaScript when auto fill is shown.
-  //       // JavaScript can capture 'animationstart' events
-  //       animation-name: onAutoFillStart;
-  //     }
-
-  //     &:not(:-webkit-autofill) {
-  //       // Expose a hook for JS onAutoFillCancel
-  //       // JavaScript can capture 'animationstart' events
-  //       animation-name: onAutoFillCancel;
-  //     }
-  //   }
-  // }
-  // @keyframes onAutoFillStart {
-  //   from {
-  //     /**/
-  //   }
-  //   to {
-  //     /**/
-  //   }
-  // }
-  // @keyframes onAutoFillCancel {
-  //   from {
-  //     /**/
-  //   }
-  //   to {
-  //     /**/
-  //   }
 }
 
 @media screen and (max-width: 767px) {
@@ -204,8 +180,8 @@ input {
     & > *:not(button) {
       margin: 0.25rem;
     }
-    & span {
-      margin-right: 1rem;
+    & h2 {
+      margin-right: 2rem;
       margin-top: auto;
     }
   }

@@ -8,8 +8,8 @@ export default createStore({
     actualCard: {},
     cardsList: [],
     cardsListKey: 0,
-    cardsToRevise: [],
-    cardsToReviseKey: 0,
+    cardsToReviseList: [],
+    cardsToReviseListKey: 0,
     firstDeckCard: {},
     modifCard: false,
     validModifCard: false,
@@ -104,6 +104,9 @@ export default createStore({
         state[mutate] = payload.body;
       }
     },
+    incrementKey(state, sKey) {
+      if (state[sKey + "Key"] > -1) ++state[sKey + "Key"];
+    },
     resetKey(state, sKey) {
       if (Array.isArray(state[sKey])) state[sKey] = [];
       else state[sKey] = "";
@@ -116,9 +119,6 @@ export default createStore({
       let sKey = payload.sKey;
       let findId = payload.findId;
       state[sKey] = state[sKey].filter((item) => item.id !== findId);
-    },
-    refreshKey(state, sKey) {
-      ++state[sKey + "Key"];
     },
     deleteSearchTag(state) {
       let index = 0;
@@ -147,9 +147,22 @@ export default createStore({
   },
   actions: {
     mutateStore(context, payload) {
-      if (payload.value.sKey && payload.value.sKey == "cardsList") {
+      if (payload.value && payload.value.sKey) {
+        let key = payload.value.sKey;
         setTimeout(() => {
-          payload.value.sKey = "cardsToRevise";
+          this.dispatch("mutateStore", {
+            fct: "incrementKey",
+            value: key,
+          });
+        });
+      }
+      if (
+        payload.value &&
+        payload.value.sKey &&
+        payload.value.sKey == "cardsList"
+      ) {
+        setTimeout(() => {
+          payload.value.sKey = "cardsToReviseList";
           this.dispatch("mutateStore", {
             fct: payload.fct,
             value: payload.value,
@@ -284,7 +297,7 @@ export default createStore({
         this.dispatch("mutateStore", {
           fct: "mutateKey",
           value: {
-            sKey: "cardsToRevise",
+            sKey: "cardsToReviseList",
             body: this.state.cardsList,
           },
         });
@@ -352,13 +365,7 @@ export default createStore({
               });
             }
 
-            if (req.mutate) {
-              this.dispatch("mutateStore", {
-                fct: "refreshKey",
-                value: req.mutate,
-              });
-              if (req.mutate == "cardsList") context.commit("prepareDeck");
-            }
+            if (req.mutate == "cardsList") context.commit("prepareDeck");
             // console.log(req.method + ' ' + req.mutate)
             this.dispatch("mutateStore", {
               fct: "mutateKey",
