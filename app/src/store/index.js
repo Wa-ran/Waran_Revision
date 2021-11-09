@@ -356,7 +356,7 @@ export default createStore({
     },
     async revisionRequest(context, req) {
       if (!this.state.error.pending) {
-        await this.dispatch("mutateStore", {
+        this.dispatch("mutateStore", {
           fct: "mutateKey",
           value: { sKey: "loading", body: true },
         });

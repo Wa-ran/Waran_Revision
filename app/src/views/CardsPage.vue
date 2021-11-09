@@ -1,6 +1,5 @@
 <template>
   <div class="container">
-    {{ cardSelected }}
     <div v-if="cardSelected" id="modifier" class="modifier deck">
       <button @click="cardSelected = false" class="icon white">
         <font-awesome-icon :icon="['fas', 'times']" size="2x" />

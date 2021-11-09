@@ -27,17 +27,19 @@ export default {
         {
           date: "08/11/21",
           bugs: [
-            '<span class="italic">Mon hébergeur OVH a effectué une mise à jour <span class="underline">indépendante de la volonté de la direction</span>, dans la uit du 09, désolé du dérangement !</span>',
+            '<span class="italic">Notre hébergeur, OVH, a effectué une mise à jour <span class="underline">indépendante de la volonté de la direction</span>, dans la nuit du 09 novembre ; nos plus plates (comme une crèpe) excuses !</span>',
           ],
           improvements: [
             '<span class="underline">Ajout d\'une page ou vous pouvez <span class="bold">voir et modifer</span> TOUTES vos cartes !</span> ^^',
           ],
           todo: [
-            "Peut-être de bouveaux bugs suite à l'implémentation de la récupération de toutes les cartes...",
-            '<span class="bold">Connu</span> : il faut recharger l\'application pour constater les changements fais sur les cartes.',
-            '<span class="bold">Connu</span> : Les cartes modifées voient leur prochaine révision être mise à jour ! (Exemple : si vous modifez une carte de niveau 10, qui doit être révisée dans 1 jour, son compteur sera remis à zéro, vous la réviserez donc dans 3 jours).<br><br>',
+            "Sûrement de nouveaux bugs suite à l'implémentation de la récupération de toutes les cartes, notamment :",
+            '<span class="bold">Connu</span> : il faut resélectionner la carte dans la liste pour constater les changements fais dessus.',
+            '<span class="bold">Connu</span> : Les cartes modifées voient leur prochaine révision être mise à jour ! (Exemple : si vous modifez une carte de niveau 10, qui doit être révisée dans 1 jour, son compteur sera remis à zéro, vous la réviserez donc dans 3 jours).',
+            '<span class="bold">Connu</span> : Il n\'est pas possible de supprimer une carte depuis cette page (vous pouvez cependant la mettre au niveau 0 et aller la supprimer dans l\'onglet "Révision").<br><br>',
             "Problèmes avec les formules mathématiques à confirmer...",
             "La révision de plusieurs cartes dans l'ordre (bêta) est presque prête !",
+            "Aurélien me l'a dit hier mais il semblerait que je ne soit pas très drôle ?",
           ],
         },
         {

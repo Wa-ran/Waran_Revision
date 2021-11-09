@@ -366,6 +366,8 @@ export default {
       else return "le " + next.getDate() + "/" + (1 + next.getMonth());
     },
     async postCard() {
+      this.mutateKey("cardReveal", false);
+      this.mutateKey("loading", true);
       let streak = this.actualCard.streak;
       let findId = this.actualCardId;
       if (this.actualCard.recto && this.actualCard.verso) {
