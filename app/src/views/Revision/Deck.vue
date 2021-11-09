@@ -191,7 +191,7 @@ export default {
         let cards = document.querySelectorAll(".sub_card");
         for (let index of cards.keys()) {
           cards[index].style.cssText = `
-            z-index: ${50 - index};
+            z-index: ${49 - index};
             transition: all 0.2s 0.${index}s;
             transform:
             translateX(${-index * 3}px)
@@ -221,7 +221,7 @@ export default {
   async mounted() {
     await this.chargeDeck()
       .then(() => {
-        this.$emit("charged");
+        this.mutateKey("deckCharged", true);
       })
       .then(() => {
         this.paintDeck();
@@ -277,10 +277,6 @@ export default {
     margin: auto;
     // min-width: 350px;
     // min-height: 65vh;
-    width: 90%;
-    height: 75vh;
-    max-width: 350px;
-    max-height: 600px;
   }
   & .shadow {
     box-shadow: -1px -1px 25px 2px rgba(0, 0, 0, 0.75);

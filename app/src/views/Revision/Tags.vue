@@ -13,7 +13,7 @@
         @submitTagRequest="submitTagRequest(null, 'tagsListKey')"
         @deleteButton="setTagRequest('deleteTag')"
         @tagClick="
-          if (!modifCard && !userTagSelected) {
+          if (!modifCardState && !userTagSelected) {
             selectedList = 'tagsSelectedList';
             modifSearchTag('add', true);
           }
@@ -41,7 +41,10 @@
       </TagsGestion>
     </div>
 
-    <div v-if="tagsListLength > 0 && !modifCard" class="container--gestion">
+    <div
+      v-if="tagsListLength > 0 && !modifCardState"
+      class="container--gestion"
+    >
       <h3>Réviser par tags :</h3>
 
       <div v-if="tagsSelectedList.length > 1">
@@ -71,7 +74,7 @@
         @submitTagRequest="refreshTagSelection('tagsSelectedListKey')"
         @deleteButton="mutateKey('handleTagSelection', 'remove')"
         @tagClick="
-          if (!modifCard) {
+          if (!modifCardState) {
             selectedList = 'tagsSelectedList';
             modifSearchTag('remove', true);
           }
@@ -126,7 +129,7 @@ export default {
     handleTagSelection() {
       return this.$store.state.handleTagSelection;
     },
-    modifCard() {
+    modifCardState() {
       return this.$store.state.modifCard;
     },
     searchTagsCond() {
@@ -199,7 +202,7 @@ export default {
   },
   watch: {
     actualTag() {
-      if (!this.modifCard) this.modifSearchTag();
+      if (!this.modifCardState) this.modifSearchTag();
     },
     tagRequest() {
       this.resetKey("actualTag");

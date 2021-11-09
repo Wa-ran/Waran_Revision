@@ -12,7 +12,7 @@ html {
     font-family: "Roboto", sans-serif;
     max-width: 100vw;
   }
-  & *:not(del) {
+  & *:not(del), & *:not(.bold) {
     text-decoration-thickness: 1px !important;
     // text-underline-position: under;
   }
@@ -194,6 +194,13 @@ hr {
   margin: 1rem;
 }
 
+.deck .card {
+  width: 90%;
+  height: 75vh;
+  max-width: 350px;
+  max-height: 550px;
+}
+
 .card {
   border: solid 1px $highlight;
   border-radius: $card_rad;
@@ -203,7 +210,7 @@ hr {
   min-width: 300px;
   min-height: 500px;
   &.sub_card {
-    z-index: 50;
+    z-index: 49;
   }
   & hr {
     margin: 0.5rem;
@@ -237,9 +244,9 @@ hr {
       position: relative;
     }
     & .editorZone {
-      flex-grow: 1;
       &:focus-within {
-        border: solid 2px $white;
+        border: solid 1px $white;
+        outline: solid 1px $white;
         border-radius: 0.25rem;
         // box-shadow: inset 0 0 5px 2px $highlight;
       }

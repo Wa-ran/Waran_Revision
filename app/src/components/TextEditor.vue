@@ -117,33 +117,31 @@ export default {
       this.saveChange();
 
       let startNode = selection.anchorNode;
-      let test = startNode;
-      try {
-        while (
-          !test.classList ||
-          Object.entries(test.classList)[0].indexOf("contentEditable") == -1
-        ) {
-          test = test.parentElement;
-          if (test == document) return;
-        }
-      } catch (error) {
-        return;
-      }
+      // let test = startNode;
+      // try {
+      // while (
+      //   !test.classList ||
+      //   Object.entries(test.classList)[0].indexOf("contentEditable") == -1
+      // ) {
+      //   test = test.parentNode;
+      // }
+      // } catch (error) {
+      //   return;
+      // }
       let startOffset = selection.anchorOffset;
 
       let endNode = selection.focusNode;
-      test = endNode;
-      try {
-        while (
-          !test.classList ||
-          Object.entries(test.classList)[0].indexOf("contentEditable") == -1
-        ) {
-          test = test.parentElement;
-          if (test == document) return;
-        }
-      } catch (error) {
-        return;
-      }
+      // test = endNode;
+      // try {
+      // while (
+      //   !test.classList ||
+      //   Object.entries(test.classList)[0].indexOf("contentEditable") == -1
+      // ) {
+      //   test = test.parentNode;
+      // }
+      // } catch (error) {
+      //   return;
+      // }
       let endOffset = selection.focusOffset;
 
       if (selection.focusOffset < selection.anchorOffset) {
@@ -309,6 +307,7 @@ export default {
     },
   },
   mounted() {
+    console.log(this.faceSelected);
     this.faceSelected = this.face;
     this.textarea = this.faceContent;
 

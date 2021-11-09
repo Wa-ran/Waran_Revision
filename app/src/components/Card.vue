@@ -9,7 +9,7 @@
 
     <div v-if="recto" class="recto">
       <button
-        v-if="!isModifying"
+        v-if="!modifCardState"
         @click="recto = false"
         class="icon flip-card white"
       >
@@ -32,7 +32,7 @@
 
     <div v-else class="verso">
       <button
-        v-if="actualCardId && !isModifying"
+        v-if="actualCardId && !modifCardState"
         @click="recto = true"
         class="icon flip-card white"
       >
@@ -40,8 +40,8 @@
       </button>
 
       <div
-        v-if="isModifying && modifFocus == 'recto'"
-        class="editorZone content"
+        v-if="modifCardState && modifFocus == 'recto'"
+        class="editorZone content flex-grow-2"
       >
         <TextEditor
           v-if="modifFocus == 'recto'"
@@ -73,8 +73,8 @@
       <hr />
 
       <div
-        v-if="isModifying && modifFocus == 'verso'"
-        class="editorZone content"
+        v-if="modifCardState && modifFocus == 'verso'"
+        class="editorZone content flex-grow-2"
       >
         <TextEditor
           v-if="modifFocus == 'verso'"
@@ -146,29 +146,29 @@
       <div class="content bottom">
         <div class="streakButtons">
           <button
-            v-if="isModifying || !streakSet"
+            v-if="modifCardState || !streakSet"
             @click="this.handleStreak(-1)"
           >
-            {{ isModifying ? "-1 niveau" : "Perdu" }}
+            {{ modifCardState ? "-1 niveau" : "Perdu" }}
           </button>
           <button
-            v-if="!isModifying && !streakSet"
+            v-if="!modifCardState && !streakSet"
             @click="this.handleStreak()"
           >
             Presque
           </button>
           <button
-            v-if="isModifying || !streakSet"
+            v-if="modifCardState || !streakSet"
             @click="this.handleStreak(1)"
           >
-            {{ isModifying ? "+1 niveau" : "Gagné" }}
+            {{ modifCardState ? "+1 niveau" : "Gagné" }}
           </button>
         </div>
 
         <div class="level">Niveau: {{ actualCard.streak }}</div>
         <div class="calc-revision">Prochaine révision {{ nextRevision() }}</div>
 
-        <div v-if="!isModifying && wasModified" class="multiButtons">
+        <div v-if="!modifCardState && wasModified" class="multiButtons">
           <button @click="modifCard(true)"><span>Modifer</span></button>
           <button @click="postCard" class="highlight">
             <span>Valider</span>
@@ -177,9 +177,10 @@
         <div v-else class="multiButtons">
           <button @click="modifCard(true)"><span>Modifer</span></button>
         </div>
-        <div v-if="isModifying" class="multiButtons">
+        <div v-if="modifCardState" class="multiButtons">
           <button
             @click="
+              $emit('endModif');
               mutateKey('validModifCard', true);
               modifCard(false);
               mutateKey('validModifCard', false);
@@ -237,6 +238,9 @@ export default {
     cardsList() {
       return this.$store.state.cardsList;
     },
+    cardModifierState() {
+      return this.$store.state.cardModifier;
+    },
     cardRevealState() {
       return this.$store.state.cardReveal;
     },
@@ -246,7 +250,7 @@ export default {
     cardTagsListLength() {
       return this.$store.state.cardTagsList.length;
     },
-    isModifying() {
+    modifCardState() {
       return this.$store.state.modifCard;
     },
     cardsToReviseListLength() {
@@ -262,21 +266,22 @@ export default {
   methods: {
     async buildActualCard() {
       let bodyActualCard;
-      if (this.cardsList.length > 0 && !this.$store.state.newCardCreation) {
-        if (!this.$store.state.reviseByOrder && this.$store.state.pickRandom)
-          bodyActualCard = this.pickRandom({ ...this.cardsList });
-        else {
-          bodyActualCard = { ...this.cardsList[0] };
-        }
-      } else {
-        bodyActualCard = { ...this.$store.state.newCard };
-        this.mutateKey("newCardCreation", false);
-        this.mutateKey("cardReveal", true);
-      }
-
       this.originalCard = bodyActualCard;
+      if (!this.cardModifierState) {
+        if (this.cardsList.length > 0 && !this.$store.state.newCardCreation) {
+          if (!this.$store.state.reviseByOrder && this.$store.state.pickRandom)
+            bodyActualCard = this.pickRandom({ ...this.cardsList });
+          else {
+            bodyActualCard = { ...this.cardsList[0] };
+          }
+        } else {
+          bodyActualCard = { ...this.$store.state.newCard };
+          this.mutateKey("newCardCreation", false);
+          this.mutateKey("cardReveal", true);
+        }
 
-      this.mutateKey("actualCard", bodyActualCard);
+        this.mutateKey("actualCard", bodyActualCard);
+      }
     },
     reBuild() {
       this.mutateKey("actualCard", this.originalCard);
@@ -400,28 +405,31 @@ export default {
       return list[Math.floor(Math.random() * list.length)];
     },
     scrollTag(direction = false) {
-      this.scrollTagStop = false;
-      let card = document.querySelector(".verso");
-      let cont = document.querySelector(".tags--container");
-      let list = document.querySelector(".tags--list");
+      if (!this.recto) {
+        this.scrollTagStop = false;
+        let card = document.querySelector(".verso");
+        let cont = document.querySelector(".tags--container");
+        let list = document.querySelector(".tags--list");
 
-      if (!direction) {
-        if (card.scrollWidth < list.scrollWidth) this.displayScrollTag = true;
-      } else {
-        const scroll = setInterval(() => {
-          if (direction == "left") {
-            cont.scrollLeft += 2;
-          } else {
-            cont.scrollLeft -= 2;
-          }
-          if (cont.scrollLeft + cont.offsetWidth > list.offsetWidth + 10)
-            this.scrollTagPos = "left";
-          else if (cont.scrollLeft == 0) this.scrollTagPos = "right";
-          else this.scrollTagPos = "middle";
-          if (this.scrollTagStop) clearInterval(scroll);
-          else this.scrollTagStop = false;
-        }, 10);
-        scroll;
+        if (!direction) {
+          if (list && card.scrollWidth < list.scrollWidth)
+            this.displayScrollTag = true;
+        } else {
+          const scroll = setInterval(() => {
+            if (direction == "left") {
+              cont.scrollLeft += 2;
+            } else {
+              cont.scrollLeft -= 2;
+            }
+            if (cont.scrollLeft + cont.offsetWidth > list.offsetWidth + 10)
+              this.scrollTagPos = "left";
+            else if (cont.scrollLeft == 0) this.scrollTagPos = "right";
+            else this.scrollTagPos = "middle";
+            if (this.scrollTagStop) clearInterval(scroll);
+            else this.scrollTagStop = false;
+          }, 10);
+          scroll;
+        }
       }
     },
   },
@@ -429,16 +437,20 @@ export default {
     if (!this.doodleSeed) this.doodleSeed = Math.trunc(Math.random) * 1000;
     await this.buildActualCard()
       .then(() => {
-        if (
-          !this.actualCardId &&
-          this.$store.state.tagsSelectedList.length == 0
-        ) {
-          this.mutateKey("cardReveal", true);
-          this.recto = false;
-          this.modifCard(true);
-        } else this.modifCard(false);
-        if (this.actualCardId) {
-          this.mutateKey("cardReveal", !this.cardChronoState);
+        if (this.cardModifierState) this.recto = false;
+        else {
+          if (
+            (!this.actualCardId &&
+              this.$store.state.tagsSelectedList.length == 0) ||
+            this.cardModiferState
+          ) {
+            this.mutateKey("cardReveal", true);
+            this.recto = false;
+            this.modifCard(true);
+          } else this.modifCard(false);
+          if (this.actualCardId) {
+            this.mutateKey("cardReveal", !this.cardChronoState);
+          }
         }
       })
       .then(() => {

@@ -1,10 +1,10 @@
 <template>
   <main id="home">
-    <Header />
+    <Header class="z-index-2" />
 
     <ChangeLog v-if="!userId" />
 
-    <div class="modal">
+    <Modal>
       <div v-show="userId" id="firstLoad">
         <Loader :size="'5x'" />
       </div>
@@ -14,63 +14,66 @@
           <button @click="endCongratulate()">Yeah ! :D</button>
         </div>
       </div>
-    </div>
+    </Modal>
 
-    <div v-if="userId" :key="userId" class="home--main flex-grow-1">
-      <div class="tagsZone">
-        <Tags />
-        <UserOptions />
+    <main v-if="userId" class="home--main flex-grow-1">
+      <div class="page--selector">
+        <button @click="mutateKey('showPage', 'RevisionPage')">Réviser</button>
+        <button @click="mutateKey('showPage', 'CardsPage')">
+          Voir mes cartes
+        </button>
       </div>
+      <keep-alive>
+        <component :is="showPageState" />
+      </keep-alive>
+    </main>
 
-      <div class="central">
-        <Deck @charged="stopLoad" @success="congratulate" />
-      </div>
-
-      <div class="edit">
-        <Editor id="cardEditor" v-if="isModifying" />
-      </div>
-    </div>
-
-    <footer></footer>
+    <Footer v-if="userId" class="footer" />
   </main>
 </template>
 
 <script>
-import Deck from "@/views/Revision/Deck.vue";
-import Editor from "@/views/Revision/Editor.vue";
-import Tags from "@/views/Revision/Tags.vue";
+import { defineAsyncComponent } from "vue";
 
 import ChangeLog from "@/components/ChangeLog.vue";
 import Loader from "@/components/Loader.vue";
 import Header from "@/components/Header.vue";
-import UserOptions from "@/components/UserOptions.vue";
+import Footer from "@/components/Footer.vue";
+import Modal from "@/components/Modal.vue";
+
+const RevisionPage = defineAsyncComponent(() =>
+  import("@/views/RevisionPage.vue")
+);
+const CardsPage = defineAsyncComponent(() => import("@/views/CardsPage.vue"));
 
 export default {
   name: "Home",
   components: {
-    Deck,
-    Editor,
     Header,
+    Footer,
     ChangeLog,
     Loader,
-    Tags,
-    UserOptions,
+    Modal,
+    RevisionPage,
+    CardsPage,
   },
   data() {
     return {
+      seeAllCards: false,
       success: false,
       hasSucceed: false,
+      loaderTimer: false,
     };
   },
   computed: {
-    actualCardId() {
-      return this.$store.state.actualCard.id;
+    deckChargedState() {
+      return this.$store.state.deckCharged;
     },
-    cardsList() {
-      return this.$store.state.cardsList;
+    loadingState() {
+      return this.$store.state.loading;
     },
-    isModifying() {
-      return this.$store.state.modifCard;
+    showPageState() {
+      return this.$store.state.showPage;
     },
     userId() {
       return this.$store.state.user.id;
@@ -82,10 +85,14 @@ export default {
       setTimeout(() => {
         loader.style.cssText += `
           opacity: 0;`;
-        setTimeout(() => {
-          loader.style = "display: none";
-        }, 1000);
-      }, 1500);
+        this.loaderTimer = setInterval(() => {
+          if (!this.loadingState) {
+            loader.style = "display: none";
+            this.mutateKey("showModal", false);
+            clearInterval(this.loaderTimer);
+          }
+        }, 300);
+      }, 500);
     },
     congratulate() {
       this.success = true;
@@ -107,10 +114,19 @@ export default {
         this.hasSucceed = true;
       }, 1000);
     },
-    mounted() {
-      let headerHeight = document.querySelector("#home > header").scrollHeight;
-      let modal = document.querySelector("modal");
-      modal.style.cssText = `top: ${headerHeight + 1}px;`;
+  },
+  created() {
+    this.mutateKey("showPage", "revisionPage");
+  },
+  watch: {
+    deckChargedState() {
+      if (this.deckChargedState) this.stopLoad();
+    },
+    userId() {
+      this.mutateKey("showModal", true);
+    },
+    success() {
+      this.mutateKey("showModal", this.success);
     },
   },
 };
@@ -131,45 +147,26 @@ export default {
     justify-content: space-around;
     align-content: center;
     flex-wrap: wrap;
-    & > * {
-      min-width: 380px;
-      max-width: 25vw;
-      height: fit-content;
-      padding: 1rem;
-      & > * {
-        height: fit-content;
-        margin: auto;
-      }
-    }
-    & .central {
+    margin-bottom: 1rem;
+    & .page--selector {
+      position: absolute;
+      top: -0.5rem;
+      left: 0.5rem;
+      width: 100%;
       display: flex;
-      flex-direction: column;
-      min-height: 80vh;
-      max-width: 100%;
-      & > * {
-        margin: 0;
+      & + * {
+        padding-top: 1rem;
+      }
+      & button {
+        margin-right: 0.5rem;
       }
     }
   }
 }
 
-.modal > * {
-  position: absolute;
-  left: 0;
-  z-index: 1000;
-  min-width: 100%;
-  min-height: 100%;
-  padding: 0;
-  background-color: $dark_bgc;
-  box-shadow: inset 0 0 80px 50px $bgc;
-  transition: opacity 0.5s;
-  & > .container {
-    min-width: 100%;
-    margin-top: 100px;
-  }
-}
 #firstLoad {
   color: $highlight;
+  padding-top: 5rem;
 }
 #revisionSuccess {
   & > * {
@@ -191,16 +188,8 @@ export default {
   }
 }
 
-.tagsZone {
-  display: flex;
-  flex-wrap: wrap;
-  > .container {
-    min-width: 100%;
-  }
-}
-
-footer {
-  margin-top: 2rem;
+.footer {
+  margin-top: auto;
 }
 
 @media screen and (max-width: 767px) {
@@ -209,26 +198,12 @@ footer {
   }
   #home .home--main {
     margin: auto;
-    & > * {
-      width: 100%;
-      min-width: 33%;
-      max-width: 95vw;
-      margin: auto !important;
-      padding: 0;
-      & > * {
-        width: auto;
-        margin: auto;
-        max-width: 95vw;
+    margin-bottom: 1rem;
+    & .page--selector {
+      left: -0.5rem;
+      & + * {
+        padding-top: 2rem;
       }
-    }
-    & .central {
-      order: 1;
-    }
-    & .edit {
-      order: 2;
-    }
-    & .tagsZone {
-      order: 3;
     }
   }
 }

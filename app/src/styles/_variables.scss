@@ -28,6 +28,9 @@ $card_rad: 1rem;
   .flex-grow-#{$i} {
     flex-grow: $i;
   }
+  .z-index-#{$i} {
+    z-index: $i;
+  }
 };
 
 @mixin case_style {

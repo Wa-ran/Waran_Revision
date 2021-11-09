@@ -6,10 +6,13 @@ export default createStore({
   state: {
     //card
     actualCard: {},
+    cardModifier: false,
     cardsList: [],
     cardsListKey: 0,
     cardsToReviseList: [],
     cardsToReviseListKey: 0,
+    userCardsList: [],
+    userCardsListKey: 0,
     firstDeckCard: {},
     modifCard: false,
     validModifCard: false,
@@ -34,6 +37,7 @@ export default createStore({
     reviseByOrder: false,
     cardChrono: true,
     cardReveal: false,
+    deckCharged: false,
 
     error: {
       pending: false,
@@ -79,6 +83,8 @@ export default createStore({
       token: "",
     },
     randomNum: null,
+    showPage: '',
+    showModal: false,
   },
   mutations: {
     changeUser(state, payload) {
@@ -313,6 +319,14 @@ export default createStore({
           tag: this.state.tagsSelectedList,
         },
         mutate: "cardsList",
+      });
+    },
+    async getAllUserCards() {
+      await this.dispatch("revisionRequest", {
+        method: "GET",
+        serverRoute: "/AllUserCards",
+        data: "user/" + this.state.user.id,
+        mutate: "userCardsList",
       });
     },
     async getAllUserTags() {

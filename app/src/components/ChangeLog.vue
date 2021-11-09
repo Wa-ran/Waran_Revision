@@ -25,6 +25,22 @@ export default {
     return {
       logs: [
         {
+          date: "08/11/21",
+          bugs: [
+            '<span class="italic">Mon hébergeur OVH a effectué une mise à jour <span class="underline">indépendante de la volonté de la direction</span>, dans la uit du 09, désolé du dérangement !</span>',
+          ],
+          improvements: [
+            '<span class="underline">Ajout d\'une page ou vous pouvez <span class="bold">voir et modifer</span> TOUTES vos cartes !</span> ^^',
+          ],
+          todo: [
+            "Peut-être de bouveaux bugs suite à l'implémentation de la récupération de toutes les cartes...",
+            '<span class="bold">Connu</span> : il faut recharger l\'application pour constater les changements fais sur les cartes.',
+            '<span class="bold">Connu</span> : Les cartes modifées voient leur prochaine révision être mise à jour ! (Exemple : si vous modifez une carte de niveau 10, qui doit être révisée dans 1 jour, son compteur sera remis à zéro, vous la réviserez donc dans 3 jours).<br><br>',
+            "Problèmes avec les formules mathématiques à confirmer...",
+            "La révision de plusieurs cartes dans l'ordre (bêta) est presque prête !",
+          ],
+        },
+        {
           date: "05/11/21",
           bugs: [
             '<span class="bold">Hotfix</span> : Les modifications sur des cartes existantes avec un niveau de 0 n\'étaient (toujours) pas bien prises en comptes !',
