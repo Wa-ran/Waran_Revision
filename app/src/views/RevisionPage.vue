@@ -15,7 +15,6 @@
   </div>
 </template>
 
-
 <script>
 import Deck from "@/views/Revision/Deck.vue";
 import Editor from "@/views/Revision/Editor.vue";

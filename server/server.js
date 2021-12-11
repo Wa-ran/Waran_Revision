@@ -1,5 +1,16 @@
+// const https = require('https');
+// const fs = require('fs');
+
+// const options = {
+//   key: fs.readFileSync('key.pem'),
+//   cert: fs.readFileSync('cert.pem')
+//   // attention : not async !
+// };
+
 const http = require('http');
 const app = require('./app');
+
+//_______________________________________
 
 const normalizePort = val => {
   const port = parseInt(val, 10);
@@ -35,7 +46,11 @@ const errorHandler = error => {
   }
 };
 
+//______________________________
+
 const server = http.createServer(app);
+
+// const server = https.createServer(options, app);
 
 server.on('error', errorHandler);
 server.on('listening', () => {

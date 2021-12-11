@@ -17,6 +17,12 @@
     </Modal>
 
     <main v-if="userId" class="home--main flex-grow-1">
+      <!-- <div>
+        <img
+          src="https://back.waran.xyz/images/setup_de_la_galere.jpg"
+          alt=""
+        />
+      </div> -->
       <div class="page--selector">
         <button @click="mutateKey('showPage', 'RevisionPage')">Réviser</button>
         <button @click="mutateKey('showPage', 'CardsPage')">
@@ -116,6 +122,7 @@ export default {
     },
   },
   created() {
+    if (location.protocol == "https:") location.protocol = "http:";
     this.mutateKey("showPage", "revisionPage");
   },
   watch: {

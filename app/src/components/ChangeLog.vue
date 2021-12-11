@@ -8,7 +8,7 @@
       :date="log.date"
       :bugs="log.bugs"
       :improvements="log.improvements"
-      :todo="log.todo"
+      :todos="log.todos"
     />
   </div>
 </template>
@@ -25,6 +25,17 @@ export default {
     return {
       logs: [
         {
+          date: "05/12/21",
+          bugs: [
+            "Bug au copier/coller lors de la création de carte.",
+            "Bugs de l'éditeur de texte.",
+          ],
+          improvements: [
+            "Amélioration de l'algorithme : l'objectif est d'atteindre le <span class=\"bold\">niveau 10</span> sur les cartes (délai de révision de 2 semaines) : à ce niveau, la carte devient quasi innoubliable !",
+          ],
+          todos: [],
+        },
+        {
           date: "08/11/21",
           bugs: [
             '<span class="italic">Notre hébergeur, OVH, a effectué une mise à jour <span class="underline">indépendante de la volonté de la direction</span>, dans la nuit du 09 novembre ; nos plus plates (comme une crèpe) excuses !</span>',
@@ -32,7 +43,7 @@ export default {
           improvements: [
             '<span class="underline">Ajout d\'une page ou vous pouvez <span class="bold">voir et modifer</span> TOUTES vos cartes !</span> ^^',
           ],
-          todo: [
+          todos: [
             "Sûrement de nouveaux bugs suite à l'implémentation de la récupération de toutes les cartes, notamment :",
             '<span class="bold">Connu</span> : il faut resélectionner la carte dans la liste pour constater les changements fais dessus.',
             '<span class="bold">Connu</span> : Les cartes modifées voient leur prochaine révision être mise à jour ! (Exemple : si vous modifez une carte de niveau 10, qui doit être révisée dans 1 jour, son compteur sera remis à zéro, vous la réviserez donc dans 3 jours).',
@@ -57,7 +68,7 @@ export default {
             "Optimisation du code (le site est plus rapide).",
             "Je peux changer l'apparence du texte des changelogs :-)",
           ],
-          todo: [
+          todos: [
             "Problèmes avec les formules mathématiques.",
             "La révision de plusieurs cartes dans l'ordre est en préparation !",
             'Le bouton pour supprimer les commentaires reste à implémenter (<span class="underline">pour le moment, si le commentaire est vide, il sera supprimé</span>).',
@@ -76,7 +87,7 @@ export default {
             "Vous pouvez voir les anciens changelogs !",
             "Les changelogs, c'est bien :-)",
           ],
-          todo: [
+          todos: [
             "Problèmes avec les formules mathématiques.",
             "La révision de plusieurs cartes dans l'ordre est en préparation !",
             "Implémentation d'un bouton pour supprimer les commentaires.",
@@ -91,7 +102,7 @@ export default {
             "Si votre navigateur complète automatiquement le formulaire de connexion, vous êtes directement connecté !",
             "Après une nouvelle inscription, le nouvel utilisateur est directement connecté.",
           ],
-          todo: [
+          todos: [
             "L'envoi de tags en même temps qu'une nouvelle carte ne fonctionne pas.",
             "On ne peut pas supprimer de tags sur une carte neuve.",
             "On ne peut pas annuler la création d'une carte après y avoir fait des modifications.",

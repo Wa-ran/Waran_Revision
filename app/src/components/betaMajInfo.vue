@@ -4,13 +4,13 @@
       <span class="italic">{{ date }}</span>
     </button>
     <div v-if="show">
-      <div>
+      <div v-if="bugs.length > 0">
         <h4>Bugs réglés :</h4>
         <ul>
           <li v-for="(text, index) of bugs" :key="index" v-html="text"></li>
         </ul>
       </div>
-      <div>
+      <div v-if="improvements.length > 0">
         <h4>Amméliorations :</h4>
         <ul>
           <li
@@ -20,10 +20,10 @@
           ></li>
         </ul>
       </div>
-      <div>
+      <div v-if="todos.length > 0">
         <h4>Bugs restants :</h4>
         <ul>
-          <li v-for="(text, index) of todo" :key="index" v-html="text"></li>
+          <li v-for="(text, index) of todos" :key="index" v-html="text"></li>
         </ul>
       </div>
     </div>
@@ -43,7 +43,7 @@ export default {
     date: String,
     bugs: Array,
     improvements: Array,
-    todo: Array,
+    todos: Array,
   },
   mounted() {
     this.show = this.defaultShow;

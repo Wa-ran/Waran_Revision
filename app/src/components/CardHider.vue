@@ -9,7 +9,7 @@
 
     <div class="recto">
       <div class="content flex-grow-1">
-        <div class="porthole">
+        <div class="porthole" :style="cardLoad ? 'tabindex: -1' : ''">
           <Loader
             :size="'4x'"
             class="cardLoader highlight"
@@ -46,7 +46,7 @@ export default {
   },
   data() {
     return {
-      cardLoad: false,
+      cardLoad: true,
       doodleSeed: "",
     };
   },
@@ -57,24 +57,17 @@ export default {
   },
   methods: {
     loadingState() {
-      if (!this.cardLoad) {
-        this.cardLoad = true;
-        // let cardLoader = document.querySelector(".porthole .cardLoader");
-        // let cardQuestion = document.querySelector(".porthole .cardQuestion");
-        // cardLoader.style.cssText = `transition: opacity 0.3s; opacity: 1;`;
-        // cardQuestion.style.cssText = `transition: opacity 0.3s; opacity: 0;`;
-        let stop = setInterval(() => {
-          if (!this.loading) {
-            // cardLoader.style.cssText += `opacity: 0;`;
-            // cardLoader.style.cssText += `opacity: 1;`;
-            this.cardLoad = false;
-            clearInterval(stop);
-          }
-        }, 500);
-      }
+      this.cardLoad = true;
+      let stop = setInterval(() => {
+        if (!this.loading) {
+          this.cardLoad = false;
+          clearInterval(stop);
+        }
+      }, 500);
     },
   },
-  async mounted() {
+  mounted() {
+    this.loadingState();
     if (!this.doodleSeed) this.doodleSeed = Math.trunc(Math.random) * 1000;
   },
   watch: {

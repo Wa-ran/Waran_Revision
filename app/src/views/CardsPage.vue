@@ -115,7 +115,6 @@
   </div>
 </template>
 
-
 <script>
 import Card from "@/components/Card.vue";
 

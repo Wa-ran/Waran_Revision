@@ -165,8 +165,10 @@
           </button>
         </div>
 
-        <div class="level">Niveau: {{ actualCard.streak }}</div>
-        <div class="calc-revision">Prochaine révision {{ nextRevision() }}</div>
+        <div class="level">Niveau: {{ showStreak() }}</div>
+        <div class="calc-revision">
+          Prochaine révision {{ showNextRevision() }}
+        </div>
 
         <div v-if="!modifCardState && wasModified" class="multiButtons">
           <button @click="modifCard(true)"><span>Modifer</span></button>
@@ -323,16 +325,32 @@ export default {
       let streak = this.actualCard.streak;
       if (streak > HOURS_SUITE.length) streak = HOURS_SUITE.length;
       let number = HOURS_SUITE[streak];
+      if (streak > 8) {
+        let decal = Math.trunc(number / 10);
+        let rand = Math.random();
+        if (rand < 1 / 3) number += decal;
+        else if (rand > 2 / 3) number -= decal;
+      }
       return new Date(
         new Date().setTime(new Date().getTime() + number * 60 * 60 * 1000)
       );
     },
-    handleStreak(add) {
+    handleStreak(add = null) {
+      let newStreak;
+      if (add) {
+        newStreak = this.actualCard.streak + add;
+        if (add === -1 && newStreak % 2 === 0 && !this.streakSet) newStreak--;
+        if (newStreak < 0) newStreak = 0;
+        this.mutateCardModifs("streak", newStreak);
+      }
       this.streakSet = true;
-      if (add) this.mutateCardModifs("streak", this.actualCard.streak + add);
-      else this.mutateCardModifs("streak", this.originalCard.streak);
-      if (this.actualCard.streak < 0) this.mutateCardModifs("streak", 0);
-      this.nextRevision();
+      this.showNextRevision();
+    },
+    showStreak() {
+      let level = Math.trunc(this.actualCard.streak / 2);
+      if (this.actualCard.streak % 2 === 1) level++;
+      else if (level !== 0) level += "+";
+      return level;
     },
     changeFace(face) {
       this.modifFocus = face;
@@ -351,7 +369,7 @@ export default {
       cardModif[cardKey] = value;
       this.mutateKey("actualCard", cardModif);
     },
-    nextRevision() {
+    showNextRevision() {
       let next = this.calculNextRevision();
       let showDate = new Date(next - Date.now());
       if (this.actualCard.streak == 0 || !this.wasModified) {

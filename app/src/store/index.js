@@ -83,7 +83,7 @@ export default createStore({
       token: "",
     },
     randomNum: null,
-    showPage: '',
+    showPage: "",
     showModal: false,
   },
   mutations: {

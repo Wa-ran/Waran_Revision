@@ -117,20 +117,10 @@ export default {
       this.saveChange();
 
       let startNode = selection.anchorNode;
-      // let test = startNode;
-      // try {
-      // while (
-      //   !test.classList ||
-      //   Object.entries(test.classList)[0].indexOf("contentEditable") == -1
-      // ) {
-      //   test = test.parentNode;
-      // }
-      // } catch (error) {
-      //   return;
-      // }
+
       let startOffset = selection.anchorOffset;
 
-      let endNode = selection.focusNode;
+      // let endNode = selection.focusNode;
       // test = endNode;
       // try {
       // while (
@@ -147,7 +137,7 @@ export default {
       if (selection.focusOffset < selection.anchorOffset) {
         startNode = selection.focusNode;
         startOffset = selection.focusOffset;
-        endNode = selection.anchorNode;
+        // endNode = selection.anchorNode;
         endOffset = selection.anchorOffset;
       }
       let rand1 = "{1}" + this.randomNum;
@@ -155,40 +145,42 @@ export default {
       // Insertion d'une chaine random pour retrouver la position de l'insertion
 
       let start = startNode.textContent.slice(0, startOffset);
-      start = startNode.textContent.slice(0, start.lastIndexOf(" ") + 1);
+      start = startNode.textContent.slice(0, start.search(/\W(\w+(?!.))/g) + 1);
       // if (start.slice(0, 1) === " ") start = start.slice(1);
 
-      if (startNode == endNode) {
-        let end = startNode.textContent.slice(endOffset - 1);
-        // if (end.slice([end.length] - 1) === " ") end = end.slice(0, end.length - 2);
-        if (end.indexOf(" ") !== -1) end = end.slice(end.indexOf(" "));
-        else end = "";
+      // if (startNode == endNode) {
+      let end = startNode.textContent.slice(endOffset - 1);
+      // if (end.slice([end.length] - 1) === " ") end = end.slice(0, end.length - 2);
+      if (end.search(/\W/g) !== -1) end = end.slice(end.search(/\W/g));
+      else end = "";
 
-        let select = startNode.textContent.slice(
-          start.length,
-          startNode.textContent.length - end.length
-        );
+      let select = startNode.textContent.slice(
+        start.length,
+        startNode.textContent.length - end.length
+      );
 
-        startNode.textContent = start + rand1 + select + rand2 + end;
-      } else {
-        startNode.textContent =
-          start.slice(0, start.lastIndexOf(" ")) +
-          rand1 +
-          startNode.textContent.slice(start.lastIndexOf(" ") + 1);
+      startNode.textContent = start + rand1 + select + rand2 + end;
+      // } else {
+      //   startNode.textContent =
+      //     start.slice(0, start.search(/\W(\w+(?!.))/g)) +
+      //     rand1 +
+      //     startNode.textContent.slice(start.search(/\W(\w+(?!.))/g) + 1);
 
-        let end = endNode.textContent.slice(0, endOffset);
-        if (end.slice([end.length]) === " ") end = end.slice(0, end.length - 1);
-        endNode.textContent =
-          end +
-          endNode.textContent.slice(
-            end.length,
-            endNode.textContent.indexOf(" ", end.length)
-          ) +
-          rand2 +
-          endNode.textContent.slice(
-            endNode.textContent.indexOf(" ", end.length)
-          );
-      }
+      //   let end = endNode.textContent.slice(0, endOffset);
+      //   if (end.slice([end.length]) === /\W/g)
+      //     end = end.slice(0, end.length - 1);
+
+      //   endNode.textContent =
+      //     end +
+      //     endNode.textContent.slice(
+      //       end.length,
+      //       endNode.textContent.indexOf(/\W/g, end.length)
+      //     ) +
+      //     rand2 +
+      //     endNode.textContent.slice(
+      //       endNode.textContent.indexOf(/\W/g, end.length)
+      //     );
+      // }
     },
     editContent(wrapStart, wrapEnd) {
       this.wrapContent();
@@ -200,32 +192,45 @@ export default {
     normalContent() {
       this.wrapContent();
 
-      let firstStart = this.contEdit.innerHTML.indexOf(
-        "<span ",
-        this.contEdit.innerHTML.indexOf("{1}" + this.randomNum)
-      );
-      let firstClose = this.contEdit.innerHTML.indexOf(
-        "</span>",
-        this.contEdit.innerHTML.indexOf("{1}" + this.randomNum)
-      );
-      let lastStart = this.contEdit.innerHTML
-        .slice(0, this.contEdit.innerHTML.indexOf("{2}" + this.randomNum))
-        .lastIndexOf("<span style");
-      let lastClose = this.contEdit.innerHTML
-        .slice(0, this.contEdit.innerHTML.indexOf("{2}" + this.randomNum))
-        .lastIndexOf("</span>");
+      let content = this.contEdit.innerHTML;
 
-      let startDelete = Math.min(firstStart, firstClose, lastStart, lastClose);
-      let endDelete = Math.max(firstStart, firstClose, lastStart, lastClose);
+      let start = content.slice(0, content.indexOf("{1}" + this.randomNum));
+      start = start.slice(0, start.search(/(<span([^>])*>)(?!.*<\/span>)/));
 
-      let content =
-        this.contEdit.innerHTML.slice(0, startDelete) +
-        this.contEdit.innerHTML
-          .slice(startDelete, endDelete)
-          .replace(/(<\/?span([^<>])*>)/g, "") +
-        this.contEdit.innerHTML.slice(endDelete);
+      let end = content.slice(content.indexOf("{2}" + this.randomNum));
+      end = end.slice(end.indexOf("</span>") + 6);
 
-      this.contEdit.innerHTML = content
+      let select = content.slice(start.length, content.length - end.length);
+      select = select.replace(/(<\/?span([^>])*>)/g, "");
+
+      let normalize = start + select + end;
+
+      // let firstStart = this.contEdit.innerHTML.indexOf(
+      //   "<span ",
+      //   this.contEdit.innerHTML.indexOf("{1}" + this.randomNum)
+      // );
+      // let firstClose = this.contEdit.innerHTML.indexOf(
+      //   "</span>",
+      //   this.contEdit.innerHTML.indexOf("{1}" + this.randomNum)
+      // );
+      // let lastStart = this.contEdit.innerHTML
+      //   .slice(0, this.contEdit.innerHTML.indexOf("{2}" + this.randomNum))
+      //   .lastIndexOf("<span style");
+      // let lastClose = this.contEdit.innerHTML
+      //   .slice(0, this.contEdit.innerHTML.indexOf("{2}" + this.randomNum))
+      //   .lastIndexOf("</span>");
+
+      // let startDelete = Math.min(firstStart, firstClose, lastStart, lastClose);
+      // let endDelete = Math.max(firstStart, firstClose, lastStart, lastClose);
+
+      // let content =
+      //   this.contEdit.innerHTML.slice(0, startDelete) +
+      //   this.contEdit.innerHTML
+      //     .slice(startDelete, endDelete)
+      //     .replace(/(<\/?span.*>)/g, "") +
+      //   this.contEdit.innerHTML.slice(endDelete);
+
+      this.contEdit.innerHTML = normalize
         .replace("{1}" + this.randomNum, "")
         .replace("{2}" + this.randomNum, "");
     },
@@ -235,7 +240,7 @@ export default {
       let text = this.contEdit;
       text.innerHTML = text.textContent;
     },
-    mutateModifs(last = false) {
+    async mutateModifs(last = false) {
       let cardModif = { ...this.$store.state.actualCard };
       if (last) cardModif[this.faceSelected] = this.lastOptiContent();
       else cardModif[this.faceSelected] = this.optiContent();
@@ -244,7 +249,8 @@ export default {
     optiContent() {
       return this.contEdit.innerHTML
         .replace(/<div>/, "<br>")
-        .replace(/<\/div>/, "");
+        .replace(/<\/div>/, "")
+        .replace(/(\w*[^class])="[^"]*"(?=[^<]*>)/, "");
     },
     lastOptiContent() {
       let opti;
@@ -254,7 +260,8 @@ export default {
         opti = opti
           .replace(/<div>/g, "<br>")
           .replace(/<\/div>/g, "")
-          .replace(/&nbsp;/g, "");
+          .replace(/&nbsp;/g, " ")
+          .replace(/\s+/g, " ");
         while (
           opti.slice(opti.length - 4) == "<br>" ||
           opti.slice(opti.length - 1) == " "
@@ -307,7 +314,6 @@ export default {
     },
   },
   mounted() {
-    console.log(this.faceSelected);
     this.faceSelected = this.face;
     this.textarea = this.faceContent;
 
@@ -323,7 +329,9 @@ export default {
     this.contEdit.addEventListener("paste", () => {
       setTimeout(() => {
         this.resetText();
-        this.resetText();
+        this.contEdit.innerHTML = this.contEdit.innerHTML
+          .replace(/&nbsp;/g, " ")
+          .replace(/\s+/g, " ");
       });
     });
   },
@@ -394,7 +402,7 @@ export default {
   overflow-x: hidden;
   overflow-y: scroll;
 }
-.contentEditable {
+div[contenteditable="true"] {
   height: fit-content;
   min-height: 100%;
   margin: auto;
