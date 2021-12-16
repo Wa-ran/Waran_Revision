@@ -102,10 +102,10 @@ export default {
       });
 
       if (this.displayForm === "connexion")
-        await this.$store.dispatch("getUser");
+        await this.$store.dispatch("getUserByPseudo");
       else {
         await this.$store.dispatch("postUser").then(() => {
-          this.$store.dispatch("getUser");
+          this.$store.dispatch("getUserByPseudo");
           // alert("Inscription réussie !");
         });
         this.autofill = 0;

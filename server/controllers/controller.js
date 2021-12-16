@@ -13,22 +13,22 @@ module.exports = async (req, res, next) => {
   delete req.body.assets;
 
   const verifIdByToken = (obj) => {
-    if (token && ((obj.user_id && obj.user_id !== token.tokenId) || (!obj.user_id && obj.id !== token.tokenId))) {
+    if (token && ((obj.user_id && obj.user_id !== token.tokenId) || (obj.pseudo && obj.id !== token.tokenId))) {
       return false
     }
     else return true
   };
 
-  const checkToken = async () => {
+  const needToken = async () => {
     // Checked if token needed (not login or signup)
-    if ((fctName !== "postUser" && fctName !== "postgetUser")) {
+    if ((fctName !== "postUser" && fctName !== "postgetUserByPseudo")) {
       token = verifToken(req.headers.authorization);
       return
     }
     else return
   };
 
-  checkToken().then(() => {
+  needToken().then(() => {
     if (method === "get") {
       let objName = req.params.object;
       let object = { 'id': req.params.id };

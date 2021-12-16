@@ -213,11 +213,20 @@ exports.deleteCardTags = async (req) => {
   await dtbFct.deleteCardTag(req)
 };
 
-exports.postgetUser = async (req) => {
+exports.getUserById = async (req) => {
+  let resUser;
+  await dtbFct.selectUserById(req)
+    .then(dtbUser => {
+      resUser = createObj("user", dtbUser[0])
+    })
+  return resUser
+};
+
+exports.postgetUserByPseudo = async (req) => {
   let resUser;
   let reqUser = createObj("user", req.user);
   let dtbUser;
-  await dtbFct.selectUser(req)
+  await dtbFct.selectUserByPseudo(req)
     .then(async (selectedUser) => {
       dtbUser = selectedUser[0];
       if (await bcrypt.compare(reqUser.password, selectedUser[0].password)) return
@@ -233,7 +242,7 @@ exports.postgetUser = async (req) => {
       resUser['token'] = jwt.sign(
         { tokenId },
         'b$UKq/Tjy9lCriz$$YUUTXCMo.obIcG/AO4',
-        { expiresIn: '24h' }
+        { expiresIn: '6h' }
       );
     })
   return resUser

@@ -2,6 +2,43 @@
   <main id="home">
     <Header class="z-index-2" />
 
+    <form
+      action="http://localhost:8000/test.php"
+      method="POST"
+      enctype="multipart/form-data"
+      target="dummyframe"
+      @submit="imageUpload"
+    >
+      <input
+        type="file"
+        id="recto_image"
+        name="recto"
+        accept="image/png, image/jpeg, image/jpg, image/webp"
+        @change="filePreview"
+      />
+      <input
+        type="text"
+        name="user"
+        :value="JSON.stringify($store.state.user)"
+        hidden
+      />
+      <input
+        type="text"
+        name="card"
+        :value="JSON.stringify($store.state.actualCard)"
+        hidden
+      />
+      <img v-if="$store.state.fileTest" :src="$store.state.fileTest" />
+      <button type="submit">php</button>
+    </form>
+
+    <iframe
+      name="dummyframe"
+      id="dummyframe"
+      style="display: none"
+      @load="fileView"
+    ></iframe>
+
     <ChangeLog v-if="!userId" />
 
     <Modal>
@@ -119,6 +156,13 @@ export default {
         this.success = false;
         this.hasSucceed = true;
       }, 1000);
+    },
+    filePreview(event) {
+      let url = URL.createObjectURL(event.target.files[0]);
+      this.mutateKey("fileTest", url);
+    },
+    fileView(event) {
+      console.log(event);
     },
   },
   created() {

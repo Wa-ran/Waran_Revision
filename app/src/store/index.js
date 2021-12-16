@@ -1,7 +1,5 @@
 import { createStore } from "vuex";
 
-import revisionAPI from "../assets/API/revisionAPI";
-
 export default createStore({
   state: {
     //card
@@ -45,17 +43,21 @@ export default createStore({
       status: "",
     },
     form: {
-      revisionRequest: null,
+      APIRequest: null,
       submitPath: null,
     },
-    headers: {
+    defaultHeaders: {
       Authorization: "",
       "Content-Type": "application/json",
     },
     loading: false,
     serverAddress: {
-      waran_revision: "http://195.110.59.46:3008",
-      // waran_revision: "http://localhost:3008",
+      // php_server: "http://waran.xyz/",
+      // waran_revision: "http://195.110.59.46:3008",
+
+      // Local Dev
+      php_server: "http://localhost:8000",
+      waran_revision: "http://localhost:3008",
     },
 
     //tag
@@ -85,15 +87,18 @@ export default createStore({
     randomNum: null,
     showPage: "",
     showModal: false,
+
+    fileTest: '',
+    php_res: 'none',
   },
   mutations: {
     changeUser(state, payload) {
       try {
         state.newCard.user_id = payload.id;
-        state.headers.Authorization = payload.token;
+        state.defaultHeaders.Authorization = payload.token;
       } catch (error) {
         state.newCard.user_id = "";
-        state.headers.Authorization = "";
+        state.defaultHeaders.Authorization = "";
       }
     },
     mutateKey(state, payload) {
@@ -178,7 +183,7 @@ export default createStore({
       context.commit(payload.fct, payload.value || null);
     },
     async deleteCard() {
-      await this.dispatch("revisionRequest", {
+      await this.dispatch("APIRequest", {
         method: "DELETE",
         serverRoute: "/Card",
         data: { card: this.state.actualCard },
@@ -186,7 +191,7 @@ export default createStore({
       });
     },
     async deleteCardTag() {
-      await this.dispatch("revisionRequest", {
+      await this.dispatch("APIRequest", {
         method: "DELETE",
         serverRoute: "/CardTags",
         data: { card: this.state.actualCard, tag: this.state.actualTag },
@@ -194,7 +199,7 @@ export default createStore({
       });
     },
     async deleteTag() {
-      await this.dispatch("revisionRequest", {
+      await this.dispatch("APIRequest", {
         method: "DELETE",
         serverRoute: "/Tag",
         data: { tag: this.state.actualTag },
@@ -204,7 +209,7 @@ export default createStore({
     async postCard() {
       if (!this.state.actualCard.user_id)
         this.state.actualCard.user_id = this.state.user.id;
-      await this.dispatch("revisionRequest", {
+      await this.dispatch("APIRequest", {
         method: "POST",
         serverRoute: "/Card",
         data: {
@@ -221,7 +226,7 @@ export default createStore({
     async postTag() {
       if (!this.state.actualTag.user_id)
         this.state.actualTag.user_id = this.state.user.id;
-      await this.dispatch("revisionRequest", {
+      await this.dispatch("APIRequest", {
         method: "POST",
         serverRoute: "/Tag",
         data: { tag: this.state.actualTag },
@@ -229,7 +234,7 @@ export default createStore({
       });
     },
     async postUser() {
-      await this.dispatch("revisionRequest", {
+      await this.dispatch("APIRequest", {
         method: "POST",
         serverRoute: "/User",
         data: { user: this.state.user },
@@ -239,7 +244,7 @@ export default createStore({
     },
     async postCardTags() {
       if (this.state.actualCard.id) {
-        await this.dispatch("revisionRequest", {
+        await this.dispatch("APIRequest", {
           method: "POST",
           serverRoute: "/CardTags",
           data: {
@@ -252,7 +257,7 @@ export default createStore({
     },
     async putCard() {
       if (this.state.actualCard.id) {
-        await this.dispatch("revisionRequest", {
+        await this.dispatch("APIRequest", {
           method: "PUT",
           serverRoute: "/Card",
           data: { card: this.state.actualCard },
@@ -262,7 +267,7 @@ export default createStore({
     },
     async putCardOrder() {
       if (this.state.actualCard.id) {
-        await this.dispatch("revisionRequest", {
+        await this.dispatch("APIRequest", {
           method: "PUT",
           serverRoute: "/CardOrder",
           data: {
@@ -277,7 +282,7 @@ export default createStore({
     },
     async putTag() {
       if (this.state.actualTag.id) {
-        await this.dispatch("revisionRequest", {
+        await this.dispatch("APIRequest", {
           method: "PUT",
           serverRoute: "/Tag",
           data: { tag: this.state.actualTag },
@@ -286,7 +291,7 @@ export default createStore({
       }
     },
     async getLastCard() {
-      await this.dispatch("revisionRequest", {
+      await this.dispatch("APIRequest", {
         method: "GET",
         serverRoute: "/LastCard",
         data: "user/" + this.state.user.id,
@@ -294,7 +299,7 @@ export default createStore({
       });
     },
     async getCardsToRevise() {
-      await this.dispatch("revisionRequest", {
+      await this.dispatch("APIRequest", {
         method: "GET",
         serverRoute: "/CardsToRevise",
         data: "user/" + this.state.user.id,
@@ -310,7 +315,7 @@ export default createStore({
       });
     },
     async getCardsToReviseByTags() {
-      await this.dispatch("revisionRequest", {
+      await this.dispatch("APIRequest", {
         method: "POST",
         serverRoute:
           "/getCardsToReviseByTags" + this.state.searchTagsCond.toUpperCase(),
@@ -322,7 +327,7 @@ export default createStore({
       });
     },
     async getAllUserCards() {
-      await this.dispatch("revisionRequest", {
+      await this.dispatch("APIRequest", {
         method: "GET",
         serverRoute: "/AllUserCards",
         data: "user/" + this.state.user.id,
@@ -330,7 +335,7 @@ export default createStore({
       });
     },
     async getAllUserTags() {
-      await this.dispatch("revisionRequest", {
+      await this.dispatch("APIRequest", {
         method: "GET",
         serverRoute: "/AllUserTags",
         data: "user/" + this.state.user.id,
@@ -338,69 +343,145 @@ export default createStore({
       });
     },
     async getCardTags() {
-      await this.dispatch("revisionRequest", {
+      await this.dispatch("APIRequest", {
         method: "GET",
         serverRoute: "/CardTags",
         data: "card/" + this.state.actualCard.id,
         mutate: "cardTagsList",
       });
     },
-    async getUser() {
-      await this.dispatch("revisionRequest", {
+    async getUserByPseudo() {
+      await this.dispatch("APIRequest", {
         method: "POST",
-        serverRoute: "/getUser",
+        serverRoute: "/getUserByPseudo",
         data: { user: this.state.user },
         mutate: "user",
         alert: true,
       });
     },
-    async revisionRequest(context, req) {
+    async postImage() {
+      await this.dispatch("APIRequest", {
+        method: "POST",
+        serverAddress: this.state.serverAddress.php_server,
+        serverRoute: "/test.php",
+        data: {
+          'user_image': this.state.fileTest,
+          'user': this.state.user,
+          'card': this.state.actualCard,
+        },
+        headers: {
+          Authorization: this.state.defaultHeaders.Authorization,
+          enctype: 'multipart/form-data',
+        },
+        "form_data": true,
+        mutate: "php_res",
+        // alert: true,
+      }).then((res) => {
+        this.dispatch("mutateStore", {
+          fct: "mutateKey",
+          value: { sKey: "php_res", body: res },
+        });
+      })
+    },
+    async APIRequest(context, req) {
       if (!this.state.error.pending) {
         this.dispatch("mutateStore", {
           fct: "mutateKey",
           value: { sKey: "loading", body: true },
         });
-        await revisionAPI
-          .request(
-            req.method,
-            this.state.serverAddress.waran_revision,
-            req.serverRoute,
-            this.state.headers,
-            req.data
-          )
-          .then((response) => {
-            if (response) {
-              let result = {};
-              result["sKey"] = req.mutate;
-              result["body"] = response;
-              this.dispatch("mutateStore", {
-                fct: "mutateKey",
-                value: result,
-              });
-            }
+        return this.dispatch("callAPI", {
+          method: req.method,
+          address: req.serverAddress || this.state.serverAddress.waran_revision,
+          route: req.serverRoute,
+          headers: req.headers || this.state.defaultHeaders,
+          data: req.data,
+          form_data: req.form_data || false,
+        }).then((response) => {
+          if (response) {
+            let result = {};
+            result["sKey"] = req.mutate;
+            result["body"] = response;
+            this.dispatch("mutateStore", {
+              fct: "mutateKey",
+              value: result,
+            })
+          };
 
-            if (req.mutate == "cardsList") context.commit("prepareDeck");
-            // console.log(req.method + ' ' + req.mutate)
-            this.dispatch("mutateStore", {
-              fct: "mutateKey",
-              value: { sKey: "loading", body: false },
-            });
-          })
-          .catch((error) => {
-            if (req.alert) alert(error.msg);
-            if (error.status !== 404) console.log(error);
-            context.commit("triggError", {
-              bool: true,
-              status: error.status,
-              msg: error.msg,
-            });
-            this.dispatch("mutateStore", {
-              fct: "mutateKey",
-              value: { sKey: "loading", body: false },
-            });
-            throw error;
+          if (req.mutate == "cardsList") context.commit("prepareDeck");
+          // console.log(req.method + ' ' + req.mutate)
+          this.dispatch("mutateStore", {
+            fct: "mutateKey",
+            value: { sKey: "loading", body: false },
           });
+
+          return response
+        }).catch((error) => {
+          if (req.alert) alert(error.msg);
+          if (error.status !== 404) console.log(error);
+          context.commit("triggError", {
+            bool: true,
+            status: error.status,
+            msg: error.msg,
+          });
+          this.dispatch("mutateStore", {
+            fct: "mutateKey",
+            value: { sKey: "loading", body: false },
+          });
+          throw error;
+        });
       }
+    },
+    async callAPI(context, req) {
+      let method = req.method;
+      let address = req.address;
+      let route = req.route;
+      let headers = req.headers;
+      let body = req.data;
+
+      method = method.toUpperCase();
+
+      if (method == "GET") {
+        route = route + "/" + body;
+        body = null;
+      } else if (req.form_data) {
+        let form = new FormData;
+        for (let [key, value] of Object.entries(body)) {
+          form.append(key, JSON.stringify(value))
+        }
+        body = form
+      } else if (typeof body === "object") {
+        // body = object to send
+        body = JSON.stringify(body);
+      };
+
+      return fetch(address + route, {
+        method,
+        headers,
+        body,
+      }).then(async (res) => {
+        if (res.status >= 400) {
+          let err = {};
+          let status = res.status;
+          let msg = {};
+
+          try {
+            msg = await res.json(); // Si le serveur ne renvoie qu'un statut sans corps, '.json' va fail
+          } catch (error) {
+            msg = res.statusText;
+          }
+
+          err["status"] = status;
+          err["msg"] = msg;
+
+          throw err;
+        } else {
+          try {
+            return res = await res.json().then((res) => { return res })
+          } catch (error) {
+            return null; // Si le serveur renvois un statut 2XX/3XX seul
+          }
+        }
+      });
     },
   },
   getters: {

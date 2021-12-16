@@ -124,7 +124,7 @@ exports.selectAllUserTags = async (req) => {
 };
 
 exports.selectCard = async (req) => {
-  return await this.connect("SELECT JSON_OBJECT(" + this.jsonList('card') + ") FROM cards WHERE id = " + req.card.id + " AND user_id = " + req.card.user_id + ";");
+  return await this.connect("SELECT JSON_OBJECT(" + this.jsonList('card') + ") FROM cards WHERE id = " + req.card.id + ";");
 };
 
 exports.selectCardTags = async (req) => {
@@ -182,6 +182,11 @@ exports.updateCard = async (req) => {
   return await this.connect(this.updateRequest(req.card));
 };
 
+exports.updateCardImage = async (req) => {
+  req.card.parseToMySQL();
+  return await this.connect(`UPDATE cards_tags SET has_image = ${req.assets.has_image} WHERE card_id = ${req.card.id};`);
+};
+
 exports.updateCardOrder = async (req) => {
   return await this.connect(`UPDATE cards_tags SET card_order = ${req.assets.deck_order.order} WHERE card_id = ${req.card.id} AND tag_id = ${req.assets.tag_id};`);
 };
@@ -208,7 +213,12 @@ exports.createUser = async (req) => {
   await this.connect(this.insertRequest(req.user));
 };
 
-exports.selectUser = async (req) => {
+exports.selectUserByPseudo = async (req) => {
   req.user.parseToMySQL();
   return await this.connect("SELECT JSON_OBJECT(" + this.jsonList('user') + ") FROM users WHERE pseudo = " + req.user.pseudo + ";");
+};
+
+exports.selectUserById = async (req) => {
+  req.user.parseToMySQL();
+  return await this.connect("SELECT JSON_OBJECT(" + this.jsonList('user') + ") FROM users WHERE id = " + req.user.id + ";");
 };
