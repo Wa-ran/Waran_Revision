@@ -10,8 +10,8 @@
         role="switch"
         id="darkMode"
         @change="toogleDarkMode"
+        tabindex="0"
       />
-
       <label class="form-check-label aria-only" for="darkMode"
         >Activer le mode nuit</label
       >
@@ -75,10 +75,20 @@ input.form-check-input {
   &:not(:checked) {
     border-color: $yellow-600;
     background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'><circle r='3' fill='%23ffc107'/></svg>") !important;
+    &:hover,
+    &:focus {
+      box-shadow: inset 0 0 0 1rem rgba($yellow-600, 0.3),
+        0 0 0 0.25rem rgba($yellow-600, 0.3) !important;
+    }
   }
   &:checked {
     border-color: $indigo-300;
     background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'><circle r='3' fill='%23a370f7'/></svg>") !important;
+    &:hover,
+    &:focus {
+      box-shadow: inset 0 0 0 1rem rgba($indigo-300, 0.3),
+        0 0 0 0.25rem rgba($indigo-300, 0.3) !important;
+    }
   }
 }
 </style>

@@ -12,7 +12,11 @@
           py-2
         "
       >
-        <a class="navbar-brand m-0 pe-3 py-3" href="#"> Waran </a>
+        <cust-a
+          :linkName="'Home'"
+          :linkText="this.user.pseudo ? this.user.pseudo : 'Revision'"
+          class="navbar-brand m-0 pe-3 py-0"
+        />
       </div>
       <Connexion v-if="!user.id" class="flex-grow-1" />
       <button

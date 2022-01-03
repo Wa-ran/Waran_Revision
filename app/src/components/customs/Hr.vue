@@ -4,6 +4,6 @@
 
 <script>
 export default {
-  name: "CustHr",
+  name: "Hr",
 };
 </script>
