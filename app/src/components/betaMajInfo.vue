@@ -1,17 +1,21 @@
 <template>
   <div class="container">
-    <button @click="show = !show">
+    <button
+      type="button"
+      @click="show = !show"
+      class="btn btn-primary mb-2 py-0"
+    >
       <span class="italic">{{ date }}</span>
     </button>
     <div v-if="show">
       <div v-if="bugs.length > 0">
-        <h4>Bugs réglés :</h4>
+        <h3 class="fs-5">Bugs réglés :</h3>
         <ul>
           <li v-for="(text, index) of bugs" :key="index" v-html="text"></li>
         </ul>
       </div>
       <div v-if="improvements.length > 0">
-        <h4>Amméliorations :</h4>
+        <h3 class="fs-5">Amméliorations :</h3>
         <ul>
           <li
             v-for="(text, index) of improvements"
@@ -21,7 +25,7 @@
         </ul>
       </div>
       <div v-if="todos.length > 0">
-        <h4>Bugs restants :</h4>
+        <h3 class="fs-5">Bugs restants :</h3>
         <ul>
           <li v-for="(text, index) of todos" :key="index" v-html="text"></li>
         </ul>

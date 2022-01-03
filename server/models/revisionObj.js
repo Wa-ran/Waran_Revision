@@ -2,7 +2,7 @@ const dtb = require('../middlewares/dtb');
 const dateParser = require('../middlewares/dateParser');
 const { encrypt, decrypt } = require('../middlewares/crypto');
 
-module.exports = class dtbObj {
+module.exports = class revisionObj {
 
   parseToJS() {
     for (let [key, value] of Object.entries(this)) {
@@ -16,8 +16,7 @@ module.exports = class dtbObj {
           };
         }
         catch (error) {
-          console.log([key, value])
-          throw error
+          this[key] = value
         };
       }
     };
@@ -40,8 +39,7 @@ module.exports = class dtbObj {
           };
         }
         catch (error) {
-          console.log([key, value])
-          throw error
+          this[key] = value
         };
       }
     };
@@ -59,7 +57,7 @@ module.exports = class dtbObj {
   };
 
   tryParseInt(val) {
-    return Number.isInteger(val) ? val : (isNaN(Number.parseInt(val)) ? null : Number.parseInt(val));
+    return Number.isInteger(val) ? val : (isNaN(Number.parseInt(val)) ? 0 : Number.parseInt(val));
   };
 
   isBoolean(val) {

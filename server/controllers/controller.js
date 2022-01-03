@@ -21,7 +21,7 @@ module.exports = async (req, res, next) => {
 
   const needToken = async () => {
     // Checked if token needed (not login or signup)
-    if ((fctName !== "postUser" && fctName !== "postgetUserByPseudo")) {
+    if ((fctName !== "postUser" && fctName !== "postToGetUserByPseudo")) {
       token = verifToken(req.headers.authorization);
       return
     }

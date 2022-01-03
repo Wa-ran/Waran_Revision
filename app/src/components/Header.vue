@@ -1,192 +1,80 @@
 <template>
-  <header @keyup.enter.capture="submitForm">
-    <div class="container">
-      <div v-if="!stateUser.id" class="container">
-        <button
-          v-if="!displayForm"
-          @click="displayForm = 'inscription'"
-          :class="displayForm == 'inscription' ? 'highlight' : ''"
-        >
-          <span>Inscription</span>
-        </button>
-        <button
-          v-if="!displayForm"
-          @click="displayForm = 'connexion'"
-          class="highlight"
-        >
-          <span>Connexion</span>
-        </button>
-
-        <div v-if="displayForm" class="container">
-          <h2 v-if="displayForm == 'connexion'">Connexion :</h2>
-          <h2 v-else>Inscription :</h2>
-          <div class="multiButtons">
-            <button @click="displayForm = false">
-              <span>Annuler</span>
-            </button>
-            <button @click="submitUser" class="highlight">
-              <span>Valider</span>
-            </button>
-          </div>
-        </div>
-
-        <form v-if="displayForm" class="container">
-          <input
-            v-model="pseudo"
-            placeholder="Pseudo"
-            autocomplete="username"
-            @change="autofillTest"
-          />
-          <input
-            v-model="password"
-            type="password"
-            placeholder="Password"
-            autocomplete="current-password"
-            @change="autofillTest"
-          />
-        </form>
+  <header class="container-fluid dark shadow">
+    <nav class="navbar navbar-expand-lg navbar-dark justify-content-end">
+      <div
+        class="
+          border-end border-primary
+          position-absolute
+          top-0
+          start-0
+          me-2
+          my-1
+          py-2
+        "
+      >
+        <a class="navbar-brand m-0 pe-3 py-3" href="#"> Waran </a>
       </div>
+      <Connexion v-if="!user.id" class="flex-grow-1" />
+      <button
+        v-if="user.id"
+        class="navbar-toggler btn btn-outline-primary shadow-none"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#HeaderNav"
+        aria-controls="HeaderNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <font-awesome-icon :icon="['fas', 'bars']" size="lg" />
+      </button>
 
-      <div v-else class="container">
-        <button @click="resetUser"><span>Déconnexion</span></button>
-        <div class="welcome">
-          <div>
-            Bienvenue,
-            <span style="font-weight: bold">{{ stateUser.pseudo }}</span>
-          </div>
-        </div>
+      <div
+        v-if="user.id"
+        class="
+          collapse
+          navbar-collapse
+          border-top border-primary
+          mt-2
+          ms-sm-5
+          ps-sm-5
+        "
+        id="HeaderNav"
+      >
+        <Navigation />
       </div>
-    </div>
+    </nav>
   </header>
 </template>
 
 <script>
+import Connexion from "@/components/Connexion";
+import Navigation from "@/components/Navigation";
+
 export default {
   name: "Header",
-  data() {
-    return {
-      autofill: 0,
-      displayForm: false,
-      pseudo: "",
-      password: "",
-    };
+  components: {
+    Connexion,
+    Navigation,
   },
   computed: {
-    stateUser() {
+    user() {
       return this.$store.state.user;
-    },
-    stateUserId() {
-      return this.$store.state.user.id;
-    },
-  },
-  methods: {
-    autofillTest(event) {
-      if (this.autofill === 0) this.autofill = event.timeStamp;
-      else if (event.timeStamp - this.autofill < 200) {
-        this.autofill = 0;
-        if (this.pseudo && this.password) this.submitUser();
-      } else this.autofill = 0;
-    },
-    submitForm() {
-      if (!this.pseudo)
-        document.querySelector("header input[placeholder='Pseudo']").focus();
-      else if (!this.password)
-        document.querySelector("header input[placeholder='Password']").focus();
-      else this.submitUser();
-    },
-    async submitUser() {
-      this.mutateKey("user", {
-        id: this.$store.state.user.id,
-        pseudo: this.pseudo,
-        password: this.password,
-      });
-
-      if (this.displayForm === "connexion")
-        await this.$store.dispatch("getUserByPseudo");
-      else {
-        await this.$store.dispatch("postUser").then(() => {
-          this.$store.dispatch("getUserByPseudo");
-          // alert("Inscription réussie !");
-        });
-        this.autofill = 0;
-      }
-    },
-    resetUser() {
-      this.$store.dispatch("mutateStore", {
-        fct: "resetKey",
-        value: "user",
-      });
-    },
-  },
-  watch: {
-    // displayForm() {
-    // setTimeout(() => {
-    //   document
-    //     .querySelector("header input[type = 'password']")
-    //     .addEventListener("animationstart", (e) => {
-    //       if (e.animationName.match(/onAutoFillStart/)) {
-    //         return this.submitUser();
-    //       } else if (e.animationName.match(/onAutoFillCancel/)) return;
-    //     });
-    // });
-    // }
-    // },
-    stateUserId() {
-      this.$store.dispatch("mutateStore", {
-        fct: "changeUser",
-        value: this.stateUser,
-      });
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-header {
-  z-index: 1001;
-}
-.container {
-  display: flex;
-  justify-content: flex-start;
-  flex-wrap: wrap;
-  & > * {
-    margin: auto 1rem auto 0;
-  }
-  h2 {
-    margin-right: 2rem;
-    font-weight: normal;
-    font-size: 1.1rem;
-    text-decoration: underline;
-  }
-  & .welcome {
-    display: flex;
-    justify-content: space-between;
-    flex-grow: 1;
-    & > * {
-      height: fit-content;
-      margin: auto 0.25rem;
-    }
-  }
-}
-input {
-  height: fit-content;
-  width: 40%;
-  max-width: 200px;
-  padding: 0.25rem;
-  border-bottom: solid 1px;
-}
+@import "@/styles/global.scss";
 
-@media screen and (max-width: 767px) {
-  .container {
-    width: 100%;
-    justify-content: center;
-    & > *:not(button) {
-      margin: 0.25rem;
-    }
-    & h2 {
-      margin-right: 2rem;
-      margin-top: auto;
-    }
+header {
+  background-color: $dark;
+}
+#HeaderNav {
+  @media (min-width: 576px) {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    border: none !important;
   }
 }
 </style>

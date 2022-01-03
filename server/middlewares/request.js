@@ -32,21 +32,6 @@ exports.postCard = async (req) => {
   }
 };
 
-exports.newCardTags = async (req) => {
-  await this.getLastCard(req)
-    .then(async (lastCard) => {
-      req.card = lastCard;
-      let tagsList = req.tag;
-      for await (tag of tagsList) {
-        req.tag = tag;
-        dtbFct.createCardTag(req)
-      };
-    })
-    .then(() => {
-      if (req.assets.order.length > 0) return this.putCardOrder(req)
-    })
-};
-
 exports.putCard = async (req) => {
   req.card.calculNextRevision();
   req.card.inverseRectoVerso();
@@ -57,29 +42,29 @@ exports.deleteCard = async (req) => {
   await dtbFct.deleteCard(req)
 };
 
-exports.getTag = async (req) => {
-  let resTag;
-  await dtbFct.selectTag(req)
-    .then(dtbTag => {
-      resTag = createObj("tag", dtbTag[0])
+exports.getDeck = async (req) => {
+  let resDeck;
+  await dtbFct.selectDeck(req)
+    .then(dtbDeck => {
+      resDeck = createObj("deck", dtbDeck[0])
     })
-  return resTag
+  return resDeck
 };
 
-exports.postTag = async (req) => {
-  if (req.tag.id) {
+exports.postDeck = async (req) => {
+  if (req.deck.id) {
     throw "Id déjà existant"
   } else {
-    await dtbFct.createTag(req)
+    await dtbFct.createDeck(req)
   }
 };
 
-exports.putTag = async (req) => {
-  await dtbFct.updateTag(req)
+exports.putDeck = async (req) => {
+  await dtbFct.updateDeck(req)
 };
 
-exports.deleteTag = async (req) => {
-  await dtbFct.deleteTag(req)
+exports.deleteDeck = async (req) => {
+  await dtbFct.deleteDeck(req)
 };
 
 exports.getAllUserCards = async (req) => {
@@ -94,9 +79,9 @@ exports.getAllUserCards = async (req) => {
   return resList
 };
 
-exports.getAllUserCardsByTagsAND = async (req) => {
+exports.getAllCardsOnDeck = async (req) => {
   let resList = [];
-  await dtbFct.selectAllUserCardsByTagsAND(req)
+  await dtbFct.selectAllCardsOnDeck(req)
     .then((list) => {
       for (card of list) {
         let objCard = createObj("card", card);
@@ -106,25 +91,15 @@ exports.getAllUserCardsByTagsAND = async (req) => {
   return resList
 };
 
-exports.getAllUserCardsByTagsOR = async (req) => {
+exports.getAllUserDecks = async (req) => {
   let resList = [];
-  await dtbFct.selectAllUserCardsByTagsOR(req)
-    .then((list) => {
-      for (card of list) {
-        let objCard = createObj("card", card);
-        resList.push(objCard);
-      };
-    })
-  return resList
-};
-
-exports.getAllUserTags = async (req) => {
-  let resList = [];
-  await dtbFct.selectAllUserTags(req)
-    .then((list) => {
-      for (tag of list) {
-        let objTag = createObj("tag", tag);
-        resList.push(objTag);
+  await dtbFct.selectAllUserDecks(req)
+    .then(async (list) => {
+      for (deck of list) {
+        let objDeck = createObj("deck", deck);
+        let infos = await dtbFct.selectDeckInfos({ 'deck': objDeck });
+        Object.assign(objDeck, infos[0]);
+        resList.push(objDeck);
       };
     })
   return resList
@@ -142,9 +117,9 @@ exports.getCardsToRevise = async (req) => {
   return resList
 };
 
-exports.postgetCardsToReviseByTagsAND = async (req) => {
+exports.getCardsToReviseOnDeck = async (req) => {
   let resList = [];
-  await dtbFct.selectCardsToReviseByTagsAND(req)
+  await dtbFct.selectCardsToReviseOnDeck(req)
     .then((list) => {
       for (card of list) {
         let objCard = createObj("card", card);
@@ -152,65 +127,6 @@ exports.postgetCardsToReviseByTagsAND = async (req) => {
       };
     })
   return resList
-};
-
-exports.postgetCardsToReviseByTagsOR = async (req) => {
-  let resList = [];
-  await dtbFct.selectCardsToReviseByTagsOR(req)
-    .then((list) => {
-      for (card of list) {
-        let objCard = createObj("card", card);
-        resList.push(objCard);
-      };
-    })
-  return resList
-};
-
-exports.getCardTags = async (req) => {
-  let resList = [];
-  await dtbFct.selectCardTags(req)
-    .then((list) => {
-      for (tag of list) {
-        let objTag = createObj("tag", tag);
-        resList.push(objTag);
-      };
-    })
-  return resList
-};
-
-exports.getTagOrder = async (req) => {
-  let resList = [];
-  await dtbFct.selectTagOrder(req)
-    .then((list) => {
-      resList = list;
-    })
-  return resList
-};
-
-exports.postCardTags = async (req) => {
-  await this.getCardTags(req)
-    .then(async (DtbList) => {
-      // On récupère les tags déjà associés et on enlève les doublons
-      let reqList = req.tag;
-      filtList = [].concat(
-        reqList.filter(reqTag => DtbList.every(dtbTag => reqTag.id !== dtbTag.id)),
-        DtbList.filter(dtbTag => reqList.every(reqTag => dtbTag.id !== reqTag.id))
-      );
-      if (filtList.length > 0) {
-        for await (tag of filtList) {
-          req.tag = tag;
-          dtbFct.createCardTag(req)
-        };
-      }
-    })
-};
-
-exports.putCardOrder = async (req) => {
-  await this.updateCardOrder(req);
-};
-
-exports.deleteCardTags = async (req) => {
-  await dtbFct.deleteCardTag(req)
 };
 
 exports.getUserById = async (req) => {
@@ -222,7 +138,7 @@ exports.getUserById = async (req) => {
   return resUser
 };
 
-exports.postgetUserByPseudo = async (req) => {
+exports.postToGetUserByPseudo = async (req) => {
   let resUser;
   let reqUser = createObj("user", req.user);
   let dtbUser;

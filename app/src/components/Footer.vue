@@ -1,19 +1,16 @@
 <template>
-  <footer></footer>
+  <footer class="footer bg-dark py-2">
+    <DarkSwitch />
+  </footer>
 </template>
 
 <script>
+import DarkSwitch from "@/components/DarkSwitch";
+
 export default {
   name: "Footer",
+  components: {
+    DarkSwitch,
+  },
 };
 </script>
-
-<style lang="scss" scoped>
-@import "../styles/variables";
-
-footer {
-  height: 1rem;
-  background-color: $dark_bgc;
-  border-top: solid 1px $highlight;
-}
-</style>

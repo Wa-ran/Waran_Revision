@@ -3,19 +3,26 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 
+// import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap";
+
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
+  faBars,
   faBold,
   faCaretDown,
   faCheck,
   faChevronLeft,
   faChevronRight,
   faCircle,
+  faCog,
   faHistory,
   faItalic,
+  faMoon,
   faQuestion,
   faShare,
   faStrikethrough,
+  faSun,
   faTimes,
   faTint,
   faTrashAlt,
@@ -25,25 +32,31 @@ import {
 import { faHourglass } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-import { CssDoodle } from "css-doodle";
-
 import VueMathjax from "vue-mathjax-next";
 
-import DoubleCheckButton from "@/components/DoubleCheckButton.vue";
+import "css-doodle";
+// import VueCssDoodle from "@luxdamore/vue-css-doodle";
+// import "@luxdamore/vue-css-doodle/dist/VueCssDoodle.css";
+
+// import DoubleCheckButton from "@/components/DoubleCheckButton.vue";
 
 library.add(
+  faBars,
   faBold,
   faCaretDown,
   faCheck,
   faChevronLeft,
   faChevronRight,
   faCircle,
+  faCog,
   faHistory,
   faHourglass,
   faItalic,
+  faMoon,
   faQuestion,
   faShare,
   faStrikethrough,
+  faSun,
   faTimes,
   faTint,
   faTrashAlt,
@@ -52,6 +65,9 @@ library.add(
 );
 
 const VueApp = createApp(App);
+
+VueApp.config.compilerOptions.isCustomElement = (tag) =>
+  tag.startsWith("css-doodle");
 
 VueApp.mixin({
   methods: {
@@ -78,10 +94,34 @@ VueApp.mixin({
   },
 });
 
+VueApp.mixin({
+  methods: {
+    mutateApp(appKey, value) {
+      let app = { ...this.$store.state.app };
+      app[appKey] = value;
+      this.mutateKey('app', app);
+    },
+  },
+});
+
+VueApp.mixin({
+  methods: {
+    setModal(body) {
+      this.$store.dispatch("mutateStore", {
+        fct: "mutateKey",
+        value: {
+          sKey: "modal",
+          body,
+        },
+      });
+    },
+  },
+});
+
 VueApp.component("font-awesome-icon", FontAwesomeIcon);
-VueApp.component("css-doodle", CssDoodle);
+// VueApp.component(VueCssDoodle.name, VueCssDoodle);
 VueApp.component("vue-mathjax", VueMathjax);
-VueApp.component("DoubleCheckButton", DoubleCheckButton);
-VueApp.use(store).use(router);
+// VueApp.component("DoubleCheckButton", DoubleCheckButton);
+VueApp.use(store).use(router).use(VueMathjax);
 
 VueApp.mount("#app");

@@ -1,22 +1,14 @@
-const dtbObj = require('./dtbObj');
+const revisionObj = require('./revisionObj');
 const bcrypt = require('bcrypt');
 
-module.exports = class User extends dtbObj {
+module.exports = class User extends revisionObj {
 
   constructor(id, pseudo, password) {
     super();
     this.id = this.tryParseInt(id);
     this.pseudo = pseudo;
     this.password = password;
-  };
-
-  parseToJS() {
-    let token = this.token;
-    delete this.token;
-    delete this.password;
-    super.parseToJS();
-    this['token'] = token;
-    return this;
+    this.parseToJS();
   };
 
   parseToMySQL() {

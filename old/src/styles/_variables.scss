@@ -1,0 +1,50 @@
+$dark_bgc: #211a4c;
+$highlight: #e7576a;
+$bgc: rgb(49, 17, 75);
+$white: rgb(247, 236, 248);
+
+$colors: (
+  'cust_highlight' $highlight,
+  'cust_bgc' $bgc,
+  'cust_white' $white,
+  'cust_dark_bgc' $dark_bgc,
+  'cust_red' red,
+  'cust_orange' orange,
+  'cust_yellow' yellow,
+  'cust_green' limegreen,
+  'cust_blue' dodgerblue,
+);
+
+$card_rad: 1rem;
+
+
+@each $name, $color in $colors {
+  .#{$name} {
+    color: $color !important;
+  };
+};
+
+@for $i from 1 through 10 {
+  .flex-grow-#{$i} {
+    flex-grow: $i;
+  }
+  .z-index-#{$i} {
+    z-index: $i;
+  }
+};
+
+@mixin case_style {
+  background-color: $dark_bgc;
+  border: solid 1px $highlight;
+  padding: 0.15rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  & span {
+    margin: 0 0.75rem;
+  }
+  & svg {
+    margin: 0 0.5rem;
+    margin-right: auto;
+  }
+}

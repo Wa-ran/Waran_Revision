@@ -4,15 +4,11 @@ html {
   height: 100%;
   width: 100%;
   overflow-x: hidden;
-  background-color: $bgc;
-  color: $white;
   word-wrap: break-word;
 
   & * {
     font-family: "Roboto", sans-serif;
-    max-width: 100vw;
-  }
-  & *:not(del), & *:not(.bold) {
+    // max-width: 100vw;
     text-decoration-thickness: 1px !important;
     // text-underline-position: under;
   }
@@ -27,11 +23,11 @@ html {
   height: 0;
 }
 ::-webkit-scrollbar-track {
-  background: $dark_bgc;
-  border-left: solid 1px $highlight;
+  background: red;
+  border-left: solid 1px red;
 }
 ::-webkit-scrollbar-thumb {
-  background: $highlight;
+  background: red;
   border-radius: 5px;
 }
 
@@ -43,390 +39,57 @@ body,
   margin: 0;
 }
 
-input, textarea, div[contenteditable="true"] {
-  resize: none;
-
-  height: 100%;
-  flex-grow: 1;
-
-  border: none;
-  background-color: inherit;
-  color: inherit;
-  padding: 1rem;
-  text-align: center;
-}
-// div[contenteditable="true"] span:hover {
-//   background-color: rgba($highlight, 0.35);
-//   border-radius: 0.25rem;
-// }
-.bold {
-  font-weight: bold;
-}
-.italic {
-  font-style: italic;
-}
-.underline {
-  text-decoration: underline;
+button, a {
+  font-weight: bold !important;
 }
 
-button {
-  @include case_style;
+.card-body {
   z-index: 100;
-  color: $white;
-  min-width: max-content;
-  max-width: 250px;
-  min-height: 28px;
-  font-size: 1rem;
-  border-radius: 0.25rem;
-  padding: 0 0.75rem;
-  & > span {
-    margin: auto;
-  }
-  &:not(.disabled) {
-    &.selected, &.highlight, &.checked, &:hover, &:focus, &:active {
-      font-weight: bold;
-      box-shadow: inset 0 0 0 1px $dark_bgc;
-    }
-    &:hover, &:focus, &:active {
-      background-color: $highlight;
-      color: $dark_bgc;
-      z-index: 101;
-    }
-    &:hover {
-      border: solid 1px $white;
-      outline: solid 1px $white;
-    }
-    &.highlight {
-      background-color: $highlight;
-      color: $dark_bgc;
-      box-shadow: inset 0 0 0 2px $dark_bgc;
-      &:hover, &:focus, &:active {
-        box-shadow: inset 0 0 0 1px $dark_bgc;
-      }
-      &-active:hover, &-active:focus, &-active:active {
-        background-color: $highlight;
-      }
-    }
-    &.white {
-      background-color: $white;
-      color: $dark_bgc;
-      &-active:hover, &-active:focus, &-active:active {
-        background-color: $white;
-        box-shadow: inset 0 0 0 1px $dark_bgc;
-      }
-    }
-    &.checked {
-      box-shadow: 0 0 2px 2px $highlight;
-    }
-    & > span {
-      flex-grow: 1;
-      padding: 0 0.5rem;
-    }
-    &.icon svg{
-      margin: 0 0.5rem;
-    }
-    &.icon {
-      color: $highlight;
-      background-color: transparent;
-      border: none;
-      box-shadow: none;
-      &:hover, &:focus, &:active {
-        border: none;
-        box-shadow: none;
-        background-color: transparent;
-        outline: none;
-      }
-      &.highlight {
-        color: $highlight;
-        &:hover, &:focus, &:active {
-          color: $white;
-        }
-      }
-      &.white {
-        color: $white;
-        &:hover, &:focus, &:active {
-          color: $highlight;
-        }
-      }
-    }
-  }
+}
+.btn {
+  box-shadow: inset 0 0 0 1px $body-bg;
 }
 
-.multiButtons {
-  margin: 0;
-  display: flex;
-  justify-content: flex-start;
-  & button {
-    margin: 0;
-    flex-grow: 1;
-    &:not(:first-child) {
-      margin-left: -1px;
-      border-radius: 0 0.25rem 0.25rem 0;
-    }
-    &:not(:last-child) {
-      margin-right: -1px;
-      border-radius: 0.25rem 0 0 0.25rem;
-    }
-    &:last-child {
-      margin-left: 0;
-    }
-  }
-}
-
-.importantButton:hover {
-  background-color: $white;
-  color: red;
-  font-weight: bold;
-}
-
-.indication {
-  font-style: italic;
-}
-
-header {
-  background-color: $dark_bgc;
-  border-bottom: solid 1px $highlight;
-  padding: .5rem 1rem;
-  margin-bottom: 1rem;
-}
-
-hr {
-  height: 0;
-  border: none;
-  border-top: solid 1px $highlight;
-  background-color: transparent;
-  margin: 1rem;
-}
-
-.deck .card {
-  width: 90%;
-  height: 75vh;
-  max-width: 350px;
-  max-height: 550px;
-}
-
-.card {
-  border: solid 1px $highlight;
-  border-radius: $card_rad;
-  background: linear-gradient(0deg, $dark_bgc 0%, $bgc 80%, $bgc 100%);
-  z-index: 100;
-  position: relative;
-  min-width: 300px;
-  min-height: 500px;
-  &.sub_card {
-    z-index: 49;
-  }
-  & hr {
-    margin: 0.5rem;
-    border-top: none;
-  }
-  & .recto,
-  & .verso {
-    position: absolute;
-    left: 1rem;
-    top: 1rem;
-    width: calc(100% - 2rem);
-    height: calc(100% - 2rem);
-
-    // -webkit-backface-visibility: hidden;
-    // backface-visibility: hidden;
-
-    display: flex;
-    flex-direction: column;
-    align-content: flex-start;
-    & > .content {
-      margin: 0;
-      background-color: $dark_bgc;
-      // box-shadow: 0 0 10px 5px rgba(2, 9, 53, 0.55);
-      border: solid 1px $highlight;
-      text-align: center;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 1.1rem;
-      // flex-grow: 1;
-      position: relative;
-    }
-    & .editorZone {
-      &:focus-within {
-        border: solid 1px $white;
-        outline: solid 1px $white;
-        border-radius: 0.25rem;
-        // box-shadow: inset 0 0 5px 2px $highlight;
-      }
-    }
-    & .content.main--content {
-      min-height: 100px;
-      height: min-content;
-      max-height: 45%;
-      width: auto;
-      max-width: 100%;
-      padding: 0;
-      padding-bottom: 1rem;
-      flex-direction: column;
-      align-content: center;
-      justify-content: flex-start;
-      overflow-y: scroll;
-      & > * {
-        margin: auto;
-        width: auto;
-        min-width: 85%;
-      }
-    }
-    & .flip-card {
-      position: absolute;
-      top: -0.5rem;
-      right: -0.75rem;
-      margin: 0;
-      padding: 0;
-      color: $white;
-      &:hover {
-        box-shadow: none;
-      }
-    }
-  }
-  & .recto .content {
-    &:not(.plain) {
-      background: radial-gradient(circle at 50% 215px, transparent 45px, $dark_bgc 46px);
-    }
-    & .porthole {
-      position: relative;
-      border: solid 1px $highlight;
-      border-radius: 100%;
-      color: $highlight;
-      width: 92px;
-      height: 92px;
-      margin-top: 169px;
-      // box-shadow: inset 0 0 10px 5px rgba(2, 9, 53, 0.55);
-      &:hover {
-        border-color: $white;
-      }
-      & > * {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        & > * {
-          margin: auto;
-        }
-      }
-    }
-    & > * {
-      height: 100%;
-      width: 100%;
-      margin: auto;
-      display: flex;
-      flex-direction: column;
-      & > * {
-        height: fit-content;
-        margin: auto;
-      }
-      & .chrono {
-        margin: 0 auto;
-        color: $highlight;
-      }
-    }
-  }
-}
-
-.readingZone {
+.h-fit {
   height: fit-content;
-  padding: 1rem;
-  &.comment {
-    margin-bottom: 0;
-    padding-top: 0;
-    padding-bottom: 0;
-    font-size: 0.9rem;
-  }
-  & p {
-    margin: 0.5rem;
-    margin-bottom: 0;
-    text-align: left;
-  }
-  & + hr {
-    width: 80%;
-    border-top: solid 1px $highlight;
-    margin: 0 auto;
-  }
 }
-
-.doodle {
+.w-fit {
+  width: fit-content;
+}
+.aria-only {
   position: absolute;
-  width: 100%;
-  height: 100%;
   overflow: hidden;
-  border-radius: $card_rad;
-  z-index: -1;
+  white-space: nowrap;
+  margin: 0;
+  padding: 0;
+  height: 0;
+  width: 0;
 }
-css-doodle {
-  position: absolute;
-  width: 110%;
-  height: 110%;
-  top: -5%;
-  left: -5%;
 
-  // --rule: (
-  //   @grid: 35;
-  //   --deg: @p(45deg, -45deg, 135deg, -135deg);
-  //   --lg: linear-gradient(@var(--deg),#60569e 50%, transparent 0);
-  //   @nth(2n + 1) {
-  //     background:
-  //     @var(--lg) 0 0 / 100% 100%,
-  //     @var(--lg) 0 0 / 50% 50%;
-  //   }
-  //   @nth(2n) {
-  //   }
-  // );
-  // --rule1: (
-  //   :doodle {
-  //     @grid: 35;
-  //     background: #0a0c27;
-  //   };
-  //   --hue: calc(180 + 1.5 * @row * @col);
-  //   background: hsl(var(--hue), 50%, 70%);
-  //   margin: -.5px;
-  //   transition: @r(.5s) ease;
-  //   clip-path: polygon(@pick(
-  //     '0 0, 100% 0, 100% 100%',
-  //     '0 0, 100% 0, 0 100%',
-  //     '0 0, 100% 100%, 0 100%',
-  //     '100% 0, 100% 100%, 0 100%'
-  //   ));
-  // );
-  // --pattern-9: (
-  //   @grid: 1 / 100%;
-  //   background-color: $bgc;
-  //   background-image: @doodle(
-  //     :doodle {
-  //       @grid: 1 / 10000px;
-  //       transform: scale(1.5) rotate(45deg);
-  //     }
-  //     background-size: 300px 300px;
-  //     background-image: @doodle(
-  //       @grid: 1 / 100%;
-  //       background: @doodle(
-  //         @grid: @r(8) / 100%;
-  //           background: @doodle(
-  //           @grid: @r(10) / 100%;
-  //           background: radial-gradient(
-  //             @stripe.@m2.@p(
-  //               @m10(#293462),
-  //               @m10(#211a4c), 
-  //               @m2(#b2ebf2), 
-  //               #e84a5f
-  //             )
-  //           );
-  //         );
-  //       );
-  //     );
-  //   );
-  // );
-  // --pattern-card-side: (
-  //   @grid: 32;
-  //   @size: 1px calc(35px + 70%);
-  //   transform: rotate(@r(±90deg));
-  //   background: #e84a5f;
-  //   opacity: calc(1 - 1 / 1000 * @index);
-  // )
+.dark {
+  --bs-dark-rgb: 41, 37, 33; //$black
+  --bs-body-bg-rgb: 18, 18, 18; //$dark
+  #app {
+    background-color: $black;
+    color: $white;
+  }
+  * {
+    border-color: $orange-600;
+  }
+  .btn {
+    box-shadow: inset 0 0 0 1px $black;
+    &.btn-primary {
+      background-color: $orange-600;
+      &:hover {
+        background-color: $orange-500;
+      }
+    }
+    &.btn-outline-primary {
+      color: $orange-600;
+      &:hover {
+        color: $black;
+        background-color: $orange-600;
+      }
+    }
+  }
 }

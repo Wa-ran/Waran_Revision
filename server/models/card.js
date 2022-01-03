@@ -1,8 +1,8 @@
-const dtbObj = require('./dtbObj');
+const revisionObj = require('./revisionObj');
 
 const HOURS_SUITE = {
   0: 0,
-  1: 6,
+  1: 2,
   2: 6,
   3: 12,
   4: 12,
@@ -34,9 +34,9 @@ const HOURS_SUITE = {
   30: 7320
 };
 
-module.exports = class Card extends dtbObj {
+module.exports = class Card extends revisionObj {
 
-  constructor(id, recto, verso, streak, user_id, next_revision, reverse, recto_comment, verso_comment, recto_formula, verso_formula, recto_image, verso_image) {
+  constructor(id, recto, verso, streak, user_id, next_revision, reverse, comment, deck_id, recto_formula, verso_formula, recto_image, verso_image, win) {
     super();
     this.id = this.tryParseInt(id);
     this.recto = recto;
@@ -44,13 +44,15 @@ module.exports = class Card extends dtbObj {
     this.streak = this.tryParseInt(streak);
     this.user_id = this.tryParseInt(user_id);
     this.next_revision = next_revision ? next_revision : new Date();
-    this.recto_comment = recto_comment;
-    this.verso_comment = verso_comment;
+    this.comment = comment;
+    this.deck_id = deck_id;
     this.recto_formula = this.isBoolean(recto_formula);
     this.verso_formula = this.isBoolean(verso_formula);
     this.recto_image = this.isBoolean(recto_image);
     this.verso_image = this.isBoolean(verso_image);
     this.reverse = this.isBoolean(reverse);
+    this.win = this.isBoolean(win);
+    this.parseToJS();
   };
 
   calculNextRevision() {
@@ -63,11 +65,8 @@ module.exports = class Card extends dtbObj {
   inverseRectoVerso() {
     if (this.reverse) {
       let recto = this.recto;
-      let recto_comment = this.recto_comment;
       this.recto = this.verso;
       this.verso = recto;
-      this.recto_comment = this.verso_comment;
-      this.verso_comment = recto_comment;
     }
   };
 }

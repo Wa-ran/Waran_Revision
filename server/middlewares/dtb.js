@@ -1,3 +1,4 @@
+const createObj = require('./createObj');
 const fctArgsNames = require('./fctArgsNames');
 
 exports.insertRequest = (obj) => {
@@ -28,9 +29,9 @@ exports.updateRequest = (obj) => {
   return req;
 };
 
-exports.jsonList = (objName) => {
+exports.jsonObj = (objName) => {
   let req = '';
-  for (let params of fctArgsNames(objName)) {
+  for (let params of fctArgsNames("dtb" + objName.charAt(0).toUpperCase() + objName.slice(1))) {
     req += `'${params}', ${objName}s.${params}, `
   }
   req = req.substring(0, req.length - 2);
@@ -41,7 +42,6 @@ exports.jsonList = (objName) => {
 const mysqlx = require('@mysql/xdevapi');
 const config = {
   password: 'pass',
-  // password: 'root',
   user: 'root',
   // host: 'localhost',
   // port: '3306',
@@ -80,145 +80,94 @@ exports.connect = async (fctRequest) => {
 };
 
 exports.createCard = async (req) => {
-  req.card.parseToMySQL();
-  await this.connect(this.insertRequest(req.card));
+  let card = createObj("dtbCard", req.card);
+  await this.connect(this.insertRequest(card));
 };
 
-exports.createCardTag = async (req) => {
-  await this.connect('INSERT INTO cards_tags (card_id, tag_id) VALUES (' + req.card.id + ', ' + req.tag.id + ');');
-};
-
-exports.createTag = async (req) => {
-  req.tag.parseToMySQL();
-  await this.connect(this.insertRequest(req.tag));
+exports.createDeck = async (req) => {
+  let deck = createObj("dtbDeck", req.deck);
+  await this.connect(this.insertRequest(deck));
 };
 
 exports.selectAllUserCards = async (req) => {
-  return await this.connect("SELECT JSON_OBJECT(" + this.jsonList('card') + ") FROM cards WHERE user_id = " + req.user.id + ";");
+  return await this.connect("SELECT JSON_OBJECT(" + this.jsonObj('card') + ") FROM cards WHERE user_id = " + req.user.id + ";");
 };
 
-exports.selectAllUserCardsByTagsAND = async (req) => {
-  let tagsIdList = "(";
-  for (let tag of req.tag) {
-    tagsIdList += ` ${tag.id},`
-  };
-  tagsIdList = tagsIdList.replace(" ", "").slice(0, -1);
-  tagsIdList += ")";
-
-  return await this.connect("SELECT JSON_OBJECT(" + this.jsonList('card') + ") FROM cards JOIN cards_tags ON cards.id = cards_tags.card_id JOIN tags ON cards_tags.tag_id = tags.id WHERE cards.user_id = " + req.user.id + " AND tags.id IN " + tagsIdList + " GROUP BY cards.id HAVING COUNT(DISTINCT tags.id) = " + req.tag.length + ";");
+exports.selectAllCardsOnDeck = async (req) => {
+  return await this.connect("SELECT JSON_OBJECT(" + this.jsonObj('card') + ") FROM cards WHERE cards.user_id = " + req.user.id + " AND cards.deck_id = " + req.deck.id + ";");
 };
 
-exports.selectAllUserCardsByTagsOR = async () => {
-  let tagsIdList = "(";
-  for (let tag of req.tag) {
-    tagsIdList += ` ${tag.id},`
-  };
-  tagsIdList = tagsIdList.replace(" ", "").slice(0, -1);
-  tagsIdList += ")";
-
-  return await this.connect("SELECT JSON_OBJECT(" + this.jsonList('card') + ") FROM cards JOIN cards_tags ON cards.id = cards_tags.card_id JOIN tags ON cards_tags.tag_id = tags.id WHERE cards.user_id = " + req.user.id + " AND tags.id IN " + tagsIdList + " GROUP BY cards.id;");
-};
-
-exports.selectAllUserTags = async (req) => {
-  return await this.connect("SELECT JSON_OBJECT(" + this.jsonList('tag') + ") FROM tags WHERE user_id = " + req.user.id + ";");
+exports.selectAllUserDecks = async (req) => {
+  return await this.connect("SELECT JSON_OBJECT(" + this.jsonObj('deck') + ") FROM decks WHERE user_id = " + req.user.id + ";");
 };
 
 exports.selectCard = async (req) => {
-  return await this.connect("SELECT JSON_OBJECT(" + this.jsonList('card') + ") FROM cards WHERE id = " + req.card.id + ";");
-};
-
-exports.selectCardTags = async (req) => {
-  return await this.connect("SELECT JSON_OBJECT('id', tags.id, 'name', tags.name, 'user_id', tags.user_id) FROM tags JOIN cards_tags ON cards_tags.tag_id = tags.id JOIN cards ON cards.id = cards_tags.card_id WHERE cards.id = " + req.card.id + ";");
+  return await this.connect("SELECT JSON_OBJECT(" + this.jsonObj('card') + ") FROM cards WHERE id = " + req.card.id + ";");
 };
 
 exports.selectCardsToRevise = async (req) => {
-  return await this.connect("SELECT JSON_OBJECT(" + this.jsonList('card') + ") FROM cards WHERE user_id = " + req.user.id + " AND next_revision < NOW();");
+  return await this.connect("SELECT JSON_OBJECT(" + this.jsonObj('card') + ") FROM cards WHERE user_id = " + req.user.id + " AND next_revision < NOW();");
 };
 
-exports.selectCardsToReviseByTagsAND = async (req) => {
-  let tagsIdList = "(";
-  for (let tag of req.tag) {
-    tagsIdList += ` ${tag.id},`
-  };
-  tagsIdList = tagsIdList.replace(" ", "").slice(0, -1);
-  tagsIdList += ")";
-
-  return await this.connect("SELECT JSON_OBJECT(" + this.jsonList('card') + ") FROM cards JOIN cards_tags ON cards.id = cards_tags.card_id JOIN tags ON cards_tags.tag_id = tags.id WHERE cards.user_id = " + req.user.id + " AND next_revision < NOW() AND tags.id IN " + tagsIdList + " GROUP BY cards.id HAVING COUNT(DISTINCT tags.id) = " + req.tag.length + ";");
+exports.selectDeckInfos = async (req) => {
+  return await this.connect("SELECT JSON_OBJECT('cards_total_number', COUNT(*), 'cards_to_revise', SUM(CASE WHEN next_revision < NOW() THEN 1 ELSE 0 END)) FROM cards WHERE deck_id = " + req.deck.id + ";");
 };
 
-exports.selectCardsToReviseByTagsOR = async (req) => {
-  let tagsIdList = "(";
-  for (let tag of req.tag) {
-    tagsIdList += ` ${tag.id},`
-  };
-  tagsIdList = tagsIdList.replace(" ", "").slice(0, -1);
-  tagsIdList += ")";
-
-  return await this.connect("SELECT JSON_OBJECT(" + this.jsonList('card') + ") FROM cards JOIN cards_tags ON cards.id = cards_tags.card_id JOIN tags ON cards_tags.tag_id = tags.id WHERE cards.user_id = " + req.user.id + " AND next_revision < NOW() AND tags.id IN " + tagsIdList + " GROUP BY cards.id;");
+exports.selectCardsToReviseOnDeck = async (req) => {
+  return await this.connect("SELECT JSON_OBJECT(" + this.jsonObj('card') + ") FROM cards WHERE cards.deck_id = " + req.deck.id + " AND next_revision < NOW() ORDER BY cards.id;");
 };
 
 exports.selectLastCardCreated = async () => {
-  return await this.connect("SELECT JSON_OBJECT(" + this.jsonList('card') + ") FROM cards ORDER BY id DESC LIMIT 1;");
+  return await this.connect("SELECT JSON_OBJECT(" + this.jsonObj('card') + ") FROM cards ORDER BY id DESC LIMIT 1;");
 };
 
-exports.selectLastTagCreated = async () => {
-  return await this.connect("SELECT JSON_OBJECT(" + this.jsonList('tag') + ") FROM tags ORDER BY id DESC LIMIT 1;");
+exports.selectLastDeckCreated = async () => {
+  return await this.connect("SELECT JSON_OBJECT(" + this.jsonObj('deck') + ") FROM decks ORDER BY id DESC LIMIT 1;");
 };
 
 exports.selectLastUserCard = async (req) => {
-  return await this.connect("SELECT JSON_OBJECT(" + this.jsonList('card') + ") FROM cards WHERE user_id = " + req.user.id + " ORDER BY id DESC LIMIT 1;");
+  return await this.connect("SELECT JSON_OBJECT(" + this.jsonObj('card') + ") FROM cards WHERE user_id = " + req.user.id + " ORDER BY id DESC LIMIT 1;");
 };
 
-exports.selectTag = async (req) => {
-  return await this.connect("SELECT JSON_OBJECT(" + this.jsonList('tag') + ") FROM tags WHERE id = " + req.tag.id + ";");
-};
-
-exports.selectTagOrder = async (req) => {
-  return await this.connect("SELECT JSON_OBJECT('card.id', cards_tags.card_id, 'card_order', cards_tags.card_order) FROM tags JOIN cards_tags ON cards_tags.tag_id = tags.id WHERE tags.id = " + req.tag.id + ";");
+exports.selectDeck = async (req) => {
+  return await this.connect("SELECT JSON_OBJECT(" + this.jsonObj('deck') + ") FROM decks WHERE id = " + req.deck.id + ";");
 };
 
 exports.updateCard = async (req) => {
-  req.card.parseToMySQL();
-  return await this.connect(this.updateRequest(req.card));
+  let card = createObj("dtbCard", req.card);
+  return await this.connect(this.updateRequest(card));
 };
 
-exports.updateCardImage = async (req) => {
-  req.card.parseToMySQL();
-  return await this.connect(`UPDATE cards_tags SET has_image = ${req.assets.has_image} WHERE card_id = ${req.card.id};`);
-};
+// have to use recto_image/verso_image !
+// exports.updateCardImage = async (req) => {
+//   let card = createObj("dtbCard", req.card);
+//   return await this.connect(`UPDATE cards_tags SET has_image = ${req.card.has_image} WHERE card_id = ${card.id};`);
+// };
 
-exports.updateCardOrder = async (req) => {
-  return await this.connect(`UPDATE cards_tags SET card_order = ${req.assets.deck_order.order} WHERE card_id = ${req.card.id} AND tag_id = ${req.assets.tag_id};`);
-};
-
-exports.updateTag = async (req) => {
-  req.tag.parseToMySQL();
-  return await this.connect(this.updateRequest(req.tag));
+exports.updateDeck = async (req) => {
+  let deck = createObj("dtbDeck", req.deck);
+  return await this.connect(this.updateRequest(deck));
 };
 
 exports.deleteCard = async (req) => {
   return await this.connect('DELETE FROM cards WHERE id = ' + req.card.id + ';');
 };
 
-exports.deleteCardTag = async (req) => {
-  return await this.connect('DELETE FROM cards_tags WHERE card_id = ' + req.card.id + ' AND tag_id = ' + req.tag.id + ';');
-};
-
-exports.deleteTag = async (req) => {
-  return await this.connect('DELETE FROM tags WHERE id = ' + req.tag.id + ';');
+exports.deleteDeck = async (req) => {
+  return await this.connect('DELETE FROM decks WHERE id = ' + req.deck.id + ';');
 };
 
 exports.createUser = async (req) => {
-  req.user.parseToMySQL();
-  await this.connect(this.insertRequest(req.user));
+  let user = createObj("dtbUser", req.user);
+  await this.connect(this.insertRequest(user));
 };
 
 exports.selectUserByPseudo = async (req) => {
-  req.user.parseToMySQL();
-  return await this.connect("SELECT JSON_OBJECT(" + this.jsonList('user') + ") FROM users WHERE pseudo = " + req.user.pseudo + ";");
+  let user = createObj("dtbUser", req.user);
+  return await this.connect("SELECT JSON_OBJECT(" + this.jsonObj('user') + ") FROM users WHERE pseudo = " + user.pseudo + ";");
 };
 
 exports.selectUserById = async (req) => {
-  req.user.parseToMySQL();
-  return await this.connect("SELECT JSON_OBJECT(" + this.jsonList('user') + ") FROM users WHERE id = " + req.user.id + ";");
+  let user = createObj("dtbUser", req.user);
+  return await this.connect("SELECT JSON_OBJECT(" + this.jsonObj('user') + ") FROM users WHERE id = " + user.id + ";");
 };
