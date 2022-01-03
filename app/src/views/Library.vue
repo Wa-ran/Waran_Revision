@@ -8,7 +8,7 @@
     </button>
     <div
       v-if="$store.state.decksList.length > 0"
-      class="d-flex flex-wrap justify-content-center"
+      class="d-flex flex-wrap justify-content-center w-100"
       :key="$store.state.decksList.length"
     >
       <Deck

@@ -38,6 +38,7 @@ import "css-doodle";
 // import VueCssDoodle from "@luxdamore/vue-css-doodle";
 // import "@luxdamore/vue-css-doodle/dist/VueCssDoodle.css";
 
+import CustHr from "@/components/customs/CustHr.vue";
 // import DoubleCheckButton from "@/components/DoubleCheckButton.vue";
 
 library.add(
@@ -121,6 +122,7 @@ VueApp.mixin({
 VueApp.component("font-awesome-icon", FontAwesomeIcon);
 // VueApp.component(VueCssDoodle.name, VueCssDoodle);
 VueApp.component("vue-mathjax", VueMathjax);
+VueApp.component("cust-hr", CustHr);
 // VueApp.component("DoubleCheckButton", DoubleCheckButton);
 VueApp.use(store).use(router).use(VueMathjax);
 

@@ -12,11 +12,6 @@ const routes = [
     component: Home,
     children: [
       {
-        path: "",
-        name: "Accueil",
-        component: lazyLoad('ChangeLog'),
-      },
-      {
         path: "library",
         name: "Library",
         component: lazyLoad('Library'),

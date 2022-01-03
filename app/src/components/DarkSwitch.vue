@@ -40,7 +40,6 @@ export default {
   },
   methods: {
     toogleDarkMode(event) {
-      let app = { ...this.$store.state.app };
       if (
         (event && event.target.checked) ||
         (!event &&
@@ -49,31 +48,12 @@ export default {
       ) {
         document.documentElement.className = "dark";
         document.getElementById("darkMode").checked = true;
-        app.darkMode = true;
-        this.mutateKey("app", app);
-        // this.classDarkSwitch(true);
+        this.mutateApp("darkMode", true);
       } else {
         document.documentElement.className = "";
-        app.darkMode = false;
-        this.mutateKey("app", app);
-        // this.classDarkSwitch(false);
+        this.mutateApp("darkMode", false);
       }
     },
-    // classDarkSwitch(bool) {
-    //   let mode = bool ? "dark" : "light";
-    //   let inverse = !bool ? "dark" : "light";
-    //   document.body.innerHTML = document.body.innerHTML.replace(
-    //     new RegExp(inverse, "g"),
-    //     mode
-    //   );
-    //   this.bsList.forEach((element) => {
-    //     let regex = new RegExp(`(?<=(class=").*)(${element})(?=.*("))`, "g");
-    //     document.body.innerHTML = document.body.innerHTML.replace(
-    //       regex,
-    //       "d-" + element
-    //     );
-    //   });
-    // },
   },
   mounted() {
     this.toogleDarkMode();

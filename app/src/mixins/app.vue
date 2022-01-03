@@ -7,6 +7,9 @@ export default {
     };
   },
   computed: {
+    darkMode() {
+      return this.$store.state.app.darkMode;
+    },
     deckCharged() {
       return this.$store.state.app.deckCharged;
     },
@@ -18,10 +21,18 @@ export default {
     },
   },
   mounted() {
-    this.storeReset = { ...this.$store.state };
-    if (!this.userId) this.$router.push("");
+    setTimeout(() => {
+      // wait for user preferences (darkMode)
+      this.storeReset = { ...this.$store.state };
+    }, 200);
+    if (!this.userId) this.$router.push({ name: "Home" });
   },
   watch: {
+    darkMode() {
+      if (this.storeReset && this.darkMode !== undefined) {
+        this.storeReset.app.darkMode = this.darkMode;
+      }
+    },
     deckCharged() {
       this.mutateApp(
         "randomCardPick",
@@ -29,10 +40,13 @@ export default {
       );
     },
     disconnect() {
-      if (this.disconnect) this.mutateStore("setState", this.storeReset);
+      if (this.disconnect) {
+        this.mutateStore("setState", this.storeReset);
+        this.$router.push({ name: "Home" });
+      }
     },
     userId() {
-      if (this.userId) this.$router.push("library");
+      if (this.userId) this.$router.push({ name: "Library" });
     },
   },
 };

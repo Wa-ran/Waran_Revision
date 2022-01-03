@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex justify-content-end justify-content-sm-center">
-    <div v-if="!connectForm">
+    <div v-if="!connectForm" class="d-flex">
       <button
         type="button"
         class="btn btn-primary me-3"

@@ -2,27 +2,15 @@
   <div class="position-relative">
     <Card class="position-relative text-center shadow">
       <template v-slot:body>
-        <button
-          type="button"
-          @click="$router.push('/deck/' + deck.id)"
-          class="
-            has-icon
-            btn
-            bg-body
-            border-primary
-            position-absolute
-            top-0
-            end-0
-            m-2
-            p-0
-          "
-        >
-          <font-awesome-icon
-            :icon="['fas', 'cog']"
-            size="lg"
-            class="text-primary"
-          />
-        </button>
+        <div class="bg-body position-absolute top-0 end-0 m-2">
+          <button
+            type="button"
+            @click="$router.push('/deck/' + deck.id)"
+            class="has-icon btn btn-outline-primary p-0"
+          >
+            <font-awesome-icon :icon="['fas', 'cog']" size="lg" />
+          </button>
+        </div>
 
         <div class="d-flex flex-column flex-grow-1 h-100">
           <div

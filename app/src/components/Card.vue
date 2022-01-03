@@ -14,16 +14,7 @@
       <div
         class="card-footer bg-transparent border-0 d-flex flex-column mt-auto"
       >
-        <hr
-          class="
-            border-top border-primary
-            mt-0
-            mb-1
-            bg-transparent
-            opacity-100
-            h-0
-          "
-        />
+        <cust-hr class="mt-0 mb-1" />
         <slot name="footer">card-footer</slot>
       </div>
     </div>
@@ -46,9 +37,9 @@ export default {
 
 .card {
   overflow: hidden;
-  background: linear-gradient(195deg, $white 45%, $primary 60%);
+  background: linear-gradient(195deg, $white 50%, $primary 60%);
   &.darkM {
-    background: linear-gradient(195deg, $black 45%, $primary 60%);
+    background: linear-gradient(195deg, $black 50%, $primary 60%);
   }
 }
 .card-body {
