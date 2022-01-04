@@ -77,8 +77,7 @@ input.form-check-input {
     background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'><circle r='3' fill='%23ffc107'/></svg>") !important;
     &:hover,
     &:focus {
-      box-shadow: inset 0 0 0 1rem rgba($yellow-600, 0.3),
-        0 0 0 0.25rem rgba($yellow-600, 0.3) !important;
+      box-shadow: 0 0 0 0.25rem rgba($yellow-600, 0.3) !important;
     }
   }
   &:checked {
@@ -86,8 +85,7 @@ input.form-check-input {
     background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'><circle r='3' fill='%23a370f7'/></svg>") !important;
     &:hover,
     &:focus {
-      box-shadow: inset 0 0 0 1rem rgba($indigo-300, 0.3),
-        0 0 0 0.25rem rgba($indigo-300, 0.3) !important;
+      box-shadow: 0 0 0 0.25rem rgba($indigo-300, 0.3) !important;
     }
   }
 }

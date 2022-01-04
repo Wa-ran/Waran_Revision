@@ -14,6 +14,7 @@ UPDATE cards SET comment = NULL WHERE comment = '_';
 SET SQL_SAFE_UPDATES = ON;
 
 ALTER TABLE cards DROP recto_comment, DROP verso_comment, DROP has_image;
+ALTER TABLE cards RENAME COLUMN streak TO level;
 
 DROP TABLE IF EXISTS decks;
 CREATE TABLE decks (

@@ -39,7 +39,7 @@ export default {
   overflow: hidden;
   background: linear-gradient(195deg, $white 50%, $primary 60%);
   &.darkM {
-    background: linear-gradient(195deg, $black 50%, $primary 60%);
+    background: linear-gradient(195deg, $black 50%, $orange-600 60%);
   }
 }
 .card-body {

@@ -2,7 +2,10 @@ import { createRouter, createWebHistory } from "vue-router";
 import Home from "../views/Home.vue";
 
 function lazyLoad(view) {
-  return () => import(/* webpackPrefetch: true */ /* webpackPreload: true */`@/views/${view}.vue`)
+  return () =>
+    import(
+      /* webpackPrefetch: true */ /* webpackPreload: true */ `@/views/${view}.vue`
+    );
 }
 
 const routes = [
@@ -14,23 +17,22 @@ const routes = [
       {
         path: "library",
         name: "Library",
-        component: lazyLoad('Library'),
+        component: lazyLoad("Library"),
       },
       {
         path: "deck/:deck",
         name: "DecksMenu",
-        component: lazyLoad('DeckView'),
+        component: lazyLoad("DeckView"),
         props: true,
         children: [
           {
             path: "revision",
             name: "Revision",
-            component: lazyLoad('Revision'),
+            component: lazyLoad("Revision"),
           },
-        ]
+        ],
       },
-
-    ]
+    ],
   },
 ];
 

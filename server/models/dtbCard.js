@@ -36,12 +36,12 @@ const HOURS_SUITE = {
 
 module.exports = class DtbCard extends revisionObj {
 
-  constructor(id, recto, verso, streak, user_id, next_revision, reverse, comment, deck_id, recto_formula, verso_formula, recto_image, verso_image) {
+  constructor(id, recto, verso, level, user_id, next_revision, reverse, comment, deck_id, recto_formula, verso_formula, recto_image, verso_image) {
     super();
     this.id = this.tryParseInt(id);
     this.recto = recto;
     this.verso = verso;
-    this.streak = this.tryParseInt(streak);
+    this.level = this.tryParseInt(level);
     this.user_id = this.tryParseInt(user_id);
     this.next_revision = next_revision ? next_revision : new Date();
     this.comment = comment;
@@ -55,9 +55,9 @@ module.exports = class DtbCard extends revisionObj {
   };
 
   calculNextRevision() {
-    let streak = this.streak;
-    if (streak > Object.values(HOURS_SUITE).length) streak = Object.values(HOURS_SUITE).length;
-    let number = HOURS_SUITE[streak];
+    let level = this.level;
+    if (level > Object.values(HOURS_SUITE).length) level = Object.values(HOURS_SUITE).length;
+    let number = HOURS_SUITE[level];
     this.next_revision = new Date(new Date().setTime(new Date().getTime() + number * 60 * 60 * 1000));
   };
 

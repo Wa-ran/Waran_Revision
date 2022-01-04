@@ -39,8 +39,8 @@
           navbar-collapse
           border-top border-primary
           mt-2
-          ms-sm-5
-          ps-sm-5
+          ms-lg-5
+          ps-lg-5
         "
         id="HeaderNav"
       >
@@ -75,10 +75,15 @@ header {
   background-color: $dark;
 }
 #HeaderNav {
-  @media (min-width: 576px) {
+  @media (min-width: 992px) {
     margin-top: 0 !important;
     margin-bottom: 0 !important;
     border: none !important;
+  }
+}
+.navbar-toggler {
+  @media (min-width: 992px) {
+    display: none !important;
   }
 }
 </style>

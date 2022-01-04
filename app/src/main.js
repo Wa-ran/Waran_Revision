@@ -101,7 +101,7 @@ VueApp.mixin({
     mutateApp(appKey, value) {
       let app = { ...this.$store.state.app };
       app[appKey] = value;
-      this.mutateKey('app', app);
+      this.mutateKey("app", app);
     },
   },
 });

@@ -1,5 +1,5 @@
 import { createStore } from "vuex";
-import router from '@/router';
+import router from "@/router";
 
 export default createStore({
   state: {
@@ -237,20 +237,21 @@ export default createStore({
       let actualCard;
       let list = state.cardsToReviseBaseList;
       if (state.app.randomCardPick) {
-        actualCard = list[Math.floor(Math.random() * list.length)]
+        actualCard = list[Math.floor(Math.random() * list.length)];
       } else {
-        actualCard = list[0]
+        actualCard = list[0];
       }
-      return actualCard
+      return actualCard;
     },
     actualDeck: (state) => {
       let actualDeck;
       if (router.currentRoute._value.params.deck) {
         for (const deck of state.decksList) {
-          if (deck.id == router.currentRoute._value.params.deck) actualDeck = deck;
+          if (deck.id == router.currentRoute._value.params.deck)
+            actualDeck = deck;
         }
       } else {
-        actualDeck = null
+        actualDeck = null;
       }
       return actualDeck;
     },
