@@ -21,7 +21,7 @@ const routes = [
       },
       {
         path: "deck/:deck",
-        name: "DecksMenu",
+        name: "DeckView",
         component: lazyLoad("DeckView"),
         props: true,
         children: [

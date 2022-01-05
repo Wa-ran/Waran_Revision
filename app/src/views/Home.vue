@@ -1,9 +1,16 @@
 <template>
-  <div class="container-fluid p-0 h-100">
-    <Modal />
-    <Header class="border-bottom border-primary" />
+  <div class="position-fixed overflow-scroll container-fluid p-0 h-100">
+    <Header class="sticky-top border-bottom border-primary" />
     <main
-      class="d-flex justify-content-center align-items-start h-auto p-3 pb-5"
+      class="
+        overflow-scroll
+        d-flex
+        justify-content-center
+        align-items-start
+        m-auto
+        px-3
+        py-5
+      "
     >
       <ChangeLog v-if="$route.name == 'Home'" />
       <router-view v-else />
@@ -16,7 +23,6 @@
 // import { defineAsyncComponent } from "vue";
 
 import ChangeLog from "@/views/ChangeLog";
-import Modal from "@/components/Modal";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
@@ -25,7 +31,6 @@ export default {
   components: {
     ChangeLog,
     // MenuDecks: defineAsyncComponent(() => import("@/views/MenuDecks.vue")),
-    Modal,
     Header,
     Footer,
   },
@@ -35,5 +40,8 @@ export default {
 <style lang="scss" scoped>
 main {
   min-height: 100%;
+  @media (min-width: 992px) {
+    max-width: 75vw;
+  }
 }
 </style>

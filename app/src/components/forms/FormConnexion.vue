@@ -55,15 +55,13 @@ export default {
       } else this.autofill = 0;
     },
     submitForm() {
-      if (!this.pseudo)
-        document.querySelector("header input[placeholder='Pseudo']").focus();
+      if (!this.pseudo) document.getElementById("ConnexionPseudo").focus();
       else if (!this.password)
-        document.querySelector("header input[placeholder='Password']").focus();
+        document.getElementById("ConnexionPassword").focus();
       else this.submitUser();
     },
     async submitUser() {
       this.mutateKey("user", {
-        id: this.$store.state.user.id,
         pseudo: this.pseudo,
         password: this.password,
       });

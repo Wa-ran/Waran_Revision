@@ -30,6 +30,7 @@ export default {
   watch: {
     darkMode() {
       if (this.storeReset && this.darkMode !== undefined) {
+        // cause setState in $store use Object.assign which briefly delete the $stroe.state, causing this.DarkMode = undefined
         this.storeReset.app.darkMode = this.darkMode;
       }
     },

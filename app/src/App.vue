@@ -1,14 +1,19 @@
 <template>
   <div id="view">
+    <Modal />
     <router-view />
   </div>
 </template>
 
 <script>
 import app from "@/mixins/app";
+import Modal from "@/components/Modal";
 
 export default {
   name: "App",
+  components: {
+    Modal,
+  },
   mixins: [app],
 };
 </script>
