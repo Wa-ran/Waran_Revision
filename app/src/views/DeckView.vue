@@ -60,7 +60,7 @@
       </div>
 
       <div v-else>
-        <ModifDeck />
+        <ModifDeck @submited="modification = false" />
       </div>
     </div>
   </div>

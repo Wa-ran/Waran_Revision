@@ -2,7 +2,7 @@ const createObj = require('./createObj');
 const fctArgsNames = require('./fctArgsNames');
 
 exports.insertRequest = (obj) => {
-  let req = `INSERT INTO ${obj.constructor.name.toLowerCase()}s (`;
+  let req = `INSERT INTO ${obj.constructor.name.toLowerCase().slice(3)}s (`;
   for (let params of fctArgsNames(obj)) {
     req += `${params}, `
   }
@@ -19,7 +19,7 @@ exports.insertRequest = (obj) => {
 };
 
 exports.updateRequest = (obj) => {
-  let req = `UPDATE ${obj.constructor.name.toLowerCase()}s SET`;
+  let req = `UPDATE ${obj.constructor.name.toLowerCase().slice(3)}s SET`;
   for (let params of fctArgsNames(obj)) {
     req += ` ${params} = ${obj[params]},`
   }

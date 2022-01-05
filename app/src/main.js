@@ -5,7 +5,7 @@ import store from "./store";
 
 // import "bootstrap/dist/css/bootstrap.min.css";
 // import 'bootstrap';
-import { Tooltip } from 'bootstrap';
+import { Tooltip } from "bootstrap";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
@@ -30,7 +30,10 @@ import {
   faUnderline,
   faUndo,
 } from "@fortawesome/free-solid-svg-icons";
-import { faHourglass, faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
+import {
+  faHourglass,
+  faQuestionCircle,
+} from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 import VueMathjax from "vue-mathjax-next";
@@ -88,15 +91,11 @@ VueApp.mixin({
 VueApp.mixin({
   methods: {
     mutateKey(sKey, body) {
-      if (
-        typeof body === 'object' &&
-        !Array.isArray(body) &&
-        body !== null
-      ) {
+      if (typeof body === "object" && !Array.isArray(body) && body !== null) {
         let sObj = { ...this.$store.state[sKey] };
         body = Object.assign(sObj, body);
       }
-      this.mutateStore('mutateKey', { sKey, body });
+      this.mutateStore("mutateKey", { sKey, body });
     },
   },
 });
@@ -106,8 +105,8 @@ VueApp.mixin({
     mutateApp(appKey, value) {
       let app = { ...this.$store.state.app };
       app[appKey] = value;
-      this.mutateStore('mutateKey', { sKey: 'app', body: app });
-    }
+      this.mutateStore("mutateKey", { sKey: "app", body: app });
+    },
   },
 });
 
@@ -127,22 +126,26 @@ VueApp.mixin({
 
 // const bootstrap = new bootstrap
 const bsTooltip = (el, binding) => {
-  const t = ['hover', 'focus', 'click']
+  const t = ["hover", "focus", "click"];
 
   new Tooltip(el, {
     title: binding.value,
-    placement: binding.arg || 'top',
-    trigger: t.join(' '),
+    placement: binding.arg || "top",
+    trigger: t.join(" "),
     html: true,
   });
-}
+};
 
-VueApp.directive('tooltip', {
-  beforeMount(el, binding) { bsTooltip(el, binding) },
-  updated(el, binding) { bsTooltip(el, binding) },
+VueApp.directive("tooltip", {
+  beforeMount(el, binding) {
+    bsTooltip(el, binding);
+  },
+  updated(el, binding) {
+    bsTooltip(el, binding);
+  },
   unmounted(el) {
-    new Tooltip(el).dispose()
-  }
+    new Tooltip(el).dispose();
+  },
 });
 
 VueApp.component("font-awesome-icon", FontAwesomeIcon);

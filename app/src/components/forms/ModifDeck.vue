@@ -4,7 +4,7 @@
       <label for="DeckTitle" class="form-label aria-only"> Titre </label>
       <input
         type="text"
-        v-model="DeckTitle"
+        v-model="deck.title"
         class="form-control border-primary"
         placeholder="Nouveau titre"
         id="DeckTitle"
@@ -13,7 +13,7 @@
     <div class="mt-2">
       <label for="DeckText" class="aria-only">Description</label>
       <textarea
-        v-model="DeckText"
+        v-model="deck.text"
         class="form-control border-primary"
         placeholder="Description"
         id="DeckText"
@@ -24,7 +24,7 @@
       <div class="form-check form-switch ms-2">
         <input
           @click="CheckSequence = !CheckSequence"
-          v-model="CheckSequence"
+          v-model="deck.sequence"
           class="form-check-input"
           type="checkbox"
           role="switch"
@@ -52,26 +52,27 @@ export default {
   name: "ModifDeck",
   data() {
     return {
-      DeckTitle: null,
-      DeckText: null,
-      CheckSequence: false,
+      deck: {
+        title: null,
+        text: null,
+        sequence: false,
+      },
     };
   },
   methods: {
     submitForm() {
-      if (!this.DeckTitle) document.getElementById("DeckTitle").focus();
-      else if (!this.DeckText) document.getElementById("DeckText").focus();
-      else this.submitUser();
+      if (!this.deck.title) document.getElementById("DeckTitle").focus();
+      else this.submitDeck();
     },
-    async submitUser() {
-      this.mutateKey("ActualDeck", {
-        title: this.DeckTitle,
-        text: this.DeckText,
-        sequence: this.DeckSequence,
+    async submitDeck() {
+      await this.$store.dispatch("putDeck", this.deck).then(() => {
+        this.$emit("submited");
       });
-
-      await this.$store.dispatch("putDeck");
     },
+  },
+  mounted() {
+    this.deck = this.$store.getters.actualDeck;
+    console.log(this.deck);
   },
 };
 </script>

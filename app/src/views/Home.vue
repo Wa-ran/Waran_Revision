@@ -2,15 +2,7 @@
   <div class="position-fixed overflow-scroll container-fluid p-0 h-100">
     <Header class="sticky-top border-bottom border-primary" />
     <main
-      class="
-        overflow-scroll
-        d-flex
-        justify-content-center
-        align-items-start
-        m-auto
-        px-3
-        py-5
-      "
+      class="overflow-scroll d-flex justify-content-center align-items-start m-auto px-3 py-5"
     >
       <ChangeLog v-if="$route.name == 'Home'" />
       <router-view v-else />

@@ -103,6 +103,14 @@ export default createStore({
         mutate: "user",
       });
     },
+    async putDeck({ getters }, deck) {
+      await this.dispatch("APIRequest", {
+        method: "PUT",
+        serverRoute: "/Deck",
+        data: { deck: Object.assign(getters.actualDeck, deck) },
+        mutate: "deckList",
+      });
+    },
     mutateStore(context, payload) {
       // if (payload.value && payload.value.sKey) {
       //   let key = payload.value.sKey;
