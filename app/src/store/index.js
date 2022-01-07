@@ -7,6 +7,8 @@ export default createStore({
     app: {
       actionDisconnect: false,
       cardCharged: false,
+      cardHide: true,
+      cardChrono: true,
       darkMode: false,
       deckSelected: false,
       decksCharged: false,

@@ -5,15 +5,7 @@
   >
     <Doodle />
     <div
-      class="
-        card-body
-        border border-primary
-        d-flex
-        flex-column
-        p-0
-        m-3
-        bg-transparent
-      "
+      class="card-body border border-primary d-flex flex-column p-0 m-3 bg-transparent"
     >
       <div class="h-100 overflow-scroll">
         <slot name="body">card-body</slot>

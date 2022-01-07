@@ -24,26 +24,6 @@
           class="nav-link disabled"
         />
       </li>
-      <li class="dropdown">
-        <div class="dropdown position-relative">
-          <button
-            class="nav-link dropdown-toggle text-decoration-none"
-            type="button"
-            id="dropdownMenuButton2"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-            tabindex="1"
-          >
-            Options de révision
-          </button>
-          <div
-            class="dropdown-menu dropdown-menu-dark position-absolute ms-3"
-            aria-labelledby="dropdownMenuButton2"
-          >
-            <Options />
-          </div>
-        </div>
-      </li>
     </ul>
     <button
       type="button"
@@ -56,13 +36,9 @@
 </template>
 
 <script>
-import Options from "@/components/Options";
-
 export default {
   name: "Navigation",
-  components: {
-    Options,
-  },
+  components: {},
   methods: {
     resetStore() {
       this.mutateKey("app", { actionDisconnect: true });

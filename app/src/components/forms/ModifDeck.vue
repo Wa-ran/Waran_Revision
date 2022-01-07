@@ -44,9 +44,9 @@
         <button
           @click="submitForm"
           type="button"
-          class="btn btn-primary m-3 me-0 ms-auto"
+          class="btn btn-primary h-fit py-0 m-3 me-0 ms-auto"
         >
-          Envoyer
+          Valider
         </button>
       </div>
     </div>
@@ -78,7 +78,6 @@ export default {
   },
   mounted() {
     this.deck = this.$store.getters.actualDeck;
-    console.log(this.deck);
   },
 };
 </script>

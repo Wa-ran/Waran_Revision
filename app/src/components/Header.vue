@@ -2,15 +2,7 @@
   <header class="container-fluid dark shadow">
     <nav class="navbar navbar-expand-lg navbar-dark justify-content-end">
       <div
-        class="
-          border-end border-primary
-          position-absolute
-          top-0
-          start-0
-          me-2
-          my-1
-          py-2
-        "
+        class="border-end border-primary position-absolute top-0 start-0 me-2 my-1 py-2"
       >
         <cust-a
           :linkName="'Home'"
@@ -34,14 +26,7 @@
 
       <div
         v-if="user.id"
-        class="
-          collapse
-          navbar-collapse
-          border-top border-primary
-          mt-2
-          ms-lg-5
-          ps-lg-5
-        "
+        class="collapse navbar-collapse border-top border-primary mt-2 ms-lg-5 ps-lg-5"
         id="HeaderNav"
       >
         <Navigation />
