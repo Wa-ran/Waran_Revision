@@ -1,22 +1,22 @@
 <template>
-  <div class="d-flex justify-content-center flex-column">
-    <button
-      type="button"
-      class="btn btn-outline-primary align-self-sm-start m-auto m-sm-3"
-    >
-      Créer un nouveau Deck
-    </button>
-    <div
-      v-if="$store.state.decksList.length > 0"
-      class="d-flex flex-wrap justify-content-center w-100"
-      :key="$store.state.decksList.length"
-    >
-      <Deck
-        v-for="deck of $store.state.decksList"
-        :key="deck.id"
-        :deck="deck"
-        class="m-3"
-      />
+  <div>
+    <router-view v-if="$route.name != 'Library'" />
+    <div v-else class="d-flex justify-content-center flex-column">
+      <button type="button" class="btn btn-outline-primary mx-auto">
+        Créer un nouveau Deck
+      </button>
+      <div
+        v-if="$store.state.decksList.length > 0"
+        class="d-flex flex-wrap justify-content-center w-100"
+        :key="$store.state.decksList.length"
+      >
+        <Deck
+          v-for="deck of $store.state.decksList"
+          :key="deck.id"
+          :deck="deck"
+          class="m-3"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -30,7 +30,12 @@ export default {
     Deck,
   },
   async mounted() {
-    await this.$store.dispatch("getAllUserDecks");
+    await this.$store.dispatch("getAllUserDecks").then(() => {
+      this.mutateApp("decksCharged", true);
+    });
+  },
+  unmounted() {
+    this.mutateApp("decksCharged", false);
   },
 };
 </script>

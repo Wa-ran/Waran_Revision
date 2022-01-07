@@ -1,8 +1,9 @@
 <template>
-  <div class="mt-3">
+  <div class="w-fit mt-3 mx-auto">
+    <CardHider class="position-absolute" style="z-index: 1000" />
     <Card>
       <template v-slot:body>
-        <div class="w-100 h-100 overflow-scroll">
+        <div class="w-100 h-100 overflow-scroll bg-body">
           {{ actualCard }}
         </div>
       </template>
@@ -12,11 +13,13 @@
 
 <script>
 import Card from "@/components/Card";
+import CardHider from "@/components/CardHider";
 
 export default {
   name: "revision",
   components: {
     Card,
+    CardHider,
   },
   computed: {
     actualCard() {
@@ -28,8 +31,11 @@ export default {
   },
   async mounted() {
     await this.$store.dispatch("getCardsToReviseOnDeck").then(() => {
-      this.cardsToRevise = this.cardsToReviseBaseList.slice();
+      this.mutateApp("cardsCharged", true);
     });
+  },
+  unmounted() {
+    this.mutateApp("cardsCharged", false);
   },
 };
 </script>

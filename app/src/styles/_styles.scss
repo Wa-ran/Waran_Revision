@@ -80,6 +80,9 @@ input:not([type="text"]) {
 .btn {
   box-shadow: inset 0 0 0 1px $body-bg;
 }
+.btn-outline-primary {
+  color: $orange-700;
+}
 .card-body {
   z-index: 100;
 }

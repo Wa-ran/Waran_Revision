@@ -10,8 +10,8 @@ export default {
     darkMode() {
       return this.$store.state.app.darkMode;
     },
-    deckCharged() {
-      return this.$store.state.app.deckCharged;
+    deckSelected() {
+      return this.$store.state.app.deckSelected;
     },
     disconnect() {
       return this.$store.state.app.actionDisconnect;
@@ -34,10 +34,10 @@ export default {
         this.storeReset.app.darkMode = this.darkMode;
       }
     },
-    deckCharged() {
+    deckSelected() {
       this.mutateApp(
         "randomCardPick",
-        this.deckCharged ? !this.$store.getters.actualDeck.sequence : true
+        this.deckSelected ? !this.$store.getters.actualDeck.sequence : true
       );
     },
     disconnect() {

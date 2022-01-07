@@ -8,77 +8,68 @@
       </h2>
     </div>
 
-    <div v-if="$route.name !== 'DeckView'" class="m-auto w-fit">
+    <div v-if="$route.name !== 'DeckView'" class="m-auto">
       <router-view />
     </div>
 
     <div v-else>
-      <div v-if="!modification">
-        <cust-hr class="my-3 mx-auto w-50" />
+      <cust-hr class="my-3 mx-auto w-50" />
 
-        <p class="text-center ms-3">
-          {{ actualDeck.text || "Pas de description." }}
-        </p>
+      <p class="text-center ms-3">
+        {{ actualDeck.text || "Pas de description." }}
+      </p>
 
-        <cust-hr class="my-3 mx-auto" />
+      <cust-hr class="my-3 mx-auto" />
 
-        <div class="d-flex ms-3">
-          <div>
-            <p>
-              {{ actualDeck.cards_to_revise || "Pas de" }}
-              carte{{ actualDeck.cards_to_revise > 1 ? "s" : "" }} à réviser.
-            </p>
-            <p>
-              Total : {{ actualDeck.cards_total_number || 0 }} carte{{
-                actualDeck.cards_total_number > 1 ? "s" : ""
-              }}.
-            </p>
+      <div class="d-flex ms-3">
+        <div>
+          <p>
+            {{ actualDeck.cards_to_revise || "Pas de" }}
+            carte{{ actualDeck.cards_to_revise > 1 ? "s" : "" }} à réviser.
+          </p>
+          <p>
+            Total : {{ actualDeck.cards_total_number || 0 }} carte{{
+              actualDeck.cards_total_number > 1 ? "s" : ""
+            }}.
+          </p>
 
-            <div v-if="actualDeck.sequence" class="d-flex">
-              Deck séquencé
-              <cust-tooltip
-                :text="'Les cartes sont liées et se révisent dans l\'ordre.'"
-              />
-            </div>
-            <div v-else class="d-flex">
-              Deck aléatoire
-              <cust-tooltip
-                :text="'Les cartes sont indépendantes, elles apparaissent de manière aléatoire.'"
-              />
-            </div>
+          <div v-if="actualDeck.sequence" class="d-flex">
+            Deck séquencé
+            <cust-tooltip
+              :text="'Les cartes sont liées et se révisent dans l\'ordre.'"
+            />
           </div>
-
-          <button
-            @click="modification = true"
-            class="btn btn-primary h-fit ms-auto mt-auto py-0"
-          >
-            Modifier
-          </button>
+          <div v-else class="d-flex">
+            Deck aléatoire
+            <cust-tooltip
+              :text="'Les cartes sont indépendantes, elles apparaissent de manière aléatoire.'"
+            />
+          </div>
         </div>
 
-        <cust-hr class="my-3 mx-auto" />
+        <button
+          @click="
+            $router.push({
+              name: 'DeckModification',
+              params: {
+                deck: actualDeck.id,
+              },
+            })
+          "
+          class="btn btn-primary h-fit ms-auto mt-auto py-0"
+        >
+          Modifier
+        </button>
       </div>
 
-      <div v-else>
-        <ModifDeck @submited="modification = false" />
-      </div>
+      <cust-hr class="my-3 mx-auto" />
     </div>
   </div>
 </template>
 
 <script>
-import ModifDeck from "@/components/forms/ModifDeck";
-
 export default {
   name: "DeckView",
-  components: {
-    ModifDeck,
-  },
-  data() {
-    return {
-      modification: false,
-    };
-  },
   computed: {
     actualDeck() {
       return this.$store.getters.actualDeck;

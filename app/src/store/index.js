@@ -6,12 +6,15 @@ export default createStore({
     // app
     app: {
       actionDisconnect: false,
+      cardCharged: false,
       darkMode: false,
-      deckCharged: false,
+      deckSelected: false,
+      decksCharged: false,
       randomCardPick: true,
     },
     // card
     cardsToReviseBaseList: [],
+    cardsToReviseReserved: [],
     newCard: {
       recto: "Une carte toute neuve :)",
       verso: "",

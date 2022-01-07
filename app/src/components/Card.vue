@@ -5,17 +5,26 @@
   >
     <Doodle />
     <div
-      class="card-body border border-primary d-flex flex-column p-0 m-3 bg-body"
+      class="
+        card-body
+        border border-primary
+        d-flex
+        flex-column
+        p-0
+        m-3
+        bg-transparent
+      "
     >
       <div class="h-100 overflow-scroll">
         <slot name="body">card-body</slot>
       </div>
 
       <div
-        class="card-footer bg-transparent border-0 d-flex flex-column mt-auto"
+        v-if="this.$slots.footer"
+        class="card-footer bg-body border-0 d-flex flex-column mt-auto"
       >
         <cust-hr class="mt-0 mb-1" />
-        <slot name="footer">card-footer</slot>
+        <slot name="footer"></slot>
       </div>
     </div>
   </div>
@@ -37,9 +46,9 @@ export default {
 
 .card {
   overflow: hidden;
-  background: linear-gradient(195deg, $white 50%, $primary 60%);
+  background: linear-gradient(195deg, $white 55%, $primary 65%);
   &.darkM {
-    background: linear-gradient(195deg, $black 50%, $orange-600 60%);
+    background: linear-gradient(195deg, $black 55%, $orange-600 65%);
   }
 }
 .card-body {

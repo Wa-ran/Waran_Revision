@@ -5,16 +5,24 @@
         <div class="bg-body position-absolute top-0 end-0 m-2">
           <button
             type="button"
-            @click="$router.push('/deck/' + deck.id)"
+            @click="
+              $router.push({ name: 'DeckView', params: { deck: deck.id } })
+            "
             class="has-icon btn btn-outline-primary p-0"
           >
             <font-awesome-icon :icon="['fas', 'cog']" size="lg" />
           </button>
         </div>
 
-        <div class="d-flex flex-column flex-grow-1 h-100">
+        <div class="bg-body d-flex flex-column flex-grow-1 h-100">
           <div
-            class="d-flex flex-column justify-content-center align-self-center h-100"
+            class="
+              d-flex
+              flex-column
+              justify-content-center
+              align-self-center
+              h-100
+            "
           >
             <h3 class="card-title h-fit mx-auto p-2">
               {{ deck.title || "Votre Deck" }}
@@ -24,7 +32,9 @@
             </p>
           </div>
           <button
-            @click="$router.push('/deck/' + deck.id + '/revision')"
+            @click="
+              $router.push({ name: 'Revision', params: { deck: deck.id } })
+            "
             class="btn btn-primary w-fit mx-auto px-3 py-0"
           >
             Réviser
@@ -51,7 +61,14 @@
       top: ${5 * sub}px;
       left: ${5 * sub}px;
       z-index: ${10 - sub}`"
-      class="position-absolute w-100 h-100 border border-primary rounded bg-body"
+      class="
+        position-absolute
+        w-100
+        h-100
+        border border-primary
+        rounded
+        bg-body
+      "
       :class="sub == 3 - 1 ? 'card sub_card shadow' : 'card sub_card'"
     ></div>
   </div>
