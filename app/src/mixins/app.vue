@@ -7,6 +7,15 @@ export default {
     };
   },
   computed: {
+    cardChronoCheck() {
+      return this.$store.state.app.cardChronoCheck;
+    },
+    cardHideCheck() {
+      return this.$store.state.app.cardHideCheck;
+    },
+    cardHiderKey() {
+      return this.$store.state.app.cardHiderKey;
+    },
     darkMode() {
       return this.$store.state.app.darkMode;
     },
@@ -28,6 +37,16 @@ export default {
     if (!this.userId) this.$router.push({ name: "Home" });
   },
   watch: {
+    cardChronoCheck() {
+      if (this.cardChronoCheck && !this.cardHideCheck)
+        this.mutateApp("cardHideCheck", true);
+    },
+    cardHideCheck() {
+      if (this.cardHideCheck)
+        this.mutateApp("cardHiderKey", this.cardHiderKey + 1);
+      if (!this.cardHideCheck && this.cardChronoCheck)
+        this.mutateApp("cardChronoCheck", false);
+    },
     darkMode() {
       if (this.storeReset && this.darkMode !== undefined) {
         // cause setState in $store use Object.assign which briefly delete the $stroe.state, causing this.DarkMode = undefined

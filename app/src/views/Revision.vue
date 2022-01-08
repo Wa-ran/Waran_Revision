@@ -1,46 +1,34 @@
 <template>
   <div class="w-fit mt-3 mx-auto">
-    <CardHider class="position-absolute" style="z-index: 1000" />
-    <Card>
-      <template v-slot:body>
-        <div class="w-100 h-100 overflow-scroll bg-body">
-          {{ actualCard }}
-        </div>
-      </template>
-    </Card>
+    <CardReviser />
   </div>
 </template>
 
 <script>
-import Card from "@/components/Card";
-import CardHider from "@/components/CardHider";
+import CardReviser from "@/components/CardReviser";
 
 export default {
   name: "revision",
   components: {
-    Card,
-    CardHider,
+    CardReviser,
   },
   computed: {
-    actualCard() {
-      return this.$store.getters.actualCard;
-    },
     cardsToReviseBaseList() {
       return this.$store.state.cardsToReviseBaseList;
     },
   },
   async mounted() {
     await this.$store.dispatch("getCardsToReviseOnDeck").then(() => {
-      this.mutateApp("cardsCharged", true);
+      this.mutateApp("cardsListCharged", true);
     });
   },
   unmounted() {
-    this.mutateApp("cardsCharged", false);
+    this.mutateApp("cardsListCharged", false);
   },
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .card {
   width: 18rem;
   height: 30rem;

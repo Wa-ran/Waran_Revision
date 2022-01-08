@@ -6,13 +6,16 @@ export default createStore({
     // app
     app: {
       actionDisconnect: false,
-      cardCharged: false,
-      cardHide: true,
-      cardChrono: true,
+      cardsListCharged: false,
+      cardReviserCharged: false,
+      cardHiderKey: 0,
+      cardHideCheck: true,
+      cardChronoCheck: true,
       darkMode: false,
       deckSelected: false,
       decksCharged: false,
       randomCardPick: true,
+      revealCard: false,
     },
     // card
     cardsToReviseBaseList: [],
@@ -246,15 +249,15 @@ export default createStore({
     },
   },
   getters: {
-    actualCard: (state) => {
-      let actualCard;
+    pickCard: (state) => {
+      let pickCard;
       let list = state.cardsToReviseBaseList;
       if (state.app.randomCardPick) {
-        actualCard = list[Math.floor(Math.random() * list.length)];
+        pickCard = list[Math.floor(Math.random() * list.length)];
       } else {
-        actualCard = list[0];
+        pickCard = list[0];
       }
-      return actualCard;
+      return pickCard;
     },
     actualDeck: (state) => {
       let actualDeck;

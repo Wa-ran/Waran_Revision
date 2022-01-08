@@ -2,7 +2,7 @@
   <Card>
     <template v-slot:body>
       <div
-        class="container-fluid h-100 bg-body"
+        class="container-fluid d-flex h-100 bg-body"
         :style="'background: radial-gradient(circle at 50% 215px, transparent 45px, rgba(var(--bs-body-bg-rgb)) 46px) !important'"
       >
         <div
@@ -21,7 +21,7 @@
             "
           />
           <button
-            @click="mutateKey('cardReveal', true)"
+            @click="mutateApp('cardReveal', true)"
             class="has-icon"
             :style="
               isLoading
@@ -32,6 +32,13 @@
             <font-awesome-icon :icon="['fas', 'question']" size="4x" />
           </button>
         </div>
+        <CardChrono
+          class="mt-auto"
+          :style="
+            $store.state.app.cardChronoCheck && !isLoading ? '' : 'opacity: 0'
+          "
+          :key="chronoKey"
+        />
       </div>
     </template>
   </Card>
@@ -39,27 +46,54 @@
 
 <script>
 import Card from "@/components/Card.vue";
+import CardChrono from "@/components/CardChrono.vue";
 import Loader from "@/components/Loader.vue";
 
 export default {
   name: "CardHider",
   components: {
     Card,
+    CardChrono,
     Loader,
   },
   data() {
     return {
+      chronoKey: 0,
       isLoading: true,
     };
   },
   computed: {
-    cardsCharged() {
-      return this.$store.state.app.cardsCharged;
+    cardHideCheck() {
+      return this.$store.state.app.cardHideCheck;
+    },
+    cardHiderKey() {
+      return this.$store.state.app.cardHiderKey;
+    },
+    cardReviserCharged() {
+      return this.$store.state.app.cardReviserCharged;
     },
   },
+  methods: {
+    reveal() {
+      this.cardHideCheck
+        ? this.mutateApp("cardReveal", false)
+        : this.mutateApp("cardReveal", true);
+    },
+  },
+  mounted() {
+    this.reveal();
+  },
   watch: {
-    cardsCharged() {
-      if (this.cardsCharged) this.isLoading = false;
+    cardHideCheck() {
+      if (!this.cardHideCheck) this.mutateApp("cardReveal", true);
+    },
+    cardReviserCharged() {
+      if (this.cardReviserCharged) this.isLoading = false;
+      else this.isLoading = true;
+      this.reveal();
+    },
+    isLoading() {
+      this.chronoKey++;
     },
   },
 };

@@ -121,7 +121,8 @@ export default {
 
 @media (min-width: 767px) {
   .container {
-    margin-left: 5%;
+    margin-left: -5rem;
+    width: 600px;
   }
 }
 </style>

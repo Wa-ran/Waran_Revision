@@ -1,46 +1,44 @@
 <template>
-  <div class="dropdown">
-    <div class="dropdown position-relative">
-      <button
-        class="nav-link dropdown-toggle text-decoration-none"
-        type="button"
-        id="dropdownMenuButton2"
-        data-bs-toggle="dropdown"
-        aria-expanded="false"
-      >
-        Options de révision
-      </button>
-      <div
-        class="dropdown-menu dropdown-menu-dark mt-n2"
-        aria-labelledby="dropdownMenuButton2"
-      >
-        <div class="px-3">
-          <div class="form-check">
-            <input
-              v-model="app.cardHide"
-              class="form-check-input"
-              type="checkbox"
-              id="cardHideCheck"
-              tabindex="1"
-              @change="mutateApp('cardHide', app.cardHide)"
-            />
-            <label class="form-check-label" for="cardHideCheck">
-              Cacher les cartes
-            </label>
-          </div>
-          <div class="form-check">
-            <input
-              v-model="app.cardChrono"
-              class="form-check-input"
-              type="checkbox"
-              id="cardChronoCheck"
-              tabindex="1"
-              @change="mutateApp('cardChrono', app.cardChrono)"
-            />
-            <label class="form-check-label" for="cardChronoCheck">
-              Chronomètre
-            </label>
-          </div>
+  <div class="dropend">
+    <button
+      class="nav-link dropdown-toggle text-decoration-none"
+      type="button"
+      id="dropdownMenuButton2"
+      data-bs-toggle="dropdown"
+      aria-expanded="false"
+    >
+      Options de révision
+    </button>
+    <div
+      class="position-relative dropdown-menu dropdown-menu-dark w-fit mt-n4 ms-n2"
+      aria-labelledby="dropdownMenuButton2"
+    >
+      <div class="px-3">
+        <div class="form-check">
+          <input
+            v-model="hide"
+            class="form-check-input"
+            type="checkbox"
+            id="cardHideCheck"
+            tabindex="1"
+            @click="mutateApp('cardHideCheck', !cardHideCheck)"
+          />
+          <label class="form-check-label" for="cardHideCheck">
+            Cacher les cartes
+          </label>
+        </div>
+        <div class="form-check">
+          <input
+            v-model="chrono"
+            class="form-check-input"
+            type="checkbox"
+            id="cardChronoCheck"
+            tabindex="1"
+            @click="mutateApp('cardChronoCheck', !cardChronoCheck)"
+          />
+          <label class="form-check-label" for="cardChronoCheck">
+            Chronomètre
+          </label>
         </div>
       </div>
     </div>
@@ -52,16 +50,29 @@ export default {
   name: "Options",
   data() {
     return {
-      app: {},
+      chrono: true,
+      hide: true,
     };
   },
   computed: {
-    appState() {
-      return this.$store.state.app;
+    cardChronoCheck() {
+      return this.$store.state.app.cardChronoCheck;
+    },
+    cardHideCheck() {
+      return this.$store.state.app.cardHideCheck;
     },
   },
   mounted() {
-    this.app = this.appState;
+    this.chrono = this.cardChronoCheck;
+    this.hide = this.cardHideCheck;
+  },
+  watch: {
+    cardChronoCheck() {
+      this.chrono = this.cardChronoCheck;
+    },
+    cardHideCheck() {
+      this.hide = this.cardHideCheck;
+    },
   },
 };
 </script>

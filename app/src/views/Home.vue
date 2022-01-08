@@ -1,5 +1,5 @@
 <template>
-  <div class="position-fixed overflow-scroll container-fluid p-0 h-100">
+  <div class="position-fixed overflow-scroll container-fluid p-0 pb-5 h-100">
     <Header class="sticky-top border-bottom border-primary" />
     <!-- <BreadCrumb /> -->
     <div class="d-flex flex-column flex-md-row overflow-scroll">
@@ -9,10 +9,10 @@
         <ChangeLog v-if="$route.name == 'Home'" />
         <router-view v-else class="w-100" />
       </main>
-      <aside class="order-md-1">
+      <aside class="order-md-1 mt-md-4">
         <Aside />
       </aside>
-      <aside class="order-md-3">
+      <aside class="order-md-3 mt-md-4">
         <Aside2 />
       </aside>
     </div>
