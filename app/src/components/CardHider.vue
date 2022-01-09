@@ -32,13 +32,6 @@
             <font-awesome-icon :icon="['fas', 'question']" size="4x" />
           </button>
         </div>
-        <CardChrono
-          class="mt-auto"
-          :style="
-            $store.state.app.cardChronoCheck && !isLoading ? '' : 'opacity: 0'
-          "
-          :key="chronoKey"
-        />
       </div>
     </template>
   </Card>
@@ -46,28 +39,22 @@
 
 <script>
 import Card from "@/components/Card.vue";
-import CardChrono from "@/components/CardChrono.vue";
 import Loader from "@/components/Loader.vue";
 
 export default {
   name: "CardHider",
   components: {
     Card,
-    CardChrono,
     Loader,
   },
   data() {
     return {
-      chronoKey: 0,
       isLoading: true,
     };
   },
   computed: {
     cardHideCheck() {
       return this.$store.state.app.cardHideCheck;
-    },
-    cardHiderKey() {
-      return this.$store.state.app.cardHiderKey;
     },
     cardReviserCharged() {
       return this.$store.state.app.cardReviserCharged;
@@ -91,9 +78,6 @@ export default {
       if (this.cardReviserCharged) this.isLoading = false;
       else this.isLoading = true;
       this.reveal();
-    },
-    isLoading() {
-      this.chronoKey++;
     },
   },
 };

@@ -11,8 +11,18 @@
     />
     <Card>
       <template v-slot:body>
-        <div class="w-100 h-100 overflow-scroll bg-body">
-          {{ actualCard }}
+        <div
+          v-if="$store.state.app.cardReviserCharged"
+          class="d-flex flex-column w-100 h-100 overflow-scroll bg-body"
+        >
+          <div class="flex-grow-1 d-flex align-items-center p-3">
+            <div v-html="actualCard.recto" class="text-center w-100"></div>
+          </div>
+
+          <CardChrono
+            v-if="$store.state.app.cardReveal"
+            :style="$store.state.app.cardChronoCheck ? '' : 'opacity: 0'"
+          />
         </div>
       </template>
     </Card>
@@ -21,12 +31,14 @@
 
 <script>
 import Card from "@/components/Card";
+import CardChrono from "@/components/CardChrono";
 import CardHider from "@/components/CardHider";
 
 export default {
   name: "revision",
   components: {
     Card,
+    CardChrono,
     CardHider,
   },
   data() {
@@ -37,9 +49,6 @@ export default {
   computed: {
     pickCard() {
       return this.$store.getters.pickCard;
-    },
-    cardHiderKey() {
-      return this.$store.state.app.cardHiderKey;
     },
   },
   methods: {
@@ -56,7 +65,6 @@ export default {
     },
   },
   async mounted() {
-    this.mutateApp("cardHiderKey", this.cardHiderKey + 1);
     this.setActualCard();
   },
   unmounted() {

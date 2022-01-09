@@ -10,7 +10,7 @@
       Options de révision
     </button>
     <div
-      class="position-relative dropdown-menu dropdown-menu-dark w-fit mt-n4 ms-n2"
+      class="position-relative dropdown-menu dropdown-menu-dark bg-dark w-fit mt-n4 mb-4 ms-n2"
       aria-labelledby="dropdownMenuButton2"
     >
       <div class="px-3">

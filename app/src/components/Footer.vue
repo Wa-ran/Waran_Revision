@@ -14,3 +14,9 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+footer {
+  height: 3rem;
+}
+</style>
