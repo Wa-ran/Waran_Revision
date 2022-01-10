@@ -16,24 +16,26 @@ export default createStore({
       decksCharged: false,
       randomCardPick: true,
       revealCard: false,
+      speedCheck: true,
     },
     // card
     cardsToReviseBaseList: [],
     cardsToReviseReserved: [],
+    actualCard: {},
     newCard: {
       recto: "Une carte toute neuve :)",
       verso: "",
       streak: 0,
       next_revision: "",
       user_id: "",
-      recto_comment: "",
-      verso_comment: "",
+      comment: "",
       recto_formula: false,
       verso_formula: false,
       recto_image: false,
       verso_image: false,
       reverse: true,
       new: true,
+      win: null,
     },
 
     // deck
@@ -117,6 +119,13 @@ export default createStore({
         serverRoute: "/Deck",
         data: { deck: Object.assign(getters.actualDeck, deck) },
         mutate: "deckList",
+      });
+    },
+    async putCard() {
+      await this.dispatch("APIRequest", {
+        method: "PUT",
+        serverRoute: "/Card",
+        data: { card: this.state.actualCard },
       });
     },
     mutateStore(context, payload) {

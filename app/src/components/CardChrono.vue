@@ -24,18 +24,18 @@ export default {
       let indicator = document.querySelector(".indicator");
       let points = document.querySelectorAll(".parkour > *");
       indicator.style.cssText = `
-          transition: transform ${points.length}s linear, opacity 0.5s ${
-        points.length - 1
+        transition: transform ${points.length}s linear, opacity 0.5s ${
+        points.length - 1.5
       }s;
-          transform: translateX(-${
-            container.scrollWidth - indicator.scrollWidth * 2
-          }px);
-          opacity: 0;
-          `;
+        transform: translateX(-${
+          container.scrollWidth - indicator.scrollWidth
+        }px);
+        opacity: 0;
+        `;
       for (let index of points.keys()) {
         points[index].style.cssText = `
-            transition: all 0.3s ${points.length - index - 0.6}s;
-            opacity: 0;`;
+          transition: all 0.3s ${points.length - index - 1}s;
+          opacity: 0;`;
       }
       points[0].style.cssText += "transform: scale(0)";
     },
@@ -47,15 +47,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/global.scss";
+@import "@/styles/_variables.scss";
 
 .chrono {
   position: relative;
-  width: 90%;
 }
 .indicator {
   margin-left: auto;
-  margin-bottom: 1.5rem;
+  margin-bottom: auto;
+  padding-bottom: 1.5rem;
   width: fit-content;
 }
 .parkour {

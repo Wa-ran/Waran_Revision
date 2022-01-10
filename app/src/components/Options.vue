@@ -1,7 +1,7 @@
 <template>
   <div class="dropend">
     <button
-      class="nav-link dropdown-toggle text-decoration-none"
+      class="nav-link dropdown-toggle"
       type="button"
       id="dropdownMenuButton2"
       data-bs-toggle="dropdown"
@@ -27,6 +27,7 @@
             Cacher les cartes
           </label>
         </div>
+
         <div class="form-check">
           <input
             v-model="chrono"
@@ -40,6 +41,18 @@
             Chronomètre
           </label>
         </div>
+
+        <div class="form-check">
+          <input
+            v-model="speed"
+            class="form-check-input"
+            type="checkbox"
+            id="speedCheck"
+            tabindex="1"
+            @click="mutateApp('speedCheck', !speedCheck)"
+          />
+          <label class="form-check-label" for="speedCheck"> Mode rapide </label>
+        </div>
       </div>
     </div>
   </div>
@@ -52,6 +65,7 @@ export default {
     return {
       chrono: true,
       hide: true,
+      speed: true,
     };
   },
   computed: {
@@ -61,10 +75,14 @@ export default {
     cardHideCheck() {
       return this.$store.state.app.cardHideCheck;
     },
+    speedCheck() {
+      return this.$store.state.app.speedCheck;
+    },
   },
   mounted() {
     this.chrono = this.cardChronoCheck;
     this.hide = this.cardHideCheck;
+    this.speed = this.speedCheck;
   },
   watch: {
     cardChronoCheck() {

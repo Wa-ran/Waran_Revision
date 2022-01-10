@@ -7,3 +7,9 @@ export default {
   name: "Hr",
 };
 </script>
+
+<style lang="scss" scoped>
+hr {
+  width: 100%;
+}
+</style>

@@ -61,6 +61,7 @@ module.exports = class Card extends revisionObj {
 
   newLevel() {
     let newLevel;
+    if (win === null) return;
     if (win) newLevel = this.level++;
     if (!win && newLevel % 2 === 0) newLevel--;
     if (newLevel < 0) newLevel = 0;

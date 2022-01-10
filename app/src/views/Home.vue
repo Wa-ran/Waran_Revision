@@ -4,9 +4,11 @@
   >
     <Header class="sticky-top border-bottom border-primary" />
     <!-- <BreadCrumb /> -->
-    <div class="d-flex flex-column flex-md-row flex-grow-1 h-fit pb-5">
+    <div
+      class="d-flex flex-column flex-md-row align-items-start flex-grow-1 h-fit pb-5"
+    >
       <main
-        class="d-flex justify-content-center align-items-start h-fit m-auto px-3 py-4 order-md-2"
+        class="d-flex justify-content-center align-items-start h-fit mx-auto px-3 py-4 order-md-2"
       >
         <ChangeLog v-if="$route.name == 'Home'" />
         <router-view v-else class="w-100" />
@@ -53,11 +55,11 @@ export default {
   & > * {
     &:first-child,
     &:last-child {
-      box-shadow: 0 0 2.5rem 0.25rem rgba($primary, 0.2) !important;
+      box-shadow: 0 0 2.5rem 0.25rem rgba($primary, 0.1) !important;
     }
     &:not(:first-child, :last-child) {
-      box-shadow: inset 2.5rem 0 2.5rem -2.25rem rgba($primary, 0.2),
-        inset -2.5rem 0 2.5rem -2.25rem rgba($primary, 0.2) !important;
+      box-shadow: inset 2.5rem 0 2.5rem -2.25rem rgba($primary, 0.1),
+        inset -2.5rem 0 2.5rem -2.25rem rgba($primary, 0.1) !important;
     }
   }
 }

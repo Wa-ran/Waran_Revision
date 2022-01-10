@@ -13,16 +13,88 @@
       <template v-slot:body>
         <div
           v-if="$store.state.app.cardReviserCharged"
-          class="d-flex flex-column w-100 h-100 overflow-scroll bg-body"
+          class="w-100 h-100 bg-body"
         >
-          <div class="flex-grow-1 d-flex align-items-center p-3">
-            <div v-html="actualCard.recto" class="text-center w-100"></div>
+          <div class="bg-body position-absolute top-0 end-0 m-2">
+            <button
+              @click="
+                recto = !recto;
+                fliped = true;
+              "
+              class="has-icon btn btn-outline-primary p-1"
+            >
+              <font-awesome-icon :icon="['fas', 'share']" size="2x" />
+            </button>
           </div>
 
-          <CardChrono
-            v-if="$store.state.app.cardReveal"
-            :style="$store.state.app.cardChronoCheck ? '' : 'opacity: 0'"
-          />
+          <div class="d-flex flex-column overflow-scroll h-100">
+            <div
+              class="flex-grow-1 d-flex flex-column justify-content-center align-items-center p-3"
+            >
+              <div
+                v-html="recto ? actualCard.recto : actualCard.verso"
+                class="text-center w-100"
+              ></div>
+              <div v-if="displayComment" class="w-100">
+                <cust-hr class="w-75 mx-auto" />
+                <div v-html="actualCard.comment"></div>
+              </div>
+            </div>
+            <div class="w-100 px-2">
+              <CardChrono
+                v-if="startChrono"
+                :style="$store.state.app.cardChronoCheck ? '' : 'opacity: 0'"
+              />
+              <button
+                v-else-if="actualCard.comment && !displayComment"
+                @click="displayComment = true"
+                class="btn btn-primary py-0 mx-auto mb-1"
+              >
+                Voir mes notes
+              </button>
+              <button
+                v-if="actualCard.comment && displayComment"
+                @click="displayComment = false"
+                class="btn btn-primary py-0 mx-auto mb-1"
+              >
+                Cacher mes notes
+              </button>
+            </div>
+          </div>
+        </div>
+      </template>
+      <template v-slot:footer v-if="fliped">
+        <div
+          v-if="!winSetted"
+          class="footer d-flex justify-content-between pb-1 pt-2"
+        >
+          <button
+            @click="setWin(false)"
+            class="btn btn-danger border-danger h-fit p-0"
+          >
+            Perdu
+          </button>
+          <button @click="setWin" class="btn btn-primary h-fit p-0">
+            Presque
+          </button>
+          <button
+            @click="setWin(true)"
+            class="btn btn-success border-success h-fit p-0"
+          >
+            Gagné
+          </button>
+        </div>
+
+        <div v-else class="d-flex justify-content-between pb-1 pt-2">
+          <button @click="setWin" class="btn btn-primary h-fit w-fit p-0 px-3">
+            Modifer
+          </button>
+          <button
+            @click="submitCard"
+            class="btn btn-primary h-fit w-fit p-0 px-3"
+          >
+            Valider
+          </button>
         </div>
       </template>
     </Card>
@@ -43,25 +115,43 @@ export default {
   },
   data() {
     return {
-      actualCard: null,
+      displayComment: false,
+      recto: true,
+      fliped: false,
+      winSetted: false,
     };
   },
   computed: {
+    actualCard() {
+      return this.$store.state.actualCard;
+    },
     pickCard() {
       return this.$store.getters.pickCard;
+    },
+    startChrono() {
+      return this.$store.state.app.cardReveal && this.recto && !this.fliped;
     },
   },
   methods: {
     setActualCard() {
       this.mutateApp("cardReviserCharged", false);
       const int = setInterval(() => {
-        this.actualCard = this.pickCard;
-        if (this.actualCard) {
+        let actualCard = this.pickCard;
+        if (actualCard) {
           this.mutateApp("cardReviserCharged", true);
+          this.mutateKey("actualCard", actualCard);
           clearInterval(int);
         }
       }, 200);
       int;
+    },
+    setWin(win = null) {
+      this.actualCard.win = win;
+      if (this.$store.state.app.speedCheck) this.submitCard();
+      else this.winSetted = true;
+    },
+    submitCard() {
+      this.$store.dispatch("putCard");
     },
   },
   async mounted() {
@@ -72,3 +162,9 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.footer button {
+  width: 30%;
+}
+</style>
