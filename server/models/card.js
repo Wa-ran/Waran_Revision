@@ -69,9 +69,9 @@ module.exports = class Card extends revisionObj {
   }
 
   calculNextRevision() {
-    if (level > HOURS_SUITE.length) level = HOURS_SUITE.length;
-    let hours = HOURS_SUITE[level];
-    if (level > 8) {
+    if (this.level > HOURS_SUITE.length) this.level = HOURS_SUITE.length;
+    let hours = HOURS_SUITE[this.level];
+    if (this.level > 6) {
       let decal = Math.trunc(hours / 10);
       let rand = Math.random();
       if (rand < 1 / 3) hours += decal;

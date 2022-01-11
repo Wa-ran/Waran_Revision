@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="editorOptions">
+    <div v-show="focus" class="editorOptions">
       <div>
         <button
           @click.prevent="normalContent"
@@ -34,7 +34,7 @@
         </button>
       </div>
 
-      <div>
+      <div v-show="focus">
         <button
           class="color cust_red btn btn-outline-primary bg-body"
           @click.prevent="editContent('<span class=\'cust_red\'>', '</span>')"
@@ -72,7 +72,7 @@
       </div>
     </div>
 
-    <div class="undo">
+    <div v-if="focus" class="undo">
       <button
         class="resetButton btn btn-outline-primary bg-body"
         @click.prevent="resetText"
@@ -92,9 +92,14 @@
     <div class="editorArea border border-primary rounded">
       <div
         class="contentEditable"
+        :class="focus ? '' : 'py-3'"
         v-html="textarea"
         contenteditable="true"
-        @blur="validModif(true)"
+        @focus="focus = !focus"
+        @blur="
+          focus = !focus;
+          validModif(true);
+        "
         @keydown.tab="tabHandle"
       ></div>
     </div>
@@ -111,6 +116,7 @@ export default {
   data() {
     return {
       contEdit: null,
+      focus: false,
       modifsHist: [],
       textarea: "",
       randomNum: null,
@@ -355,23 +361,28 @@ button {
   overflow-y: scroll;
 }
 div[contenteditable="true"] {
+  font-size: 1.1rem;
   height: fit-content !important;
   min-height: 100%;
   margin: auto;
-  padding: 2rem 0.5rem 1rem 0.5rem;
   outline: none;
+  padding: 1.5rem 0.5rem 1rem 0.5rem;
+  @media (max-width: 575.98px) {
+    padding: 3rem 0.5rem 1rem 0.5rem;
+  }
 }
 
 .editorOptions {
   position: absolute;
   top: 0.25rem;
   left: -0.5rem;
-  width: 100%;
   display: flex;
   justify-content: flex-start;
-  flex-wrap: wrap;
   overflow-x: scroll;
-  width: 80%;
+  width: 85%;
+  @media (max-width: 575.98px) {
+    flex-direction: column;
+  }
   & > div {
     width: fit-content;
     display: flex;

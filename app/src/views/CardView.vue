@@ -29,22 +29,32 @@
       <span class="italic">&nbsp;&nbsp;(révision ~ {{ showRevision() }})</span>
 
       <div class="w-fit ms-auto mt-3">
-        <button
-          @click="
-            $router.push({
-              name: 'ModifCard',
-              params: {
-                card: actualCard.id,
-              },
-            })
-          "
-          class="btn btn-primary h-fit w-100 py-0"
+        <cust-title
+          id="modifCardButton"
+          :text="'Modifier la carte'"
+          class="w-fit ms-auto"
         >
-          Modifier
-        </button>
+          <template v-slot:default>
+            <button
+              @click="
+                $router.push({
+                  name: 'ModifCard',
+                  params: {
+                    card: actualCard.id,
+                  },
+                })
+              "
+              aria-labelledby="modifCardButton"
+              class="position-relative btn btn-outline-primary h-fit w-fit p-1"
+            >
+              <font-awesome-icon :icon="['fas', 'cog']" size="lg" />
+            </button>
+          </template>
+        </cust-title>
+
         <button
           @click="submitCard"
-          class="btn btn-primary h-fit w-100 mt-2 py-0"
+          class="btn btn-primary h-fit w-fit mt-2 py-0 fs-5"
         >
           Valider
         </button>

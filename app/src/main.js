@@ -44,6 +44,7 @@ import "css-doodle";
 
 import Hr from "@/components/global/Hr.vue";
 import Link from "@/components/global/Link.vue";
+import Title from "@/components/global/Title.vue";
 import ToolTip from "@/components/global/ToolTip.vue";
 // import DoubleCheckButton from "@/components/DoubleCheckButton.vue";
 
@@ -148,11 +149,37 @@ VueApp.directive("tooltip", {
   },
 });
 
+// const bootstrap = new bootstrap
+const bsTooltipStretch = (el, binding) => {
+  const t = ["hover", "focus"];
+
+  new Tooltip(el, {
+    title: binding.value,
+    placement: binding.arg || "top",
+    trigger: t.join(" "),
+    html: true,
+    delay: { show: 500, hide: 0 },
+  });
+};
+
+VueApp.directive("tooltip-stretch", {
+  beforeMount(el, binding) {
+    bsTooltipStretch(el, binding);
+  },
+  updated(el, binding) {
+    bsTooltipStretch(el, binding);
+  },
+  unmounted(el) {
+    new Tooltip(el).dispose();
+  },
+});
+
 VueApp.component("font-awesome-icon", FontAwesomeIcon);
 // VueApp.component(VueCssDoodle.name, VueCssDoodle);
 VueApp.component("vue-mathjax", VueMathjax);
 VueApp.component("cust-hr", Hr);
 VueApp.component("cust-a", Link);
+VueApp.component("cust-title", Title);
 VueApp.component("cust-tooltip", ToolTip);
 // VueApp.component("DoubleCheckButton", DoubleCheckButton);
 VueApp.use(store).use(router).use(VueMathjax);
