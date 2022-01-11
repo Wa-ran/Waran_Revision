@@ -81,7 +81,7 @@ input:not([type="text"]) {
   box-shadow: inset 0 0 0 1px $body-bg;
 }
 .btn-outline-primary {
-  color: $orange-700;
+  color: currentColor;
 }
 .card-body {
   z-index: 100;
@@ -128,6 +128,7 @@ input:not([type="text"]) {
 }
 // Darkmode
 .dark {
+  --bs-primary: #fd7e14; //$orange
   --bs-dark-rgb: 41, 37, 33; //$black
   --bs-body-bg-rgb: 18, 18, 18; //$dark
   #app {

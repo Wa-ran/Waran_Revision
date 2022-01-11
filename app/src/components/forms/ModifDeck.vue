@@ -30,13 +30,15 @@
             type="checkbox"
             role="switch"
             id="CheckSequence"
+            aria-describedby="CheckSequenceDesc"
           />
           <label class="form-check-label aria-only" for="CheckSequence"
-            >Default switch checkbox input</label
+            >Choisir entre aléatoire et séquencé</label
           >
         </div>
         <div>Séquencé</div>
         <cust-tooltip
+          id="CheckSequenceDesc"
           :text="'<span class=\'bold\'>Aléatoire</span> <span class=\'italic\'>(défaut)</span> : les cartes seront révisées de manière aléatoire.</br><span class=\'bold\'>Séquencé</span> : les cartes seront révisées dans l\'ordre et auront le même niveau (utile pour apprendre un plan ou des suites d\'idées).'"
         />
       </div>

@@ -19,7 +19,8 @@
             <button
               @click="
                 recto = !recto;
-                fliped = true;
+                chrono = false;
+                flipped = true;
               "
               class="has-icon btn btn-outline-primary p-1"
             >
@@ -35,23 +36,31 @@
                 v-html="recto ? actualCard.recto : actualCard.verso"
                 class="text-center w-100"
               ></div>
+
               <div v-if="displayComment" class="w-100">
                 <cust-hr class="w-75 mx-auto" />
                 <div v-html="actualCard.comment"></div>
               </div>
             </div>
+
             <div class="w-100 px-2">
               <CardChrono
-                v-if="startChrono"
-                :style="$store.state.app.cardChronoCheck ? '' : 'opacity: 0'"
+                v-if="$store.state.app.cardReveal && !flipped"
+                :style="
+                  $store.state.app.cardChronoCheck && recto && chrono
+                    ? ''
+                    : 'opacity: 0'
+                "
               />
+
               <button
-                v-else-if="actualCard.comment && !displayComment"
+                v-else-if="actualCard.comment && !displayComment && flipped"
                 @click="displayComment = true"
                 class="btn btn-primary py-0 mx-auto mb-1"
               >
                 Voir mes notes
               </button>
+
               <button
                 v-if="actualCard.comment && displayComment"
                 @click="displayComment = false"
@@ -63,7 +72,7 @@
           </div>
         </div>
       </template>
-      <template v-slot:footer v-if="fliped">
+      <template v-slot:footer v-if="!chrono && flipped">
         <div
           v-if="!winSetted"
           class="footer d-flex justify-content-between pb-1 pt-2"
@@ -86,7 +95,15 @@
         </div>
 
         <div v-else class="d-flex justify-content-between pb-1 pt-2">
-          <button @click="setWin" class="btn btn-primary h-fit w-fit p-0 px-3">
+          <button
+            @click="
+              $router.push({
+                name: 'CardView',
+                params: { card: actualCard.id },
+              })
+            "
+            class="btn btn-primary h-fit w-fit p-0 px-3"
+          >
             Modifer
           </button>
           <button
@@ -117,7 +134,8 @@ export default {
     return {
       displayComment: false,
       recto: true,
-      fliped: false,
+      chrono: true,
+      flipped: false,
       winSetted: false,
     };
   },
@@ -125,11 +143,11 @@ export default {
     actualCard() {
       return this.$store.state.actualCard;
     },
+    cardChronoCheck() {
+      return this.$store.state.app.cardChronoCheck;
+    },
     pickCard() {
       return this.$store.getters.pickCard;
-    },
-    startChrono() {
-      return this.$store.state.app.cardReveal && this.recto && !this.fliped;
     },
   },
   methods: {
@@ -159,6 +177,11 @@ export default {
   },
   unmounted() {
     this.mutateApp("cardReviserCharged", false);
+  },
+  watch: {
+    cardChronoCheck() {
+      this.chrono = false;
+    },
   },
 };
 </script>

@@ -20,20 +20,33 @@ const routes = [
         component: lazyLoad("Library"),
         children: [
           {
-            path: ":deck",
+            path: "deck-:deck",
             name: "DeckView",
             component: lazyLoad("DeckView"),
             props: true,
             children: [
               {
                 path: "modification",
-                name: "DeckModification",
+                name: "ModifDeck",
                 component: lazyLoad("Modification"),
               },
               {
                 path: "revision",
                 name: "Revision",
                 component: lazyLoad("Revision"),
+              },
+            ],
+          },
+          {
+            path: "card-:card",
+            name: "CardView",
+            component: lazyLoad("CardView"),
+            props: true,
+            children: [
+              {
+                path: "modification",
+                name: "ModifCard",
+                component: lazyLoad("Modification"),
               },
             ],
           },

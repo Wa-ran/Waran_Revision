@@ -8,7 +8,6 @@ export default createStore({
       actionDisconnect: false,
       cardsListCharged: false,
       cardReviserCharged: false,
-      cardHiderKey: 0,
       cardHideCheck: true,
       cardChronoCheck: true,
       darkMode: false,
@@ -18,14 +17,16 @@ export default createStore({
       revealCard: false,
       speedCheck: true,
     },
+
     // card
     cardsToReviseBaseList: [],
     cardsToReviseReserved: [],
     actualCard: {},
+    cardModifInProgress: false, // true when forms/modifCard mounted ; false when card submit
     newCard: {
       recto: "Une carte toute neuve :)",
       verso: "",
-      streak: 0,
+      level: 0,
       next_revision: "",
       user_id: "",
       comment: "",
@@ -262,9 +263,12 @@ export default createStore({
       let pickCard;
       let list = state.cardsToReviseBaseList;
       if (state.app.randomCardPick) {
-        pickCard = list[Math.floor(Math.random() * list.length)];
+        let rand = Math.floor(Math.random() * list.length);
+        pickCard = list[rand];
+        pickCard.key = rand;
       } else {
         pickCard = list[0];
+        pickCard.key = 0;
       }
       return pickCard;
     },
@@ -274,6 +278,10 @@ export default createStore({
         for (const deck of state.decksList) {
           if (deck.id == router.currentRoute._value.params.deck)
             actualDeck = deck;
+        }
+      } else if (router.currentRoute._value.params.card) {
+        for (const deck of state.decksList) {
+          if (deck.id == state.actualCard.deck_id) actualDeck = deck;
         }
       } else {
         actualDeck = null;

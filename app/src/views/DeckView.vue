@@ -50,7 +50,7 @@
         <button
           @click="
             $router.push({
-              name: 'DeckModification',
+              name: 'ModifDeck',
               params: {
                 deck: actualDeck.id,
               },

@@ -45,6 +45,10 @@ export default {
       asides[1].style.width = asides[0].scrollWidth;
     else asides[0].style.width = asides[1].scrollWidth;
   },
+  created() {
+    if (location.protocol == "https:") location.protocol = "http:";
+    this.mutateKey("showPage", "revisionPage");
+  },
 };
 </script>
 
@@ -64,6 +68,7 @@ export default {
   }
 }
 main {
+  min-width: fit-content !important;
   max-width: 500px;
 }
 </style>
