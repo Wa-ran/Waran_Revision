@@ -19,7 +19,7 @@
       </button>
     </div>
 
-    <div v-else class="w-75 d-flex justify-content-center">
+    <div v-else class="w-75 d-flex justify-content-end">
       <FormConnexion />
       <button
         @click="connectForm = false"

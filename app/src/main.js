@@ -32,6 +32,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faHourglass,
+  faMinusSquare,
+  faPlusSquare,
   faQuestionCircle,
 } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -60,7 +62,9 @@ library.add(
   faHistory,
   faHourglass,
   faItalic,
+  faMinusSquare,
   faMoon,
+  faPlusSquare,
   faQuestion,
   faQuestionCircle,
   faShare,

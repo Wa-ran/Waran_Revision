@@ -4,6 +4,7 @@
     data-bs-toggle="tooltip"
     data-bs-html="true"
     @blur="dispose"
+    @click="dispose"
   >
     <slot></slot>
   </div>
@@ -27,6 +28,13 @@ export default {
         document.querySelector(".tooltip").remove();
       }
     },
+  },
+  unmounted() {
+    try {
+      document.querySelector(".tooltip").remove();
+    } catch (error) {
+      return;
+    }
   },
 };
 </script>

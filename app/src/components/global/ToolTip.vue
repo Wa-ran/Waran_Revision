@@ -32,6 +32,13 @@ export default {
       }
     },
   },
+  unmounted() {
+    try {
+      document.querySelector(".tooltip").remove();
+    } catch (error) {
+      return;
+    }
+  },
 };
 </script>
 

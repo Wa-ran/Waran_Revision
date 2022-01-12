@@ -1,5 +1,6 @@
 <template>
   <form :key="card.id" class="m-auto h-fit">
+    <!-- Recto -->
     <div class="mt-2 mb-3 h-fit">
       <label for="CardRecto" class="fs-5 ms-n3">
         {{ card.reverse ? "Recto" : "Question" }} :
@@ -8,7 +9,7 @@
         id="CardRecto"
         :contentId="'CardRecto'"
         :text="card.recto"
-        @validModif="mutateKey('actualCard', { recto: $event })"
+        @validModif="card.recto = $event"
       />
 
       <div v-if="options">
@@ -42,6 +43,7 @@
 
     <cust-hr v-if="options" class="w-50 ms-n3 mb-2" />
 
+    <!-- Verso -->
     <div class="mt-2 mb-3 h-fit">
       <label for="CardVerso" class="fs-5 ms-n3">
         {{ card.reverse ? "Verso" : "Réponse" }} :
@@ -50,7 +52,7 @@
         id="CardVerso"
         :contentId="'CardVerso'"
         :text="card.verso"
-        @validModif="mutateKey('actualCard', { verso: $event })"
+        @validModif="card.verso = $event"
       />
 
       <div v-if="options">
@@ -85,20 +87,22 @@
     <div v-if="options">
       <cust-hr class="w-50 ms-n3 mb-2" />
 
+      <!-- Comment -->
       <div class="mt-2 mb-3 h-fit">
         <label for="CardVerso" class="fs-5 ms-n3"> Commentaire : </label>
         <TextEditor
           id="CardComment"
           :contentId="'CardComment'"
           :text="card.comment"
-          @validModif="mutateKey('actualCard', { comment: $event })"
+          @validModif="card.comment = $event"
         />
       </div>
 
       <cust-hr class="w-50 ms-n3 mb-2" />
 
-      <div class="fs-5 ms-n3">Options :</div>
+      <div class="fs-5 ms-n3 mb-3">Options :</div>
 
+      <!-- Reverse -->
       <div class="form-check d-flex mt-2">
         <input
           v-model="card.reverse"
@@ -116,9 +120,70 @@
           :text="'Par défaut, la carte s\'inverse à chaque révision pour accélérer l\'apprentissage.</br></br>Décochez pour créer une carte \'\'Question/Réponse\'\' !'"
         />
       </div>
-      level
+
+      <cust-hr class="w-25 my-3" />
+
+      <!-- Level -->
+      <div class="form-check d-flex align-items-center mt-2 ps-0">
+        <div class="italic">Niveau :&nbsp;</div>
+
+        <button
+          @click.prevent="card.level--"
+          aria-label="Diminuer d'un niveau"
+          class="has-icon"
+        >
+          <font-awesome-icon :icon="['far', 'minus-square']" />
+        </button>
+
+        <div class="level bold mx-1">{{ mixShowLevel(card) }}</div>
+
+        <button
+          @click.prevent="card.level++"
+          aria-label="Augmenter d'un niveau"
+          class="has-icon"
+        >
+          <font-awesome-icon :icon="['far', 'plus-square']" />
+        </button>
+        <cust-tooltip
+          class="ms-0 me-0 mt-n3"
+          :text="'Si vous venez de réviser la carte, la réussite/défaite est prise en compte.'"
+        />
+
+        <span class="italic"
+          >&nbsp;&nbsp;(révision ~ {{ mixShowRevision(card) }})</span
+        >
+      </div>
     </div>
 
+    <cust-hr class="w-25 my-3" />
+
+    <!-- Deck -->
+    <div class="form-check d-flex align-items-center mt-2 p-0">
+      <div class="italic me-2">Deck :</div>
+      <select
+        class="form-select form-select-sm w-fit h-fit bg-body m-0"
+        aria-label="Transérer dans un autre deck"
+        aria-describedby="selectDeckDesc"
+        v-model="card.deck_id"
+      >
+        <option
+          v-for="deck of $store.state.decksList"
+          :key="deck.id"
+          :value="deck.id"
+        >
+          {{ deck.title }}
+        </option>
+      </select>
+      <cust-tooltip
+        id="selectDeckDesc"
+        class="mt-n4"
+        :text="'Vous pouvez transférez la carte dans un autre deck.'"
+      />
+    </div>
+
+    <cust-hr class="w-25 my-3" />
+
+    <!-- Validation -->
     <div class="d-flex justify-content-between mt-3">
       <button
         @click.prevent="options = !options"
@@ -126,13 +191,16 @@
       >
         {{ options ? "Masquer les options" : "Afficher plus d'options" }}
       </button>
-      <button class="btn btn-primary py-1 fs-5">Valider</button>
+      <button @click.prevent="validForm" class="btn btn-primary py-1 fs-5">
+        Valider
+      </button>
     </div>
   </form>
 </template>
 
 <script>
 import TextEditor from "@/components/TextEditor";
+import card from "@/mixins/card";
 
 export default {
   name: "ModifCard",
@@ -154,19 +222,40 @@ export default {
     },
   },
   methods: {
-    submitForm() {
-      if (!this.deck.title) document.getElementById("CardVerso").focus();
-      else this.submitDeck();
+    selectDeck() {
+      let select = document.querySelectorAll("select option");
+      for (let option of select) {
+        if (option.value == this.$store.getters.actualDeck.id)
+          return (option.selected = true);
+      }
     },
-    async submitDeck() {
-      await this.$store.dispatch("putDeck", this.deck).then(() => {
-        this.$emit("submited");
-      });
+    validForm() {
+      this.mutateKey("actualCard", this.card);
+      this.$router.push({ name: "CardView" });
     },
   },
   mounted() {
     this.card = this.$store.state.actualCard;
     this.mutateApp("cardModifInProgress", true);
   },
+  watch: {
+    options() {
+      if (this.options) this.selectDeck();
+    },
+  },
+  mixins: [card],
 };
 </script>
+
+<style lang="scss" scoped>
+.has-icon {
+  font-size: 1.2rem;
+}
+.form-select {
+  color: currentColor;
+}
+.level {
+  width: 20px;
+  text-align: center;
+}
+</style>
