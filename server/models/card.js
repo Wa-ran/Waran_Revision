@@ -37,7 +37,7 @@ const HOURS_SUITE = {
 
 module.exports = class Card extends revisionObj {
 
-  constructor(id, recto, verso, level, user_id, next_revision, reverse, comment, deck_id, recto_formula, verso_formula, recto_image, verso_image, win, decalage, suggestion_down, suggestion_up) {
+  constructor(id, recto, verso, level, user_id, next_revision, reverse, comment, deck_id, recto_formula, verso_formula, recto_image, verso_image, win, decalage, suggestion_down, suggestion_up, suggestion_accepted) {
     super();
     this.id = this.tryParseInt(id);
     this.recto = recto;
@@ -52,18 +52,22 @@ module.exports = class Card extends revisionObj {
     this.recto_image = this.isBoolean(recto_image);
     this.verso_image = this.isBoolean(verso_image);
     this.reverse = this.isBoolean(reverse);
-    this.win = this.isBoolean(win);
+    this.win = this.isBoolean(win, true);
     this.decalage = decalage ? this.tryParseInt(decalage) : this.calculDecalage();
     this.suggestion_down = suggestion_down ? this.tryParseInt(suggestion_down) : this.suggestDownLevel();
     this.suggestion_up = suggestion_up ? this.tryParseInt(suggestion_up) : this.suggestUpLevel();
+    this.suggestion_accepted = this.isBoolean(suggestion_accepted);
     this.parseToJS();
   };
 
   newLevel() {
-    let newLevel;
-    if (win === null) return;
-    if (win) newLevel = this.level++;
-    if (!win && newLevel % 2 === 0) newLevel--;
+    let newLevel = this.level;
+    if (this.win === null) return;
+    else if (this.win) newLevel++;
+    else if (!this.win) {
+      newLevel--;
+      if (newLevel % 2 === 0) newLevel--
+    }
     if (newLevel < 0) newLevel = 0;
     this.level = newLevel
   }
@@ -90,10 +94,16 @@ module.exports = class Card extends revisionObj {
     }
   };
 
+  updateCard() {
+    this.newLevel();
+    this.calculNextRevision();
+    this.inverseRectoVerso();
+  };
+
   calculDecalage() {
     const diffTime = Math.abs(new Date() - this.next_revision);
     return Math.ceil(diffTime / (1000 * 60 * 60));
-  }
+  };
 
   suggestDownLevel() {
     let suggestion = null;

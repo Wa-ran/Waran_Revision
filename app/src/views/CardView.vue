@@ -26,6 +26,13 @@
         >
       </div>
 
+      <div v-if="prevRoute && prevRoute.name == 'Revision'" class="mb-2">
+        <span class="text-primary">Révision :&nbsp;&nbsp;</span>
+        <span v-if="actualCard.win == false">Perdue</span>
+        <span v-else-if="actualCard.win == null">Presque</span>
+        <span v-else>Gagnée</span>
+      </div>
+
       <div class="mb-2">
         <span class="text-primary">Deck :&nbsp;&nbsp;</span>
         <span>{{ mixShowDeck(actualCard) }}</span>
@@ -72,15 +79,28 @@ import card from "@/mixins/card";
 
 export default {
   name: "CardView",
+  data() {
+    return {
+      prevRoute: null,
+    };
+  },
   computed: {
     actualCard() {
       return this.$store.state.actualCard;
     },
   },
-  watch: {
-    $route() {
-      console.log("coucou");
+  methods: {
+    async submitCard() {
+      await this.$store
+        .dispatch("putCard", this.actualCard)
+        .then(() => this.$router.push(this.prevRoute.path));
     },
+  },
+  beforeRouteEnter(to, from, next) {
+    next((vm) => {
+      vm.prevRoute = from;
+      console.log(from);
+    });
   },
   mixins: [card],
 };

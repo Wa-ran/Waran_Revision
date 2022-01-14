@@ -33,8 +33,7 @@ exports.postCard = async (req) => {
 };
 
 exports.putCard = async (req) => {
-  req.card.calculNextRevision();
-  req.card.inverseRectoVerso();
+  req.card.updateCard();
   await dtbFct.updateCard(req);
 };
 

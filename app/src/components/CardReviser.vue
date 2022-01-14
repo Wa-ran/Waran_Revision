@@ -83,7 +83,7 @@
           >
             Perdu
           </button>
-          <button @click="setWin" class="btn btn-primary h-fit p-0">
+          <button @click="setWin()" class="btn btn-primary h-fit p-0">
             Presque
           </button>
           <button
@@ -169,7 +169,7 @@ export default {
       else this.winSetted = true;
     },
     submitCard() {
-      this.$store.dispatch("putCard");
+      this.$store.dispatch("putCard").then(() => this.$emit("submitted"));
     },
   },
   async mounted() {

@@ -1,6 +1,6 @@
 <template>
   <div class="w-fit mt-3 mx-auto">
-    <CardReviser />
+    <CardReviser @submitted="submit++" :key="submit" />
   </div>
 </template>
 
@@ -11,6 +11,11 @@ export default {
   name: "revision",
   components: {
     CardReviser,
+  },
+  data() {
+    return {
+      submit: 0,
+    };
   },
   computed: {
     cardsToReviseBaseList() {
