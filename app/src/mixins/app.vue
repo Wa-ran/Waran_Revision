@@ -25,8 +25,8 @@ export default {
     disconnect() {
       return this.$store.state.app.actionDisconnect;
     },
-    userId() {
-      return this.$store.state.user.id;
+    user() {
+      return this.$store.state.user;
     },
   },
   mounted() {
@@ -34,7 +34,7 @@ export default {
       // wait for user preferences (darkMode)
       this.storeReset = { ...this.$store.state };
     }, 200);
-    if (!this.userId) this.$router.push({ name: "Home" });
+    if (!this.user.id) this.$router.push({ name: "Home" });
   },
   watch: {
     cardChronoCheck() {
@@ -49,7 +49,7 @@ export default {
     },
     darkMode() {
       if (this.storeReset && this.darkMode !== undefined) {
-        // cause setState in $store use Object.assign which briefly delete the $stroe.state, causing this.DarkMode = undefined
+        // because setState in $store use Object.assign which briefly delete the $store.state, causing this.DarkMode = undefined
         this.storeReset.app.darkMode = this.darkMode;
       }
     },
@@ -65,8 +65,17 @@ export default {
         this.$router.push({ name: "Home" });
       }
     },
-    userId() {
-      if (this.userId) this.$router.push({ name: "Library" });
+    user() {
+      if (this.user.id) {
+        this.$router.push({ name: "Library" });
+        this.mutateKey("app", {
+          cardHideCheck: this.user.hide_card,
+          cardChronoCheck: this.user.chrono_card,
+          darkMode:
+            this.user.dark_mode === null ? this.darkMode : this.user.dark_mode,
+          fastMode: this.user.fast_mode,
+        });
+      }
     },
   },
 };

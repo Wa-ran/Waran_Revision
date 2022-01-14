@@ -19,7 +19,7 @@
         data-bs-target="#HeaderNav"
         aria-controls="HeaderNav"
         aria-expanded="false"
-        aria-label="Toggle navigation"
+        aria-label="Accéder à la navigation"
       >
         <font-awesome-icon :icon="['fas', 'bars']" size="lg" />
       </button>

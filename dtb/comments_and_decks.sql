@@ -5,6 +5,10 @@ DROP TRIGGER IF EXISTS after_update_cards;
 
 ALTER TABLE cards ADD deck_id BIGINT UNSIGNED NOT NULL;
 ALTER TABLE cards ADD comment TEXT;
+ALTER TABLE users ADD hide_card TINYINT(1) DEFAULT '1';
+ALTER TABLE users ADD chrono_card TINYINT(1) DEFAULT '1';
+ALTER TABLE users ADD fast_mode TINYINT(1) DEFAULT '1';
+ALTER TABLE users ADD dark_mode TINYINT(1) DEFAULT NULL;
 
 SET SQL_SAFE_UPDATES = 0;
 
@@ -15,6 +19,7 @@ SET SQL_SAFE_UPDATES = ON;
 
 ALTER TABLE cards DROP recto_comment, DROP verso_comment, DROP has_image;
 ALTER TABLE cards RENAME COLUMN streak TO level;
+ALTER TABLE cards_revisions RENAME COLUMN new_streak TO new_level;
 
 DROP TABLE IF EXISTS decks;
 CREATE TABLE decks (

@@ -4,6 +4,10 @@ const { encrypt, decrypt } = require('../middlewares/crypto');
 
 module.exports = class revisionObj {
 
+  beforeSend() {
+    this.parseToJS();
+  };
+
   parseToJS() {
     for (let [key, value] of Object.entries(this)) {
       if (value && !Number.isInteger(value)) {
@@ -60,8 +64,9 @@ module.exports = class revisionObj {
     return Number.isInteger(val) ? val : (isNaN(Number.parseInt(val)) ? 0 : Number.parseInt(val));
   };
 
-  isBoolean(val) {
-    if (val === true || val === false) return val
+  isBoolean(val, canBeNull = false) {
+    if (canBeNull && val === null) return null;
+    else if (val === true || val === false) return val;
     else if (val == 1) return true;
     else return false;
   }

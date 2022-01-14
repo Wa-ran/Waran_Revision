@@ -78,7 +78,7 @@ module.exports = async (req, res, next) => {
             if (method === 'get' && !verifIdByToken(obj)) {
               throw 'Token invalide'
             };
-            obj.parseToJS();
+            obj.beforeSend();
             result.push(obj);
           };
         }
@@ -86,7 +86,7 @@ module.exports = async (req, res, next) => {
           if (method === 'get' && !verifIdByToken(response)) {
             throw 'Token invalide'
           };
-          result = response.parseToJS();
+          result = response.beforeSend();
         }
 
         res.send(result)

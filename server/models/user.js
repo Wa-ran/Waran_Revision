@@ -3,20 +3,33 @@ const bcrypt = require('bcrypt');
 
 module.exports = class User extends revisionObj {
 
-  constructor(id, pseudo, password) {
+  constructor(id, pseudo, password, hide_card, chrono_card, fast_mode, dark_mode) {
     super();
     this.id = this.tryParseInt(id);
     this.pseudo = pseudo;
     this.password = password;
+    this.hide_card = this.isBoolean(hide_card);
+    this.chrono_card = this.isBoolean(chrono_card);
+    this.fast_mode = this.isBoolean(fast_mode);
+    this.dark_mode = this.isBoolean(dark_mode, true);
     this.parseToJS();
   };
 
-  parseToMySQL() {
+  parseToJS() {
     let pass = this.password;
+    let token = this.token;
+    super.parseToJS();
+    this['token'] = token;
+    this['password'] = pass;
+    return this;
+  };
+
+  beforeSend() {
+    let token = this.token;
     delete this.token;
     delete this.password;
-    super.parseToMySQL();
-    this['password'] = '"' + pass + '"';
+    super.beforeSend();
+    this['token'] = token;
     return this;
   };
 

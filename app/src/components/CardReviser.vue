@@ -165,7 +165,7 @@ export default {
     },
     setWin(win = null) {
       this.actualCard.win = win;
-      if (this.$store.state.app.speedCheck) this.submitCard();
+      if (this.$store.state.app.fastMode) this.submitCard();
       else this.winSetted = true;
     },
     submitCard() {

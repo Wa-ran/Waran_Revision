@@ -27,16 +27,13 @@ export default {
   name: "DarkSwitch",
   data() {
     return {
-      bsList: [
-        "primary",
-        "secondary",
-        "success",
-        "danger",
-        "info",
-        "body-color",
-        "body-bg",
-      ],
+      watch: false,
     };
+  },
+  computed: {
+    appDarkMode() {
+      return this.$store.state.app.darkMode;
+    },
   },
   methods: {
     toogleDarkMode(event) {
@@ -46,6 +43,13 @@ export default {
           window.matchMedia &&
           window.matchMedia("(prefers-color-scheme: dark)").matches)
       ) {
+        this.setDarkMode(true);
+      } else {
+        this.setDarkMode(false);
+      }
+    },
+    setDarkMode(bool) {
+      if (bool) {
         document.documentElement.className = "dark";
         document.getElementById("darkMode").checked = true;
         this.mutateApp("darkMode", true);
@@ -57,6 +61,15 @@ export default {
   },
   mounted() {
     this.toogleDarkMode();
+    this.watch = true;
+  },
+  watch: {
+    appDarkMode() {
+      if (this.watch) {
+        if (this.appDarkMode === null) this.toogleDarkMode();
+        else this.setDarkMode(this.appDarkMode);
+      }
+    },
   },
 };
 </script>

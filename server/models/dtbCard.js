@@ -1,39 +1,5 @@
 const revisionObj = require('./revisionObj');
 
-const HOURS_SUITE = {
-  0: 0,
-  1: 2,
-  2: 6,
-  3: 12,
-  4: 12,
-  5: 21,
-  6: 21,
-  7: 36,
-  8: 36,
-  9: 60,
-  10: 60,
-  11: 96,
-  12: 96,
-  13: 156,
-  14: 156,
-  15: 252,
-  16: 252,
-  17: 408,
-  18: 408,
-  19: 660,
-  20: 660,
-  21: 1068,
-  22: 1068,
-  23: 1728,
-  24: 1728,
-  25: 2796,
-  26: 2796,
-  27: 4524,
-  28: 4524,
-  29: 7320,
-  30: 7320
-};
-
 module.exports = class DtbCard extends revisionObj {
 
   constructor(id, recto, verso, level, user_id, next_revision, reverse, comment, deck_id, recto_formula, verso_formula, recto_image, verso_image) {
@@ -52,20 +18,5 @@ module.exports = class DtbCard extends revisionObj {
     this.verso_image = this.isBoolean(verso_image);
     this.reverse = this.isBoolean(reverse);
     this.parseToMySQL();
-  };
-
-  calculNextRevision() {
-    let level = this.level;
-    if (level > Object.values(HOURS_SUITE).length) level = Object.values(HOURS_SUITE).length;
-    let number = HOURS_SUITE[level];
-    this.next_revision = new Date(new Date().setTime(new Date().getTime() + number * 60 * 60 * 1000));
-  };
-
-  inverseRectoVerso() {
-    if (this.reverse) {
-      let recto = this.recto;
-      this.recto = this.verso;
-      this.verso = recto;
-    }
   };
 }

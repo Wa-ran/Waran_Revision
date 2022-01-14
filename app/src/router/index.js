@@ -52,6 +52,11 @@ const routes = [
           },
         ],
       },
+      {
+        path: "profil",
+        name: "Profil",
+        component: lazyLoad("Profil"),
+      },
     ],
   },
 ];

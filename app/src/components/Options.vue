@@ -44,14 +44,14 @@
 
         <div class="form-check">
           <input
-            v-model="speed"
+            v-model="fast"
             class="form-check-input"
             type="checkbox"
-            id="speedCheck"
+            id="fastMode"
             tabindex="1"
-            @click="mutateApp('speedCheck', !speedCheck)"
+            @click="mutateApp('fastMode', !fastMode)"
           />
-          <label class="form-check-label" for="speedCheck"> Mode rapide </label>
+          <label class="form-check-label" for="fastMode"> Mode rapide </label>
         </div>
       </div>
     </div>
@@ -65,7 +65,7 @@ export default {
     return {
       chrono: true,
       hide: true,
-      speed: true,
+      fast: true,
     };
   },
   computed: {
@@ -75,14 +75,14 @@ export default {
     cardHideCheck() {
       return this.$store.state.app.cardHideCheck;
     },
-    speedCheck() {
-      return this.$store.state.app.speedCheck;
+    fastMode() {
+      return this.$store.state.app.fastMode;
     },
   },
   mounted() {
     this.chrono = this.cardChronoCheck;
     this.hide = this.cardHideCheck;
-    this.speed = this.speedCheck;
+    this.fast = this.fastMode;
   },
   watch: {
     cardChronoCheck() {
@@ -90,6 +90,9 @@ export default {
     },
     cardHideCheck() {
       this.hide = this.cardHideCheck;
+    },
+    fastMode() {
+      this.fats = this.fastMode;
     },
   },
 };

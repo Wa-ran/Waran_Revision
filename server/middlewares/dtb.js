@@ -149,6 +149,11 @@ exports.updateDeck = async (req) => {
   return await this.connect(this.updateRequest(deck));
 };
 
+exports.updateUser = async (req) => {
+  let user = createObj("dtbUser", req.user);
+  return await this.connect(`UPDATE users SET hide_card = ${user.hide_card}, chrono_card = ${user.chrono_card}, fast_mode = ${user.fast_mode}, dark_mode = ${user.dark_mode} WHERE users.id = ${user.id};`);
+};
+
 exports.deleteCard = async (req) => {
   return await this.connect('DELETE FROM cards WHERE id = ' + req.card.id + ';');
 };

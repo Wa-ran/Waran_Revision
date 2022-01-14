@@ -9,12 +9,7 @@
         />
       </li>
       <li class="nav-item">
-        <cust-a
-          :linkName="'Profil'"
-          :linkText="'Profil'"
-          :disabled="true"
-          class="nav-link disabled"
-        />
+        <cust-a :linkName="'Profil'" :linkText="'Profil'" class="nav-link" />
       </li>
       <li class="nav-item">
         <cust-a

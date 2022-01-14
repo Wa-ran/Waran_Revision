@@ -171,3 +171,7 @@ exports.postUser = async (req) => {
     await req.user.cryptPassword().then(() => dtbFct.createUser(req))
   }
 };
+
+exports.putUser = async (req) => {
+  await dtbFct.updateUser(req)
+};

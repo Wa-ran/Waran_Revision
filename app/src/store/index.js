@@ -5,17 +5,19 @@ export default createStore({
   state: {
     // app
     app: {
+      // state
       actionDisconnect: false,
       cardsListCharged: false,
       cardReviserCharged: false,
+      deckSelected: false,
+      decksCharged: false,
+      revealCard: false,
+      // check
       cardHideCheck: true,
       cardChronoCheck: true,
       darkMode: false,
-      deckSelected: false,
-      decksCharged: false,
       randomCardPick: true,
-      revealCard: false,
-      speedCheck: true,
+      fastMode: true,
     },
 
     // card
@@ -114,6 +116,13 @@ export default createStore({
         mutate: "user",
       });
     },
+    async putCard() {
+      await this.dispatch("APIRequest", {
+        method: "PUT",
+        serverRoute: "/Card",
+        data: { card: this.state.actualCard },
+      });
+    },
     async putDeck({ getters }, deck) {
       await this.dispatch("APIRequest", {
         method: "PUT",
@@ -122,11 +131,11 @@ export default createStore({
         mutate: "deckList",
       });
     },
-    async putCard() {
+    async putUser(context, payload) {
       await this.dispatch("APIRequest", {
         method: "PUT",
-        serverRoute: "/Card",
-        data: { card: this.state.actualCard },
+        serverRoute: "/User",
+        data: { user: payload },
       });
     },
     mutateStore(context, payload) {
