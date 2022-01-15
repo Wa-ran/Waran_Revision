@@ -73,6 +73,8 @@ export default {
     title() {
       let route = this.$route.name;
       switch (route) {
+        case "Home":
+          return "Accueil";
         case "Library":
           return "Vos decks";
         case "DeckView":

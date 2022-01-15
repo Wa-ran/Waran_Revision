@@ -37,6 +37,14 @@ export default {
   unmounted() {
     this.mutateApp("decksCharged", false);
   },
+  watch: {
+    async $route() {
+      if (this.$route.name == "Library")
+        await this.$store.dispatch("getAllUserDecks").then(() => {
+          this.mutateApp("decksCharged", true);
+        });
+    },
+  },
 };
 </script>
 

@@ -165,7 +165,7 @@ export default {
         return this.mutateStore("reserveCard");
       } else {
         await this.$store.dispatch("putCard").then(() => {
-          this.$store.dispatch("removeCard");
+          return this.$store.dispatch("mutateStore", { fct: "removeCard" });
         });
       }
     },

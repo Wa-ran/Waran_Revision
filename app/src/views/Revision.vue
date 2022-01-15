@@ -1,22 +1,19 @@
 <template>
   <div class="w-fit mt-3 mx-auto">
-    <div class="text-center">
-      Encore
-      <span class="bold">{{ cardsToReviseBaseList.length }}</span>
-      carte{{ cardsToReviseBaseList.length > 1 ? "s" : "" }}
-      à réviser
-    </div>
+    <RevisionCounter :key="submit" />
     <CardReviser @submitted="submit++" :key="submit" />
   </div>
 </template>
 
 <script>
 import CardReviser from "@/components/CardReviser";
+import RevisionCounter from "@/components/RevisionCounter";
 
 export default {
   name: "revision",
   components: {
     CardReviser,
+    RevisionCounter,
   },
   data() {
     return {

@@ -5,16 +5,16 @@
       :seed="$store.state.user.id"
       class="w-100 h-100"
     >
-      @grid: 20 / 18rem; transform: rotate(@r(±90deg)) scale(calc(1 + @r(±0.6)))
+      @grid: 25 / 18rem; transform: rotate(@r(±90deg)) scale(calc(1 + @r(±0.6)))
       translate(@r(±5px), @r(±5px)); background-color: rgba(calc(253 +
-      ((@index/400)*2)), calc(126 + ((@index/400)*129)), calc(20 +
-      ((@index/400)*235))); opacity: calc(0.8 + @r(±0.2));
+      ((@index/625)*(2 - 0))), calc(126 + ((@index/625)*(129 - 1))), calc(20 +
+      ((@index/625)*(235 - 2)))); opacity: calc(0.8 + @r(±0.2));
     </css-doodle>
     <css-doodle v-else :seed="$store.state.user.id" class="w-100 h-100">
-      @grid: 20 / 18rem; transform: rotate(@r(±90deg)) scale(calc(1 + @r(±0.6)))
+      @grid: 25 / 18rem; transform: rotate(@r(±90deg)) scale(calc(1 + @r(±0.6)))
       translate(@r(±5px), @r(±5px)); background-color: rgba(calc(253 -
-      ((@index/400)*253)), calc(126 - ((@index/400)*126)), calc(20 -
-      ((@index/400)*20))); opacity: calc(0.8 + @r(±0.2));
+      ((@index/625)*(253 - 18))), calc(126 - ((@index/625)*(126 - 18))), calc(20
+      - ((@index/625)*(20 - 18)))); opacity: calc(0.8 + @r(±0.2));
     </css-doodle>
     <!-- <css-doodle
       v-if="!darkMode"

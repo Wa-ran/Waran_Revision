@@ -88,18 +88,21 @@ export default createStore({
       }
     },
     removeCard(state) {
-      const index = state.cardsToReviseBaseList.indexOf(state.actualCard.key);
+      let index = state.cardsToReviseBaseList.indexOf(state.actualCard.key);
       state.cardsToReviseBaseList.splice(index, 1);
-    },
-    reserveCard(state) {
-      this.mutateKey("cardsToReviseReserved", state.actualCard);
-      this.removeCard();
     },
     setState(state, payload) {
       Object.assign(state, payload);
     },
   },
   actions: {
+    reserveCard(context) {
+      context.commit("mutateKey", {
+        sKey: "cardsToReviseReserved",
+        body: this.state.actualCard,
+      });
+      context.commit("removeCard");
+    },
     async getAllUserDecks() {
       await this.dispatch("APIRequest", {
         method: "GET",
@@ -147,28 +150,6 @@ export default createStore({
       });
     },
     mutateStore(context, payload) {
-      // if (payload.value && payload.value.sKey) {
-      //   let key = payload.value.sKey;
-      //   setTimeout(() => {
-      //     this.dispatch("mutateStore", {
-      //       fct: "incrementKey",
-      //       value: key,
-      //     });
-      //   });
-      // }
-      if (
-        payload.value &&
-        payload.value.sKey &&
-        payload.value.sKey == "cardsList"
-      ) {
-        setTimeout(() => {
-          payload.value.sKey = "cardsToReviseList";
-          this.dispatch("mutateStore", {
-            fct: payload.fct,
-            value: payload.value,
-          });
-        });
-      }
       context.commit(payload.fct, payload.value || null);
     },
     async APIRequest(context, req) {
@@ -195,13 +176,6 @@ export default createStore({
                 value: result,
               });
             }
-
-            if (req.mutate == "cardsList") context.commit("prepareDeck");
-            // console.log(req.method + ' ' + req.mutate)
-            this.dispatch("mutateStore", {
-              fct: "mutateKey",
-              value: { sKey: "loading", body: false },
-            });
 
             return response;
           })

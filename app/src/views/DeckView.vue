@@ -76,10 +76,10 @@ export default {
     },
   },
   mounted() {
-    this.mutateApp("deckCharged", true);
+    this.mutateApp("deckSelected", true);
   },
   unmounted() {
-    this.mutateApp("deckCharged", false);
+    this.mutateApp("deckSelected", false);
   },
 };
 </script>

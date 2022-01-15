@@ -13,6 +13,9 @@ export default {
     cardHideCheck() {
       return this.$store.state.app.cardHideCheck;
     },
+    cardsListCharged() {
+      return this.$store.state.app.cardsListCharged;
+    },
     cardHiderKey() {
       return this.$store.state.app.cardHiderKey;
     },
@@ -46,6 +49,9 @@ export default {
         this.mutateApp("cardHiderKey", this.cardHiderKey + 1);
       if (!this.cardHideCheck && this.cardChronoCheck)
         this.mutateApp("cardChronoCheck", false);
+    },
+    cardsListCharged() {
+      this.mutateKey("cardsToReviseReserved", []);
     },
     darkMode() {
       if (this.storeReset && this.darkMode !== undefined) {
