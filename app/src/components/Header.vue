@@ -21,7 +21,7 @@
           @displayForm="connect = true"
           @hidenForm="connect = false"
         />
-        <h2 v-else class="m-0 mx-3 fs-4">{{ title }}</h2>
+        <h2 v-else class="m-0 mx-3 fs-4 text-white">{{ title }}</h2>
       </div>
 
       <button
@@ -39,7 +39,14 @@
 
       <div
         v-if="user.id"
-        class="collapse navbar-collapse border-top border-primary mt-2 ms-lg-5 ps-lg-5"
+        class="
+          collapse
+          navbar-collapse
+          border-top border-primary
+          mt-2
+          ms-lg-5
+          ps-lg-5
+        "
         id="HeaderNav"
       >
         <Navigation class="navigation" />
@@ -78,7 +85,7 @@ export default {
         case "CardView":
           return "Carte";
         case "ModifCard":
-          return "Modifer une carte";
+          return "Modifier une carte";
         case "Profil":
           return "Profil";
         default:
