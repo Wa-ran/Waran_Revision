@@ -31,3 +31,9 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+a:not(.disabled):not(.active):hover {
+  text-decoration: underline;
+}
+</style>

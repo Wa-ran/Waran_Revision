@@ -1,16 +1,29 @@
 <template>
   <header class="container-fluid dark shadow">
-    <nav class="navbar navbar-expand-lg navbar-dark justify-content-end">
+    <nav
+      class="navbar navbar-expand-lg navbar-dark justify-content-end p-1"
+      :class="!user.id ? 'flex-nowrap' : ''"
+    >
       <div
-        class="border-end border-primary position-absolute top-0 start-0 me-2 my-1 py-2"
+        v-if="!connect || user.id"
+        class="border-end border-primary my-0 ms-0 py-2"
       >
         <cust-a
           :linkName="'Home'"
           :linkText="this.user.pseudo ? this.user.pseudo : 'Revision'"
-          class="navbar-brand m-0 pe-3 py-0"
+          class="navbar-brand m-0 pe-3 py-0 text-primary"
         />
       </div>
-      <Connexion v-if="!user.id" class="flex-grow-1" />
+
+      <div class="my-auto" :class="connect || user.id ? 'me-auto' : 'ms-auto'">
+        <Connexion
+          v-if="!user.id"
+          @displayForm="connect = true"
+          @hidenForm="connect = false"
+        />
+        <h2 v-else class="m-0 mx-3 fs-4">{{ title }}</h2>
+      </div>
+
       <button
         v-if="user.id"
         class="navbar-toggler btn btn-outline-primary shadow-none"
@@ -29,7 +42,7 @@
         class="collapse navbar-collapse border-top border-primary mt-2 ms-lg-5 ps-lg-5"
         id="HeaderNav"
       >
-        <Navigation />
+        <Navigation class="navigation" />
       </div>
     </nav>
   </header>
@@ -45,7 +58,33 @@ export default {
     Connexion,
     Navigation,
   },
+  data() {
+    return {
+      connect: false,
+    };
+  },
   computed: {
+    title() {
+      let route = this.$route.name;
+      switch (route) {
+        case "Library":
+          return "Vos decks";
+        case "DeckView":
+          return "Deck";
+        case "ModifDeck":
+          return "Modifier un deck";
+        case "Revision":
+          return "Révision";
+        case "CardView":
+          return "Carte";
+        case "ModifCard":
+          return "Modifer une carte";
+        case "Profil":
+          return "Profil";
+        default:
+          return "";
+      }
+    },
     user() {
       return this.$store.state.user;
     },
@@ -58,6 +97,9 @@ export default {
 
 header {
   background-color: $dark;
+}
+.navigation {
+  min-width: 100%;
 }
 #HeaderNav {
   @media (min-width: 992px) {

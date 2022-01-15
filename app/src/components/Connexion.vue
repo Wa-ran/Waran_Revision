@@ -19,15 +19,8 @@
       </button>
     </div>
 
-    <div v-else class="w-75 d-flex justify-content-end">
-      <FormConnexion />
-      <button
-        @click="connectForm = false"
-        type="button"
-        class="btn btn-outline-primary"
-      >
-        <font-awesome-icon :icon="['fas', 'times']" size="lg" />
-      </button>
+    <div v-else class="d-flex mx-auto my-1">
+      <FormConnexion @close="connectForm = false" />
     </div>
   </div>
 </template>
@@ -48,6 +41,12 @@ export default {
         text: 'Les inscriptions sont régulées pour le moment, vous pouvez m\'adresser une demande par mail à <a href = "mailto: mgs.gilles@gmail.com">mgs.gilles@gmail.com</a>.',
       },
     };
+  },
+  watch: {
+    connectForm() {
+      if (this.connectForm) this.$emit("displayForm");
+      else this.$emit("hidenForm");
+    },
   },
 };
 </script>

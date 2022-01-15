@@ -6,7 +6,7 @@
     </div>
 
     <cust-hr class="w-75 mx-auto" />
-    <span class="text-primary">Vos préférences : </span>
+    <span class="text-primary">Pendant les révisions : </span>
 
     <div class="form-check mt-2 ms-3">
       <input
@@ -17,7 +17,7 @@
         @click="mutateApp('cardHideCheck', $event)"
       />
       <label class="form-check-label" for="hide_card">
-        Cacher les cartes <span class="italic">(pendant les révisions)</span>
+        Cacher les cartes
       </label>
     </div>
 
@@ -31,7 +31,6 @@
       />
       <label class="form-check-label" for="chrono_card">
         Afficher le chronomètre
-        <span class="italic">(pendant les révisions)</span>
       </label>
     </div>
 
@@ -51,39 +50,7 @@
 
     <cust-hr class="w-25 me-auto" />
 
-    <div class="form-check mt-2 ms-3">
-      <input
-        v-model="light_mode"
-        class="form-check-input"
-        type="checkbox"
-        id="dark_mode"
-        @click="
-          mutateApp('darkMode', false);
-          user.dark_mode = false;
-          default_mode = false;
-        "
-      />
-      <label class="form-check-label" for="dark_mode">
-        Mode jour par défaut
-      </label>
-    </div>
-
-    <div class="form-check mt-2 ms-3">
-      <input
-        v-model="user.dark_mode"
-        class="form-check-input"
-        type="checkbox"
-        id="dark_mode"
-        @click="
-          mutateApp('darkMode', true);
-          light_mode = false;
-          default_mode = false;
-        "
-      />
-      <label class="form-check-label" for="dark_mode">
-        Mode nuit par défaut
-      </label>
-    </div>
+    <span class="text-primary">Thème du site : </span>
 
     <div class="form-check mt-2 ms-3">
       <input
@@ -98,8 +65,38 @@
         "
       />
       <label class="form-check-label" for="default_mode">
-        Suivre mes préférences système (défaut)
+        Selon mon système (défaut)
       </label>
+    </div>
+
+    <div class="form-check mt-2 ms-3">
+      <input
+        v-model="light_mode"
+        class="form-check-input"
+        type="checkbox"
+        id="dark_mode"
+        @click="
+          mutateApp('darkMode', false);
+          user.dark_mode = false;
+          default_mode = false;
+        "
+      />
+      <label class="form-check-label" for="dark_mode"> Clair </label>
+    </div>
+
+    <div class="form-check mt-2 ms-3">
+      <input
+        v-model="user.dark_mode"
+        class="form-check-input"
+        type="checkbox"
+        id="dark_mode"
+        @click="
+          mutateApp('darkMode', true);
+          light_mode = false;
+          default_mode = false;
+        "
+      />
+      <label class="form-check-label" for="dark_mode"> Sombre </label>
     </div>
 
     <!-- Validation -->
