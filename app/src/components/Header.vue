@@ -6,7 +6,7 @@
     >
       <div
         v-if="!connect || user.id"
-        class="border-end border-primary my-0 ms-0 py-2"
+        class="d-flex align-items-center border-end border-primary my-0 ms-0 py-2"
       >
         <cust-a
           :linkName="'Home'"
@@ -15,13 +15,19 @@
         />
       </div>
 
-      <div class="my-auto" :class="connect || user.id ? 'me-auto' : 'ms-auto'">
-        <Connexion
-          v-if="!user.id"
-          @displayForm="connect = true"
-          @hidenForm="connect = false"
-        />
-        <h2 v-else class="m-0 mx-3 fs-4 text-white">{{ title }}</h2>
+      <div
+        v-if="!user.id"
+        class="my-auto"
+        :class="connect ? 'mx-auto' : 'ms-auto'"
+      >
+        <Connexion @displayForm="connect = true" @hidenForm="connect = false" />
+      </div>
+
+      <div
+        v-if="user.id"
+        class="d-flex align-items-center border-end border-primary my-0 ms-0 py-2 px-3 me-auto mx-3"
+      >
+        <h2 class="fs-4 text-white m-0">{{ title }}</h2>
       </div>
 
       <button
@@ -39,14 +45,7 @@
 
       <div
         v-if="user.id"
-        class="
-          collapse
-          navbar-collapse
-          border-top border-primary
-          mt-2
-          ms-lg-5
-          ps-lg-5
-        "
+        class="collapse navbar-collapse border-top border-primary mt-3"
         id="HeaderNav"
       >
         <Navigation class="navigation" />

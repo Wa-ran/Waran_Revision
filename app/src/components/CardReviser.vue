@@ -1,5 +1,6 @@
 <template>
   <div class="w-fit mt-3 mx-auto">
+    <!-- Carte pour cacher la carte de révision -->
     <CardHider
       class="position-absolute"
       style="z-index: 1000"
@@ -9,6 +10,7 @@
           : 'z-index: -1'
       "
     />
+    <!-- Carte de révision -->
     <Card>
       <template v-slot:body>
         <div
@@ -16,6 +18,7 @@
           class="w-100 h-100 bg-body"
         >
           <div class="bg-body position-absolute top-0 end-0 m-2">
+            <!-- Bouton pour "retourner" la carte -->
             <button
               @click="
                 recto = !recto;
@@ -28,6 +31,7 @@
             </button>
           </div>
 
+          <!-- Contenu de la carte -->
           <div class="d-flex flex-column overflow-scroll h-100">
             <div
               class="flex-grow-1 d-flex flex-column justify-content-center align-items-center p-3"
@@ -43,6 +47,7 @@
               </div>
             </div>
 
+            <!-- Chronomètre ou commentaire -->
             <div class="w-100 px-2">
               <CardChrono
                 v-if="$store.state.app.cardReveal && !flipped"
@@ -72,7 +77,10 @@
           </div>
         </div>
       </template>
+
+      <!-- Footer -->
       <template v-slot:footer v-if="!chrono && flipped">
+        <!-- Gagné/Perdu -->
         <div
           v-if="!winSetted"
           class="footer d-flex justify-content-between pb-1 pt-2"
@@ -94,6 +102,7 @@
           </button>
         </div>
 
+        <!-- Modifier/Valider -->
         <div v-else class="d-flex justify-content-between pb-1 pt-2">
           <button
             @click="
@@ -151,6 +160,15 @@ export default {
     },
   },
   methods: {
+    async handleSubmit() {
+      if (this.actualCard.level === 0) {
+        return this.mutateStore("reserveCard");
+      } else {
+        await this.$store.dispatch("putCard").then(() => {
+          this.$store.dispatch("removeCard");
+        });
+      }
+    },
     setActualCard() {
       this.mutateApp("cardReviserCharged", false);
       const int = setInterval(() => {
@@ -168,8 +186,8 @@ export default {
       if (this.$store.state.app.fastMode) this.submitCard();
       else this.winSetted = true;
     },
-    submitCard() {
-      this.$store.dispatch("putCard").then(() => this.$emit("submitted"));
+    async submitCard() {
+      await this.handleSubmit().then(() => this.$emit("submitted"));
     },
   },
   async mounted() {

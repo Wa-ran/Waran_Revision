@@ -1,5 +1,11 @@
 <template>
   <div class="w-fit mt-3 mx-auto">
+    <div class="text-center">
+      Encore
+      <span class="bold">{{ cardsToReviseBaseList.length }}</span>
+      carte{{ cardsToReviseBaseList.length > 1 ? "s" : "" }}
+      à réviser
+    </div>
     <CardReviser @submitted="submit++" :key="submit" />
   </div>
 </template>

@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex w-100">
+  <div class="d-flex align-items-center w-100 ps-3">
     <ul class="navbar-nav">
       <li class="nav-item">
         <cust-a
@@ -23,7 +23,7 @@
     <button
       type="button"
       @click="resetStore"
-      class="btn btn-outline-primary h-fit ms-auto mb-auto mt-2"
+      class="btn btn-outline-primary h-fit ms-auto mb-auto mt-3 mb-md-0 mt-md-0"
     >
       Déconnexion
     </button>

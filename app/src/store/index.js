@@ -82,10 +82,18 @@ export default createStore({
             if (JSON.stringify(elem) == JSON.stringify(payload.body)) return;
           }
         }
-        state[mutate].unshift(payload.body);
+        state[mutate].push(payload.body);
       } else {
         state[mutate] = payload.body;
       }
+    },
+    removeCard(state) {
+      const index = state.cardsToReviseBaseList.indexOf(state.actualCard.key);
+      state.cardsToReviseBaseList.splice(index, 1);
+    },
+    reserveCard(state) {
+      this.mutateKey("cardsToReviseReserved", state.actualCard);
+      this.removeCard();
     },
     setState(state, payload) {
       Object.assign(state, payload);
