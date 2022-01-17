@@ -1,6 +1,19 @@
 <template>
   <div class="container-fluid">
+    <!-- Bouton retour -->
+    <button
+      v-if="prevRoute"
+      @click="$router.push(prevRoute.path)"
+      class="position-relative btn btn-outline-primary h-fit w-fit mb-3 ms-n3 py-1"
+    >
+      <font-awesome-icon :icon="['fas', 'arrow-left']" size="lg" />
+      <span class="px-2"> {{ prevRouteDesc }}</span>
+    </button>
+
+    <!-- View -->
     <router-view v-if="$route.name == 'ModifCard'" />
+
+    <!-- Card summary -->
     <div v-else>
       <span class="text-primary">{{
         actualCard.reverse ? "Recto :" : "Question"
@@ -38,7 +51,7 @@
         <span>{{ mixShowDeck(actualCard) }}</span>
       </div>
 
-      <!-- Buttons -->
+      <!-- Actions -->
       <div class="w-fit ms-auto mt-3">
         <cust-title
           id="modifCardButton"
@@ -81,12 +94,27 @@ export default {
   name: "CardView",
   data() {
     return {
+      modalSetting: {
+        title: "Quitter sans valider les changements ?",
+        button: "Continuer",
+      },
       prevRoute: null,
     };
   },
   computed: {
     actualCard() {
       return this.$store.state.actualCard;
+    },
+    prevRouteDesc() {
+      let prevRoute = this.prevRoute ? this.prevRoute.name : null;
+      switch (prevRoute) {
+        case "Revision":
+          return "Retourner réviser";
+        case "Liste":
+          return "Revenir à la liste de cartes";
+        default:
+          return null;
+      }
     },
   },
   methods: {
@@ -100,6 +128,26 @@ export default {
     next((vm) => {
       vm.prevRoute = from;
     });
+  },
+  beforeRouteLeave(to, from, next) {
+    if (
+      JSON.stringify(this.actualCard) !==
+      JSON.stringify(
+        this.$store.state.cardsToReviseBaseList[this.actualCard.key]
+      )
+    ) {
+      this.setModal(this.modalSetting);
+      this.displayModal();
+      const int = setInterval(() => {
+        if (!this.$store.state.modalDisplay) {
+          next(this.$store.state.modalAnswer);
+          clearInterval(int);
+        }
+      }, 200);
+      setTimeout(() => {
+        int;
+      }, 500);
+    } else next();
   },
   mixins: [card],
 };

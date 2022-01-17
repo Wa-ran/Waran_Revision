@@ -5,10 +5,11 @@ import store from "./store";
 
 // import "bootstrap/dist/css/bootstrap.min.css";
 // import 'bootstrap';
-import { Tooltip } from "bootstrap";
+import { Modal, Tooltip } from "bootstrap";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
+  faArrowLeft,
   faBars,
   faBold,
   faCaretDown,
@@ -51,6 +52,7 @@ import ToolTip from "@/components/global/ToolTip.vue";
 // import DoubleCheckButton from "@/components/DoubleCheckButton.vue";
 
 library.add(
+  faArrowLeft,
   faBars,
   faBold,
   faCaretDown,
@@ -117,6 +119,9 @@ VueApp.mixin({
 
 VueApp.mixin({
   methods: {
+    displayModal() {
+      new Modal(document.getElementById("modal"), {}).show();
+    },
     setModal(body) {
       this.$store.dispatch("mutateStore", {
         fct: "mutateKey",
@@ -129,7 +134,6 @@ VueApp.mixin({
   },
 });
 
-// const bootstrap = new bootstrap
 const bsTooltip = (el, binding) => {
   const t = ["hover", "focus", "click"];
 
@@ -153,7 +157,6 @@ VueApp.directive("tooltip", {
   },
 });
 
-// const bootstrap = new bootstrap
 const bsTooltipStretch = (el, binding) => {
   const t = ["hover", "focus"];
 

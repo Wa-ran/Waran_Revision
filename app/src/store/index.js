@@ -56,6 +56,8 @@ export default createStore({
       title: null,
       text: null,
     },
+    modalAnswer: false,
+    modalDisplay: false,
 
     error: {
       pending: false,
