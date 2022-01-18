@@ -9,7 +9,7 @@
         class="d-flex align-items-center border-end border-primary my-0 ms-0 py-2"
       >
         <cust-a
-          :linkName="'Home'"
+          :linkObj="{ name: 'Home' }"
           :linkText="this.user.pseudo ? this.user.pseudo : 'Revision'"
           class="navbar-brand m-0 pe-3 py-0 text-primary"
         />

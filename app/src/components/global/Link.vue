@@ -1,13 +1,11 @@
 <template>
   <a
-    :type="this.current ? '' : 'button'"
-    @click="$router.push({ name: this.linkName })"
-    :class="
-      this.current ? 'active text-primary' : this.disabled ? 'disabled' : ''
-    "
+    :type="current ? '' : 'button'"
+    @click="$router.push(this.linkObj)"
+    :class="current ? 'active text-primary' : this.disabled ? 'disabled' : ''"
     class="w-fit h-fit"
-    :aria-current="this.current ? 'page' : false"
-    :tabindex="this.current || this.disabled ? -1 : 1"
+    :aria-current="current ? 'page' : false"
+    :tabindex="current || this.disabled ? -1 : 1"
   >
     <slot name="link"> {{ linkText }} </slot>
   </a>
@@ -17,16 +15,16 @@
 export default {
   name: "Link",
   props: {
-    linkName: String,
+    linkObj: Object,
     linkText: String,
     disabled: {
       type: Boolean,
       default: false,
     },
   },
-  computed: {
+  method: {
     current() {
-      return this.$route.name == this.linkName;
+      return this.$route.name == this.linkObj.name;
     },
   },
 };
