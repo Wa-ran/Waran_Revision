@@ -19,7 +19,7 @@
             class="form-check-input"
             type="checkbox"
             id="recto_image"
-            @click="mutateKey('actualCard', { recto_image: $event })"
+            @click="card.recto_image = $event"
           />
           <label class="form-check-label italic" for="recto_image">
             Insérer une image
@@ -32,7 +32,7 @@
             class="form-check-input"
             type="checkbox"
             id="recto_formula"
-            @click="mutateKey('actualCard', { recto_formula: $event })"
+            @click="crad.recto_formula"
           />
           <label class="form-check-label italic" for="recto_formula">
             Ecrire une formule
@@ -62,7 +62,7 @@
             class="form-check-input"
             type="checkbox"
             id="verso_image"
-            @click="mutateKey('actualCard', { verso_image: $event })"
+            @click="card.verso_image = $event"
           />
           <label class="form-check-label italic" for="verso_image">
             Insérer une image
@@ -75,7 +75,7 @@
             class="form-check-input"
             type="checkbox"
             id="verso_formula"
-            @click="mutateKey('actualCard', { verso_formula: $event })"
+            @click="card.verso_formula = $event"
           />
           <label class="form-check-label italic" for="verso_formula">
             Ecrire une formule
@@ -109,7 +109,7 @@
           class="form-check-input"
           type="checkbox"
           id="reverse"
-          @click="mutateKey('actualCard', { reverse: $event })"
+          @click="card.reverse = $event"
           aria-describedby="reverseDesc"
         />
         <label class="form-check-label italic ms-2" for="reverse">
@@ -184,18 +184,21 @@
     <cust-hr class="w-25 my-3" />
 
     <!-- Boutons -->
-    <div class="d-flex justify-content-between mt-3">
+    <div class="d-flex justify-content-between flex-wrap mt-3">
       <button
         @click.prevent="options = !options"
-        class="btn btn-outline-primary mb-auto ms-n3 me-5 py-0 h-fit"
+        class="btn btn-outline-primary ms-n3 me-5 mb-2 py-0 h-fit w-fit text-nowrap"
       >
         {{ options ? "Masquer les options" : "Afficher plus d'options" }}
       </button>
 
-      <div class="d-flex flex-column">
+      <div class="d-flex ms-auto">
+        <button @click.prevent="annulForm" class="btn btn-primary w-fit py-1">
+          Annuler
+        </button>
         <button
           @click.prevent="validForm"
-          class="btn btn-primary w-fit py-1 ms-auto"
+          class="btn btn-primary w-fit py-1 ms-2"
         >
           Valider
         </button>
@@ -223,9 +226,6 @@ export default {
     actualCard() {
       return this.$store.state.actualCard;
     },
-    cardModifInProgress() {
-      return this.$store.state.app.cardModifInProgress;
-    },
   },
   methods: {
     selectDeck() {
@@ -235,14 +235,16 @@ export default {
           return (option.selected = true);
       }
     },
+    annulForm() {
+      this.$router.push({ name: "CardView" });
+    },
     validForm() {
       this.mutateKey("actualCard", this.card);
       this.$router.push({ name: "CardView" });
     },
   },
   mounted() {
-    this.card = this.$store.state.actualCard;
-    this.mutateApp("cardModifInProgress", true);
+    this.card = { ...this.$store.state.actualCard };
   },
   watch: {
     options() {

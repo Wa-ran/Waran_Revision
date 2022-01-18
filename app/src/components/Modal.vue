@@ -46,7 +46,7 @@
             class="btn btn-secondary"
             data-bs-dismiss="modal"
           >
-            Fermer
+            {{ modalState.button ? "Annuler" : "Fermer" }}
           </button>
         </div>
       </div>
