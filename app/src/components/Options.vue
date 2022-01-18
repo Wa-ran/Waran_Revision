@@ -1,5 +1,5 @@
 <template>
-  <div class="dropend">
+  <div class="btn-group dropend">
     <button
       class="nav-link dropdown-toggle"
       type="button"
@@ -10,7 +10,7 @@
       Options de révision
     </button>
     <div
-      class="position-relative dropdown-menu dropdown-menu-dark bg-dark w-fit mt-n4 mb-4 ms-n2"
+      class="dropdown-menu dropdown-menu-dark bg-dark w-fit mt-2"
       aria-labelledby="dropdownMenuButton2"
     >
       <div class="px-3">

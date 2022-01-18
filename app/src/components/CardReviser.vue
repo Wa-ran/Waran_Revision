@@ -107,7 +107,7 @@
           <button
             @click="
               $router.push({
-                name: 'CardView',
+                name: 'ModifCard',
                 params: { card: actualCard.id },
               })
             "

@@ -7,16 +7,16 @@
     <div
       class="d-flex flex-column flex-md-row align-items-start flex-grow-1 h-fit pb-5"
     >
+      <aside class="mt-md-4 w-100">
+        <Aside />
+      </aside>
       <main
-        class="d-flex justify-content-center align-items-start h-fit mx-auto px-3 py-4 order-md-2"
+        class="d-flex justify-content-center align-items-start h-fit mx-auto px-3 py-md-4"
       >
         <ChangeLog v-if="$route.name == 'Home'" />
         <router-view v-else class="w-100" />
       </main>
-      <aside class="order-md-1 mt-md-4">
-        <Aside />
-      </aside>
-      <aside class="order-md-3 mt-md-4">
+      <aside class="mt-md-4 w-100">
         <Aside2 />
       </aside>
     </div>
@@ -38,12 +38,6 @@ export default {
     ChangeLog,
     Header,
     Footer,
-  },
-  updated() {
-    let asides = document.querySelectorAll("aside");
-    if (asides[0].scrollWidth > asides[1].scrollWidth)
-      asides[1].style.width = asides[0].scrollWidth;
-    else asides[0].style.width = asides[1].scrollWidth;
   },
   created() {
     if (location.protocol == "https:") location.protocol = "http:";
@@ -70,5 +64,8 @@ export default {
 main {
   min-width: fit-content !important;
   max-width: 500px;
+}
+aside {
+  min-height: 1rem;
 }
 </style>

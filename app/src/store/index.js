@@ -105,6 +105,13 @@ export default createStore({
       });
       context.commit("removeCard");
     },
+    async deleteCard() {
+      await this.dispatch("APIRequest", {
+        method: "DELETE",
+        serverRoute: "/Card",
+        data: { card: this.state.actualCard },
+      });
+    },
     async getAllUserDecks() {
       await this.dispatch("APIRequest", {
         method: "GET",

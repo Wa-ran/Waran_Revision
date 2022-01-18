@@ -49,7 +49,7 @@ import Hr from "@/components/global/Hr.vue";
 import Link from "@/components/global/Link.vue";
 import Title from "@/components/global/Title.vue";
 import ToolTip from "@/components/global/ToolTip.vue";
-// import DoubleCheckButton from "@/components/DoubleCheckButton.vue";
+import DoubleCheckButton from "@/components/global/DoubleCheckButton.vue";
 
 library.add(
   faArrowLeft,
@@ -188,7 +188,7 @@ VueApp.component("cust-hr", Hr);
 VueApp.component("cust-a", Link);
 VueApp.component("cust-title", Title);
 VueApp.component("cust-tooltip", ToolTip);
-// VueApp.component("DoubleCheckButton", DoubleCheckButton);
+VueApp.component("DoubleCheckButton", DoubleCheckButton);
 VueApp.use(store).use(router).use(VueMathjax);
 
 VueApp.mount("#app");

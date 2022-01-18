@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid flex-grow-1">
     <!-- Bouton retour -->
     <button
       v-if="prevRoute"
@@ -12,86 +12,35 @@
 
     <!-- View -->
     <router-view v-if="$route.name == 'ModifCard'" />
+    <CardSummary v-else @submitted="$router.push(prevRoute.path)" class="p-0" />
 
-    <!-- Card summary -->
-    <div v-else>
-      <span class="text-primary">{{
-        actualCard.reverse ? "Recto :" : "Question"
-      }}</span>
-      <div v-html="actualCard.recto" class="px-3 mb-3"></div>
-
-      <span class="text-primary">{{
-        actualCard.reverse ? "Verso :" : "Réponse"
-      }}</span>
-      <div v-html="actualCard.verso" class="px-3 mb-3"></div>
-      <cust-hr class="w-75 mx-auto" />
-
-      <span v-if="actualCard.comment" class="text-primary">Commentaire :</span>
-      <span v-else class="text-primary">Pas de commentaire</span>
-      <div v-html="actualCard.comment" class="px-3 mb-3"></div>
-
-      <cust-hr class="w-75 mx-auto" />
-      <div class="mb-2">
-        <span class="text-primary">Niveau :&nbsp;&nbsp;</span>
-        <span class="bold">{{ mixShowLevel(actualCard) }}</span>
-        <span class="italic"
-          >&nbsp;&nbsp;(révision ~ {{ mixShowRevision(actualCard) }})</span
-        >
-      </div>
-
-      <div v-if="prevRoute && prevRoute.name == 'Revision'" class="mb-2">
-        <span class="text-primary">Révision :&nbsp;&nbsp;</span>
-        <span v-if="actualCard.win == false">Perdue</span>
-        <span v-else-if="actualCard.win == null">Presque</span>
-        <span v-else>Gagnée</span>
-      </div>
-
-      <div class="mb-2">
-        <span class="text-primary">Deck :&nbsp;&nbsp;</span>
-        <span>{{ mixShowDeck(actualCard) }}</span>
-      </div>
-
-      <!-- Actions -->
-      <div class="w-fit ms-auto mt-3">
-        <cust-title
-          id="modifCardButton"
-          :text="'Modifier la carte'"
-          class="w-fit ms-auto"
-        >
-          <template v-slot:default>
-            <button
-              @click="
-                $router.push({
-                  name: 'ModifCard',
-                  params: {
-                    card: actualCard.id,
-                  },
-                })
-              "
-              aria-labelledby="modifCardButton"
-              class="position-relative btn btn-outline-primary h-fit w-fit p-1"
-            >
-              <font-awesome-icon :icon="['fas', 'cog']" size="lg" />
-            </button>
-          </template>
-        </cust-title>
-
-        <button
-          @click="submitCard"
-          class="btn btn-primary h-fit w-fit mt-2 py-0 fs-5"
-        >
-          Valider
-        </button>
-      </div>
-    </div>
+    <!-- Bouton supprimer -->
+    <DoubleCheckButton
+      @checkedClick="deleteCard"
+      class="btn ms-auto mt-2"
+      :classDefault="'btn-danger'"
+    >
+      <template v-slot:default>
+        <font-awesome-icon :icon="['fas', 'trash-alt']" />
+        <span class="ms-2 flex-grow-1">Supprimer la carte</span>
+      </template>
+      <template v-slot:checked>
+        <font-awesome-icon :icon="['fas', 'trash-alt']" />
+        <span class="ms-2 flex-grow-1">Supprimer ?</span>
+      </template>
+    </DoubleCheckButton>
   </div>
 </template>
 
 <script>
+import CardSummary from "@/components/CardSummary";
 import card from "@/mixins/card";
 
 export default {
   name: "CardView",
+  components: {
+    CardSummary,
+  },
   data() {
     return {
       modalSetting: {
@@ -118,9 +67,9 @@ export default {
     },
   },
   methods: {
-    async submitCard() {
+    async deleteCard() {
       await this.$store
-        .dispatch("putCard", this.actualCard)
+        .dispatch("deleteCard")
         .then(() => this.$router.push(this.prevRoute.path));
     },
   },
@@ -155,6 +104,6 @@ export default {
 
 <style lang="scss" scoped>
 .container-fluid {
-  width: 80vw;
+  max-width: 500px;
 }
 </style>

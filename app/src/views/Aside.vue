@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container-fluid">
     <component :is="'Aside' + $route.name" />
   </div>
 </template>

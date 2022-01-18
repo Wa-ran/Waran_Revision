@@ -4,7 +4,7 @@ import Home from "../views/Home.vue";
 function lazyLoad(view) {
   return () =>
     import(
-      /* webpackPrefetch: true */ /* webpackPreload: true */ `@/views/${view}.vue`
+      /* webpackPrefetch: true */ /* webpackPreload: true */ `@/${view}.vue`
     );
 }
 
@@ -17,36 +17,36 @@ const routes = [
       {
         path: "library",
         name: "Library",
-        component: lazyLoad("Library"),
+        component: lazyLoad("views/Library"),
         children: [
           {
             path: "deck-:deck",
             name: "DeckView",
-            component: lazyLoad("DeckView"),
+            component: lazyLoad("views/DeckView"),
             props: true,
             children: [
               {
                 path: "modification",
                 name: "ModifDeck",
-                component: lazyLoad("Modification"),
+                component: lazyLoad("views/Modification"),
               },
               {
                 path: "revision",
                 name: "Revision",
-                component: lazyLoad("Revision"),
+                component: lazyLoad("views/Revision"),
               },
             ],
           },
           {
             path: "card-:card",
             name: "CardView",
-            component: lazyLoad("CardView"),
+            component: lazyLoad("views/CardView"),
             props: true,
             children: [
               {
                 path: "modification",
                 name: "ModifCard",
-                component: lazyLoad("Modification"),
+                component: lazyLoad("views/Modification"),
               },
             ],
           },
@@ -55,7 +55,7 @@ const routes = [
       {
         path: "profil",
         name: "Profil",
-        component: lazyLoad("Profil"),
+        component: lazyLoad("views/Profil"),
       },
     ],
   },

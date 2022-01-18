@@ -149,7 +149,7 @@
           :text="'Si vous venez de réviser la carte, la réussite/défaite est prise en compte.'"
         />
 
-        <span class="italic"
+        <span v-if="mixShowRevision(card)" class="italic"
           >&nbsp;&nbsp;(révision ~ {{ mixShowRevision(card) }})</span
         >
       </div>
@@ -183,17 +183,23 @@
 
     <cust-hr class="w-25 my-3" />
 
-    <!-- Validation -->
+    <!-- Boutons -->
     <div class="d-flex justify-content-between mt-3">
       <button
         @click.prevent="options = !options"
-        class="btn btn-outline-primary mt-auto ms-n3 py-0 h-fit"
+        class="btn btn-outline-primary mb-auto ms-n3 me-5 py-0 h-fit"
       >
         {{ options ? "Masquer les options" : "Afficher plus d'options" }}
       </button>
-      <button @click.prevent="validForm" class="btn btn-primary py-1 fs-5">
-        Valider
-      </button>
+
+      <div class="d-flex flex-column">
+        <button
+          @click.prevent="validForm"
+          class="btn btn-primary w-fit py-1 ms-auto"
+        >
+          Valider
+        </button>
+      </div>
     </div>
   </form>
 </template>

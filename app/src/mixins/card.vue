@@ -51,6 +51,7 @@ export default {
       return level;
     },
     mixShowRevision(card) {
+      if (card.level === 0) return null;
       let next = new Date(
         new Date().setTime(
           new Date().getTime() + this.hours[card.level] * 60 * 60 * 1000

@@ -91,7 +91,7 @@
 
     <div class="editorArea border border-primary rounded">
       <div
-        class="contentEditable"
+        class="contentEditable text-center"
         :class="focus ? '' : 'py-3'"
         v-html="textarea"
         contenteditable="true"
