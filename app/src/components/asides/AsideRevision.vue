@@ -1,5 +1,7 @@
 <template>
-  <div><Options /></div>
+  <div>
+    <Options />
+  </div>
 </template>
 
 <script>

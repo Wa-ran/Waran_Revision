@@ -4,7 +4,7 @@
     <button
       v-if="prevRoute"
       @click="$router.push(prevRoute.path)"
-      class="position-relative btn btn-outline-primary h-fit w-fit mb-3 ms-n3 py-1"
+      class="position-relative btn btn-outline-primary border-0 h-fit w-fit mb-3 ms-n3 py-1"
     >
       <font-awesome-icon :icon="['fas', 'arrow-left']" size="lg" />
       <span class="px-2"> {{ prevRouteDesc }}</span>

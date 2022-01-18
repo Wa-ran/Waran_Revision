@@ -25,12 +25,12 @@
         <div>
           <p>
             {{ actualDeck.cards_to_revise || "Pas de" }}
-            carte{{ actualDeck.cards_to_revise > 1 ? "s" : "" }} à réviser.
+            carte{{ actualDeck.cards_to_revise > 1 ? "s" : "" }} à réviser
           </p>
           <p>
             Total : {{ actualDeck.cards_total_number || 0 }} carte{{
               actualDeck.cards_total_number > 1 ? "s" : ""
-            }}.
+            }}
           </p>
 
           <div v-if="actualDeck.sequence" class="d-flex">

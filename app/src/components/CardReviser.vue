@@ -17,7 +17,7 @@
           v-if="$store.state.app.cardReviserCharged"
           class="w-100 h-100 bg-body"
         >
-          <div class="bg-body position-absolute top-0 end-0 m-2">
+          <div class="bg-body position-absolute rounded top-0 end-0 m-2">
             <!-- Bouton pour "retourner" la carte -->
             <button
               @click="
