@@ -116,7 +116,7 @@ module.exports = class Card extends revisionObj {
       } while (level_hours >= 0 && suggestion > 0);
     }
     return suggestion;
-  }
+  };
   suggestUpLevel() {
     let suggestion = null;
     if (this.decalage > 24) {
@@ -129,5 +129,5 @@ module.exports = class Card extends revisionObj {
       }
     }
     return suggestion;
-  }
+  };
 }

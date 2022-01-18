@@ -3,6 +3,7 @@
 const requestFct = require('../middlewares/request');
 const createObj = require('../middlewares/createObj');
 const verifToken = require('../middlewares/token');
+const global = require('../middlewares/global');
 
 module.exports = async (req, res, next) => {
   let method = req.method.toLowerCase();
@@ -68,6 +69,7 @@ module.exports = async (req, res, next) => {
       };
     };
   })
+    // .then(() => global.commentUpdateAllCard())
     .then(() => requestFct[fctName](data))
     .then((response) => {
       if (response) {
@@ -78,7 +80,6 @@ module.exports = async (req, res, next) => {
             if (method === 'get' && !verifIdByToken(obj)) {
               throw 'Token invalide'
             };
-            obj.beforeSend();
             result.push(obj);
           };
         }
@@ -86,7 +87,7 @@ module.exports = async (req, res, next) => {
           if (method === 'get' && !verifIdByToken(response)) {
             throw 'Token invalide'
           };
-          result = response.beforeSend();
+          result = response;
         }
 
         res.send(result)

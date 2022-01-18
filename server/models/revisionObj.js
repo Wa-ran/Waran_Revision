@@ -1,18 +1,18 @@
-const dtb = require('../middlewares/dtb');
 const dateParser = require('../middlewares/dateParser');
 const { encrypt, decrypt } = require('../middlewares/crypto');
 
 module.exports = class revisionObj {
 
-  beforeSend() {
-    this.parseToJS();
+  isDate(string) {
+    if ((string && string.toString().match(/[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9].[0-9]{6}/g)) || (string && string instanceof Date && string.getTime())) return true
+    else return false
   };
 
   parseToJS() {
     for (let [key, value] of Object.entries(this)) {
       if (value && !Number.isInteger(value)) {
         try {
-          if (value && value.toString().match(/[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9].[0-9]{6}/g)) {
+          if (this.isDate(value)) {
             this[key] = dateParser.toJS(value);
           }
           else {
@@ -32,7 +32,7 @@ module.exports = class revisionObj {
     for (let [key, value] of Object.entries(this)) {
       if (!Number.isInteger(value) && value !== true && value !== false) {
         try {
-          if (value && value instanceof Date && value.getTime()) {
+          if (this.isDate(value)) {
             this[key] = `"${dateParser.toMySQL(value)}"`;
           }
           else if (value && value.length > 0) {

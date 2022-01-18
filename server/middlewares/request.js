@@ -26,9 +26,6 @@ exports.postCard = async (req) => {
     throw "Id déjà existant"
   } else {
     await dtbFct.createCard(req)
-      .then(() => {
-        if (req.tag.length > 0) return this.newCardTags(req)
-      })
   }
 };
 

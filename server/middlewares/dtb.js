@@ -176,3 +176,7 @@ exports.selectUserById = async (req) => {
   let user = createObj("dtbUser", req.user);
   return await this.connect("SELECT JSON_OBJECT(" + this.jsonObj('user') + ") FROM users WHERE id = " + user.id + ";");
 };
+
+exports.selectAllCards = async () => {
+  return await this.connect("SELECT JSON_OBJECT(" + this.jsonObj('card') + ") FROM cards WHERE id > 0;");
+};
