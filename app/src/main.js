@@ -5,7 +5,7 @@ import store from "./store";
 
 // import "bootstrap/dist/css/bootstrap.min.css";
 // import 'bootstrap';
-import { Modal, Tooltip } from "bootstrap";
+import { Collapse, Modal, Tooltip } from "bootstrap";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
@@ -119,6 +119,9 @@ VueApp.mixin({
 
 VueApp.mixin({
   methods: {
+    hideNavbar() {
+      new Collapse(document.getElementById("HeaderNav"), {});
+    },
     displayModal() {
       new Modal(document.getElementById("modal"), {}).show();
     },

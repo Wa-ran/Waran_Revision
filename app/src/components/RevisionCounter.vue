@@ -15,8 +15,5 @@ export default {
       return this.$store.state.cardsToReviseBaseList;
     },
   },
-  mounted() {
-    console.log(this.cardsToReviseBaseList.length);
-  },
 };
 </script>

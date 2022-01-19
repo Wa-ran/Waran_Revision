@@ -3,17 +3,21 @@
     <ul class="navbar-nav">
       <li class="nav-item">
         <cust-a
-          :linkName="'Library'"
+          :linkObj="{ name: 'Library' }"
           :linkText="'Mes Decks'"
           class="nav-link"
         />
       </li>
       <li class="nav-item">
-        <cust-a :linkName="'Profil'" :linkText="'Profil'" class="nav-link" />
+        <cust-a
+          :linkObj="{ name: 'Profil' }"
+          :linkText="'Profil'"
+          class="nav-link"
+        />
       </li>
       <li class="nav-item">
         <cust-a
-          :linkName="'Disabled'"
+          :linkObj="{ name: 'Disabled' }"
           :linkText="'Disabled'"
           :disabled="true"
           class="nav-link disabled"

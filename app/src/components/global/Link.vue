@@ -22,7 +22,7 @@ export default {
       default: false,
     },
   },
-  method: {
+  computed: {
     current() {
       return this.$route.name == this.linkObj.name;
     },

@@ -15,7 +15,7 @@
           <button
             @click="modalAnswer = false"
             type="button"
-            class="btn-close"
+            class="btn-close mt-n5 opacity-75"
             data-bs-dismiss="modal"
             aria-label="Close"
           ></button>
