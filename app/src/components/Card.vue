@@ -7,13 +7,13 @@
     <div
       class="card-body border border-primary d-flex flex-column p-0 m-3 bg-transparent"
     >
-      <div class="h-100 overflow-scroll">
+      <div class="h-100 overflow-scroll bg-body pb-2">
         <slot name="body">card-body</slot>
       </div>
 
       <div
         v-if="this.$slots.footer"
-        class="card-footer bg-body border-0 d-flex flex-column mt-auto"
+        class="card-footer bg-body border-0 d-flex flex-column mt-auto pt-0"
       >
         <cust-hr class="mt-0 mb-1" />
         <slot name="footer"></slot>

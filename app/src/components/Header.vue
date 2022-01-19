@@ -108,7 +108,8 @@ export default {
   },
   mounted() {
     document.getElementById("app").addEventListener("click", () => {
-      if (!this.focus) this.hideNavbar();
+      let test = document.querySelector("#HeaderNav.navbar-collapse.show");
+      if (!this.focus && test) this.hideNavbar();
     });
   },
   beforeRouteLeave(to, from, next) {
