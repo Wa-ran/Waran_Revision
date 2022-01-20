@@ -35,18 +35,18 @@ const routes = [
                 name: "Revision",
                 component: lazyLoad("views/Revision"),
               },
-            ],
-          },
-          {
-            path: "card-:card",
-            name: "CardView",
-            component: lazyLoad("views/CardView"),
-            props: true,
-            children: [
               {
-                path: "modification",
-                name: "ModifCard",
-                component: lazyLoad("views/Modification"),
+                path: "card-:card",
+                name: "CardView",
+                component: lazyLoad("views/CardView"),
+                props: true,
+                children: [
+                  {
+                    path: "modification",
+                    name: "ModifCard",
+                    component: lazyLoad("views/Modification"),
+                  },
+                ],
               },
             ],
           },

@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid p-0">
     <component :is="'Aside' + $route.name" />
   </div>
 </template>
@@ -12,6 +12,9 @@ export default {
   components: {
     AsideRevision: defineAsyncComponent(() =>
       import("@/components/asides/AsideRevision.vue")
+    ),
+    AsideCardView: defineAsyncComponent(() =>
+      import("@/components/asides/AsideCardView.vue")
     ),
   },
 };

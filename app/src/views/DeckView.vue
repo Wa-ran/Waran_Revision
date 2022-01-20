@@ -1,5 +1,6 @@
 <template>
   <div class="w-100 w-sm-75 mx-auto px-sm-4">
+    <!-- Title -->
     <div class="d-flex justify-content-center">
       <h2 class="d-flex justify-content-center w-100 m-0">
         <cust-a
@@ -13,10 +14,12 @@
       </h2>
     </div>
 
+    <!-- View -->
     <div v-if="$route.name !== 'DeckView'" class="m-auto">
       <router-view />
     </div>
 
+    <!-- Summary -->
     <div v-else>
       <cust-hr class="my-3 mx-auto w-50" />
 

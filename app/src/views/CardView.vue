@@ -1,18 +1,12 @@
 <template>
   <div class="container-fluid flex-grow-1">
-    <!-- Bouton retour -->
-    <button
-      v-if="prevRoute"
-      @click="$router.push(prevRoute.path)"
-      class="position-relative btn btn-outline-primary border-0 h-fit w-fit mb-3 ms-n3 py-1"
-    >
-      <font-awesome-icon :icon="['fas', 'arrow-left']" size="lg" />
-      <span class="px-2"> {{ prevRouteDesc }}</span>
-    </button>
-
     <!-- View -->
     <router-view v-if="$route.name == 'ModifCard'" />
-    <CardSummary v-else @submitted="$router.push(prevRoute.path)" class="p-0" />
+    <CardSummary
+      v-else
+      @submitted="$router.push(positionSaved.path)"
+      class="p-0"
+    />
 
     <!-- Bouton supprimer -->
     <DoubleCheckButton
@@ -47,35 +41,30 @@ export default {
         title: "Quitter sans valider les changements ?",
         button: "Continuer",
       },
-      prevRoute: null,
+      from: null,
     };
   },
   computed: {
     actualCard() {
       return this.$store.state.actualCard;
     },
-    prevRouteDesc() {
-      let prevRoute = this.prevRoute ? this.prevRoute.name : null;
-      switch (prevRoute) {
-        case "Revision":
-          return "Retourner réviser";
-        case "Liste":
-          return "Revenir à la liste de cartes";
-        default:
-          return null;
-      }
+    positionSaved() {
+      return this.$store.state.app.positionSaved;
     },
   },
   methods: {
     async deleteCard() {
       await this.$store
         .dispatch("deleteCard")
-        .then(() => this.$router.push(this.prevRoute.path));
+        .then(() => this.$router.push(this.positionSaved.path));
     },
+  },
+  mounted() {
+    this.mutateApp("positionSaved", this.from);
   },
   beforeRouteEnter(to, from, next) {
     next((vm) => {
-      vm.prevRoute = from;
+      vm.from = from;
     });
   },
   beforeRouteLeave(to, from, next) {

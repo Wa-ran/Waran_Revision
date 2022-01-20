@@ -11,6 +11,7 @@ export default createStore({
       cardReviserCharged: false,
       deckSelected: false,
       decksCharged: false,
+      positionSaved: null,
       revealCard: false,
       // check
       cardHideCheck: true,

@@ -55,7 +55,10 @@
           >
         </div>
 
-        <div v-if="prevRoute && prevRoute.name == 'Revision'" class="mb-2">
+        <div
+          v-if="positionSaved && positionSaved.name == 'Revision'"
+          class="mb-2"
+        >
           <span class="text-primary">Révision :&nbsp;&nbsp;</span>
           <span v-if="actualCard.win == false">Perdue</span>
           <span v-else-if="actualCard.win == null">Presque</span>
@@ -87,6 +90,9 @@ export default {
   computed: {
     actualCard() {
       return this.$store.state.actualCard;
+    },
+    positionSaved() {
+      return this.$store.state.app.positionSaved;
     },
   },
   methods: {

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container-fluid p-0 mb-n5">
     <Options />
   </div>
 </template>
