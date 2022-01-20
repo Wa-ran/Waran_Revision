@@ -6,7 +6,14 @@
     >
       <div
         v-if="!connect || user.id"
-        class="d-flex align-items-center border-end border-primary my-0 ms-0 py-2"
+        class="
+          d-flex
+          align-items-center
+          border-end border-primary
+          my-0
+          ms-0
+          py-2
+        "
       >
         <cust-a
           :linkObj="{ name: 'Home' }"
@@ -25,7 +32,17 @@
 
       <div
         v-if="user.id"
-        class="d-flex align-items-center border-end border-primary my-0 ms-0 py-2 px-3 me-auto mx-3"
+        class="
+          d-flex
+          align-items-center
+          border-end border-primary
+          my-0
+          ms-0
+          py-2
+          px-3
+          me-auto
+          mx-3
+        "
       >
         <h2 class="fs-4 text-white m-0">{{ title }}</h2>
       </div>
@@ -112,7 +129,7 @@ export default {
       if (!this.focus && test) this.hideNavbar();
     });
   },
-  beforeRouteLeave(to, from, next) {
+  beforeRouteUpdate(to, from, next) {
     this.hideNavbar();
     next();
   },
