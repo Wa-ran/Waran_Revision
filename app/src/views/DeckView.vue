@@ -1,5 +1,18 @@
 <template>
-  <div class="w-100 w-sm-75 mx-auto px-sm-4">
+  <div
+    class="container-fluid position-relative w-100 w-sm-75 mx-auto px-sm-4 p-3"
+    :class="$route.name === 'DeckView' ? 'border border-primary rounded' : ''"
+  >
+    <ButtonTopRight
+      v-if="$route.name == 'DeckView'"
+      :link="{
+        name: 'ModifDeck',
+        params: {
+          deck: actualDeck.id,
+        },
+      }"
+      :title="'Modifier le deck'"
+    />
     <!-- Title -->
     <div class="d-flex justify-content-center">
       <h2 class="d-flex justify-content-center w-100 m-0">
@@ -23,13 +36,13 @@
     <div v-else>
       <cust-hr class="my-3 mx-auto w-50" />
 
-      <p class="text-center ms-3">
+      <p class="text-center">
         {{ actualDeck.text || "Pas de description." }}
       </p>
 
       <cust-hr class="my-3 mx-auto" />
 
-      <div class="d-flex ms-3">
+      <div class="d-flex">
         <div>
           <p>
             {{ actualDeck.cards_to_revise || "Pas de" }}
@@ -54,23 +67,7 @@
             />
           </div>
         </div>
-
-        <button
-          @click="
-            $router.push({
-              name: 'ModifDeck',
-              params: {
-                deck: actualDeck.id,
-              },
-            })
-          "
-          class="btn btn-primary h-fit ms-auto mt-auto py-0"
-        >
-          Modifier
-        </button>
       </div>
-
-      <cust-hr class="my-3 mx-auto" />
     </div>
   </div>
 </template>
@@ -91,3 +88,9 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.container-fluid {
+  min-width: 250px;
+}
+</style>

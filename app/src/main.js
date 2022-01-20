@@ -50,6 +50,7 @@ import Link from "@/components/global/Link.vue";
 import Title from "@/components/global/Title.vue";
 import ToolTip from "@/components/global/ToolTip.vue";
 import DoubleCheckButton from "@/components/global/DoubleCheckButton.vue";
+import ButtonTopRight from "@/components/global/ButtonTopRight.vue";
 
 library.add(
   faArrowLeft,
@@ -192,6 +193,7 @@ VueApp.component("cust-a", Link);
 VueApp.component("cust-title", Title);
 VueApp.component("cust-tooltip", ToolTip);
 VueApp.component("DoubleCheckButton", DoubleCheckButton);
+VueApp.component("ButtonTopRight", ButtonTopRight);
 VueApp.use(store).use(router).use(VueMathjax);
 
 VueApp.mount("#app");

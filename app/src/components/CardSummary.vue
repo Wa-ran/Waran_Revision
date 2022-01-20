@@ -3,30 +3,15 @@
     <h3 class="fs-5 italic mt-2 mb-3">Aperçu :</h3>
     <div class="position-relative w-100 p-0">
       <!-- Bouton modification -->
-      <div class="w-fit bg-body position-absolute end-0 top-0 mt-n2 me-n2">
-        <cust-title
-          id="modifCardButton"
-          :text="'Modifier la carte'"
-          class="w-fit ms-auto"
-        >
-          <template v-slot:default>
-            <button
-              @click="
-                $router.push({
-                  name: 'ModifCard',
-                  params: {
-                    card: actualCard.id,
-                  },
-                })
-              "
-              aria-labelledby="modifCardButton"
-              class="position-relative btn btn-outline-primary h-fit w-fit p-1"
-            >
-              <font-awesome-icon :icon="['fas', 'cog']" size="lg" />
-            </button>
-          </template>
-        </cust-title>
-      </div>
+      <ButtonTopRight
+        :link="{
+          name: 'ModifCard',
+          params: {
+            card: actualCard.id,
+          },
+        }"
+        :title="'Modifier la carte'"
+      />
       <!-- Summary -->
       <div class="border border-primary rounded px-3 py-2">
         <span class="text-primary">{{

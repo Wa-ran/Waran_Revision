@@ -1,8 +1,6 @@
 <template>
   <div class="card" :class="$store.state.app.darkMode ? 'darkM' : ''">
-    <div class="topRight bg-body position-absolute top-0 end-0 m-n1">
-      <slot name="topRight"></slot>
-    </div>
+    <slot name="topRight"></slot>
     <!-- <Doodle /> -->
     <div
       class="card-body rounded overflow-hidden d-flex flex-column p-0 bg-transparent"
@@ -49,8 +47,5 @@ export default {
   max-width: calc(100% - 0.2rem);
   max-height: calc(100% - 0.2rem);
   margin: 0.2rem;
-}
-.topRight {
-  z-index: 1500;
 }
 </style>

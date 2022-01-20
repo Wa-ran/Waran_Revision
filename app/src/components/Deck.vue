@@ -2,13 +2,10 @@
   <div class="position-relative">
     <Card class="text-center shadow">
       <template v-slot:topRight>
-        <button
-          type="button"
-          @click="$router.push({ name: 'DeckView', params: { deck: deck.id } })"
-          class="has-icon btn btn-outline-primary p-0"
-        >
-          <font-awesome-icon :icon="['fas', 'cog']" size="lg" />
-        </button>
+        <ButtonTopRight
+          :link="{ name: 'DeckView', params: { deck: deck.id } }"
+          :title="'Modifier le deck'"
+        />
       </template>
       <template v-slot:body>
         <div class="bg-body d-flex flex-column flex-grow-1 h-100">

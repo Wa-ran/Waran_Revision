@@ -13,17 +13,18 @@
     <!-- Carte de révision -->
     <Card>
       <template v-slot:topRight>
-        <button
+        <ButtonTopRight
           v-if="$store.state.app.cardReveal"
           @click="
             recto = !recto;
             chrono = false;
             flipped = true;
           "
-          class="has-icon btn btn-outline-primary p-1"
+          :title="'Voir la réponse'"
         >
-          <font-awesome-icon :icon="['fas', 'share']" size="2x" />
-        </button>
+          <template v-slot:btnBody>
+            <font-awesome-icon :icon="['fas', 'share']" size="2x" /> </template
+        ></ButtonTopRight>
       </template>
       <template v-slot:body>
         <div

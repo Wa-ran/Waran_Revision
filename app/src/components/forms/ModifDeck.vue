@@ -5,7 +5,7 @@
       <input
         type="text"
         v-model="deck.title"
-        class="form-control border-primary"
+        class="form-control border-primary text-center"
         placeholder="Nouveau titre"
         id="DeckTitle"
       />
@@ -14,7 +14,7 @@
       <label for="DeckText" class="aria-only">Description</label>
       <textarea
         v-model="deck.text"
-        class="form-control border-primary"
+        class="form-control border-primary text-center"
         placeholder="Description"
         id="DeckText"
       ></textarea>
@@ -46,7 +46,7 @@
         <button
           @click="submitForm"
           type="button"
-          class="btn btn-primary h-fit py-0 m-3 me-0 ms-auto"
+          class="btn btn-primary h-fit py-0 m-3 me-0 ms-5"
         >
           Valider
         </button>
