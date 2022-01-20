@@ -1,19 +1,16 @@
 <template>
   <div class="position-relative">
-    <Card class="position-relative text-center shadow">
+    <Card class="text-center shadow">
+      <template v-slot:topRight>
+        <button
+          type="button"
+          @click="$router.push({ name: 'DeckView', params: { deck: deck.id } })"
+          class="has-icon btn btn-outline-primary p-0"
+        >
+          <font-awesome-icon :icon="['fas', 'cog']" size="lg" />
+        </button>
+      </template>
       <template v-slot:body>
-        <div class="bg-body position-absolute top-0 end-0 m-2">
-          <button
-            type="button"
-            @click="
-              $router.push({ name: 'DeckView', params: { deck: deck.id } })
-            "
-            class="has-icon btn btn-outline-primary p-0"
-          >
-            <font-awesome-icon :icon="['fas', 'cog']" size="lg" />
-          </button>
-        </div>
-
         <div class="bg-body d-flex flex-column flex-grow-1 h-100">
           <div
             class="d-flex flex-column justify-content-center align-self-center h-100"
@@ -55,8 +52,8 @@
       top: ${5 * sub}px;
       left: ${5 * sub}px;
       z-index: ${10 - sub}`"
-      class="position-absolute w-100 h-100 border border-primary rounded bg-body"
-      :class="sub == 3 - 1 ? 'card sub_card shadow' : 'card sub_card'"
+      class="position-absolute w-100 h-100 border border-primary bg-body sub-card"
+      :class="sub == 3 - 1 ? 'card shadow' : 'card'"
     ></div>
   </div>
 </template>
@@ -91,5 +88,8 @@ export default {
 }
 .footer {
   font-size: 0.9rem;
+}
+.sub-card {
+  border-radius: 0.5rem !important;
 }
 </style>

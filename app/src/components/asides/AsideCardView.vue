@@ -2,22 +2,12 @@
   <button
     v-if="positionSaved"
     @click="$router.push(positionSaved.path)"
-    class="
-      position-relative
-      btn btn-outline-primary
-      border-0
-      h-fit
-      w-fit
-      mt-1
-      mb-n5
-      py-1
-    "
+    class="position-relative btn btn-outline-primary border-0 h-fit w-fit mt-1 mb-n5 py-1"
   >
     <font-awesome-icon :icon="['fas', 'arrow-left']" size="lg" />
     <span class="px-2"> {{ positionSavedDesc }}</span>
   </button>
 </template>
-
 
 <script>
 export default {

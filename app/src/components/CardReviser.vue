@@ -12,25 +12,24 @@
     />
     <!-- Carte de révision -->
     <Card>
+      <template v-slot:topRight>
+        <button
+          v-if="$store.state.app.cardReveal"
+          @click="
+            recto = !recto;
+            chrono = false;
+            flipped = true;
+          "
+          class="has-icon btn btn-outline-primary p-1"
+        >
+          <font-awesome-icon :icon="['fas', 'share']" size="2x" />
+        </button>
+      </template>
       <template v-slot:body>
         <div
           v-if="$store.state.app.cardReviserCharged"
           class="w-100 h-100 bg-body"
         >
-          <div class="bg-body position-absolute rounded top-0 end-0 m-2">
-            <!-- Bouton pour "retourner" la carte -->
-            <button
-              @click="
-                recto = !recto;
-                chrono = false;
-                flipped = true;
-              "
-              class="has-icon btn btn-outline-primary p-1"
-            >
-              <font-awesome-icon :icon="['fas', 'share']" size="2x" />
-            </button>
-          </div>
-
           <!-- Contenu de la carte -->
           <div class="d-flex flex-column overflow-scroll h-100">
             <div
