@@ -1,5 +1,8 @@
 <template>
-  <form @change="change++" class="container-fluid">
+  <form
+    @change="change++"
+    class="container-fluid border border-primary rounded py-2"
+  >
     <div class="w-fit mx-auto">
       <span class="text-primary">Profil de : </span>
       <span class="bold fs-5">{{ user.pseudo }}</span>
@@ -62,6 +65,7 @@
           mutateApp('darkMode', null);
           light_mode = false;
           user.dark_mode = null;
+          verifEmpty();
         "
       />
       <label class="form-check-label" for="default_mode">
@@ -79,6 +83,7 @@
           mutateApp('darkMode', false);
           user.dark_mode = false;
           default_mode = false;
+          verifEmpty();
         "
       />
       <label class="form-check-label" for="dark_mode"> Clair </label>
@@ -94,6 +99,7 @@
           mutateApp('darkMode', true);
           light_mode = false;
           default_mode = false;
+          verifEmpty();
         "
       />
       <label class="form-check-label" for="dark_mode"> Sombre </label>
@@ -102,9 +108,9 @@
     <!-- Validation -->
     <div class="w-fit ms-auto mt-3">
       <button
+        v-if="hasChanged"
         @click.prevent="submitUser"
-        class="position-relative btn btn-primary h-fit p-1 px-3"
-        :class="hasChanged ? '' : 'disabled'"
+        class="btn btn-primary h-fit mb-2 mt-n5 p-1 px-3"
       >
         Valider
       </button>
@@ -118,7 +124,7 @@ export default {
   data() {
     return {
       default_mode: true,
-      light_mode: null,
+      light_mode: false,
       user: null,
       change: 0,
       hasChanged: false,
@@ -138,6 +144,19 @@ export default {
         })
         .then(() => this.$router.push({ name: "Profil" }))
         .then(() => this.change++);
+    },
+    verifEmpty() {
+      setTimeout(() => {
+        if (!this.default_mode && !this.light_mode && !this.user.dark_mode) {
+          this.default_mode = true;
+        }
+      });
+    },
+    beforeExit() {
+      this.mutateKey("formCompare", {
+        source: { ...this.stateUser },
+        modified: this.user,
+      });
     },
   },
   created() {

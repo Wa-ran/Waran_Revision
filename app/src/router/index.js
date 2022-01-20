@@ -54,8 +54,8 @@ const routes = [
       },
       {
         path: "profil",
-        name: "Profil",
-        component: lazyLoad("views/Profil"),
+        name: "ModifUser",
+        component: lazyLoad("views/Modification"),
       },
     ],
   },

@@ -93,11 +93,6 @@ VueApp.mixin({
         value,
       });
     },
-  },
-});
-
-VueApp.mixin({
-  methods: {
     mutateKey(sKey, body) {
       if (typeof body === "object" && !Array.isArray(body) && body !== null) {
         let sObj = { ...this.$store.state[sKey] };
@@ -105,21 +100,11 @@ VueApp.mixin({
       }
       this.mutateStore("mutateKey", { sKey, body });
     },
-  },
-});
-
-VueApp.mixin({
-  methods: {
     mutateApp(appKey, value) {
       let app = { ...this.$store.state.app };
       app[appKey] = value;
       this.mutateStore("mutateKey", { sKey: "app", body: app });
     },
-  },
-});
-
-VueApp.mixin({
-  methods: {
     hideNavbar() {
       new Collapse(document.getElementById("HeaderNav"), {});
     },
@@ -133,6 +118,30 @@ VueApp.mixin({
           sKey: "modal",
           body,
         },
+      });
+    },
+    verifUnsavedChange() {
+      return new Promise((res) => {
+        // setTimeout(() => {
+        if (
+          JSON.stringify(this.$store.state.formCompare.source) !==
+          JSON.stringify(this.$store.state.formCompare.modified)
+        ) {
+          this.setModal({
+            title: "Quitter sans valider les changements ?",
+            button: "Continuer",
+          });
+          this.displayModal();
+          // Wait for user choice
+          const int = setInterval(() => {
+            if (!this.$store.state.modalDisplay) {
+              clearInterval(int);
+              this.mutateApp("isFormPage", false);
+              res(this.$store.state.modalAnswer);
+            }
+          }, 200);
+        } else res(true);
+        // }, 500);
       });
     },
   },

@@ -7,15 +7,15 @@
     aria-hidden="true"
   >
     <div class="modal-dialog">
-      <div class="modal-content bg-body">
-        <div class="modal-header">
+      <div class="modal-content bg-body border border-primary p-3">
+        <div class="modal-header border-primary pt-0">
           <h5 class="modal-title text-center w-100" id="modalTitle">
             {{ modalState.title }}
           </h5>
           <button
             @click="modalAnswer = false"
             type="button"
-            class="btn-close mt-n5 opacity-75"
+            class="btn-close mt-n4 me-n3 opacity-75"
             data-bs-dismiss="modal"
             aria-label="Close"
           ></button>
@@ -28,7 +28,7 @@
         ></div>
 
         <div
-          class="modal-footer"
+          class="modal-footer border-primary pb-0"
           :class="modalState.button ? 'justify-content-center' : ''"
         >
           <button

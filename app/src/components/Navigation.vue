@@ -10,7 +10,7 @@
       </li>
       <li class="nav-item">
         <cust-a
-          :linkObj="{ name: 'Profil' }"
+          :linkObj="{ name: 'ModifUser' }"
           :linkText="'Profil'"
           class="nav-link"
         />

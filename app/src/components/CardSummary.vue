@@ -55,14 +55,6 @@
           <span>{{ mixShowDeck(actualCard) }}</span>
         </div>
       </div>
-
-      <!-- Validation -->
-      <button
-        @click="submitCard"
-        class="btn btn-primary h-fit w-fit mt-2 ms-auto"
-      >
-        Valider
-      </button>
     </div>
   </div>
 </template>
@@ -78,13 +70,6 @@ export default {
     },
     positionSaved() {
       return this.$store.state.app.positionSaved;
-    },
-  },
-  methods: {
-    async submitCard() {
-      await this.$store
-        .dispatch("putCard", this.actualCard)
-        .then(() => this.$emit("submitted"));
     },
   },
   mixins: [card],

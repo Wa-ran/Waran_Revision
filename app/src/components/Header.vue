@@ -88,7 +88,7 @@ export default {
           return "Carte";
         case "ModifCard":
           return "Modifier une carte";
-        case "Profil":
+        case "ModifUser":
           return "Profil";
         default:
           return "";

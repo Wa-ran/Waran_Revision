@@ -67,6 +67,9 @@ export default {
       },
     };
   },
+  props: {
+    exit: Boolean,
+  },
   methods: {
     submitForm() {
       if (!this.deck.title) document.getElementById("DeckTitle").focus();
@@ -77,9 +80,20 @@ export default {
         this.$emit("submited");
       });
     },
+    beforeExit() {
+      this.mutateKey("formCompare", {
+        source: { ...this.$store.getters.actualDeck },
+        modified: this.deck,
+      });
+    },
   },
   mounted() {
-    this.deck = this.$store.getters.actualDeck;
+    this.deck = { ...this.$store.getters.actualDeck };
+  },
+  watch: {
+    exit() {
+      if (this.exit) this.beforeExit();
+    },
   },
 };
 </script>

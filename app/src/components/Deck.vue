@@ -3,7 +3,7 @@
     <Card class="text-center shadow">
       <template v-slot:topRight>
         <ButtonTopRight
-          :link="{ name: 'DeckView', params: { deck: deck.id } }"
+          :link="{ name: 'ModifDeck', params: { deck: deck.id } }"
           :title="'Modifier le deck'"
         />
       </template>

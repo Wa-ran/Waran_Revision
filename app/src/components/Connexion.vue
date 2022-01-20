@@ -9,7 +9,7 @@
         Connexion
       </button>
       <button
-        @click="setModal(modalSetting)"
+        @click="setModal(modalSettings)"
         type="button"
         data-bs-toggle="modal"
         data-bs-target="#modal"
@@ -36,7 +36,7 @@ export default {
   data() {
     return {
       connectForm: false,
-      modalSetting: {
+      modalSettings: {
         title: "Site en développement !",
         text: 'Les inscriptions sont régulées pour le moment, vous pouvez m\'adresser une demande par mail à <a href = "mailto: mgs.gilles@gmail.com">mgs.gilles@gmail.com</a>.',
       },

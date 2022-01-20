@@ -197,7 +197,7 @@
           Annuler
         </button>
         <button
-          @click.prevent="validForm"
+          @click.prevent="submitForm"
           class="btn btn-primary w-fit py-1 ms-2"
         >
           Valider
@@ -238,9 +238,17 @@ export default {
     annulForm() {
       this.$router.push({ name: "CardView" });
     },
-    validForm() {
+    async submitForm() {
       this.mutateKey("actualCard", this.card);
-      this.$router.push({ name: "CardView" });
+      await this.$store
+        .dispatch("putCard", this.actualCard)
+        .then(() => this.$router.push({ name: "CardView" }));
+    },
+    beforeExit() {
+      this.mutateKey("formCompare", {
+        source: { ...this.actualCard },
+        modified: this.$store.state.cardsToReviseBaseList[this.actualCard.key],
+      });
     },
   },
   mounted() {

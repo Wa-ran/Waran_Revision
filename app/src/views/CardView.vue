@@ -2,11 +2,7 @@
   <div class="container-fluid flex-grow-1">
     <!-- View -->
     <router-view v-if="$route.name == 'ModifCard'" />
-    <CardSummary
-      v-else
-      @submitted="$router.push(positionSaved.path)"
-      class="p-0"
-    />
+    <CardSummary v-else class="p-0" />
 
     <!-- Bouton supprimer -->
     <DoubleCheckButton
@@ -37,10 +33,6 @@ export default {
   },
   data() {
     return {
-      modalSetting: {
-        title: "Quitter sans valider les changements ?",
-        button: "Continuer",
-      },
       from: null,
     };
   },
@@ -66,26 +58,6 @@ export default {
     next((vm) => {
       vm.from = from;
     });
-  },
-  beforeRouteLeave(to, from, next) {
-    if (
-      JSON.stringify(this.actualCard) !==
-      JSON.stringify(
-        this.$store.state.cardsToReviseBaseList[this.actualCard.key]
-      )
-    ) {
-      this.setModal(this.modalSetting);
-      this.displayModal();
-      const int = setInterval(() => {
-        if (!this.$store.state.modalDisplay) {
-          next(this.$store.state.modalAnswer);
-          clearInterval(int);
-        }
-      }, 200);
-      setTimeout(() => {
-        int;
-      }, 500);
-    } else next();
   },
   mixins: [card],
 };

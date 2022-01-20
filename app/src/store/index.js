@@ -11,14 +11,16 @@ export default createStore({
       cardReviserCharged: false,
       deckSelected: false,
       decksCharged: false,
+      isFormPage: false,
       positionSaved: null,
       revealCard: false,
       // check
       cardHideCheck: true,
       cardChronoCheck: true,
       darkMode: false,
-      randomCardPick: true,
       fastMode: true,
+      formVerif: true,
+      randomCardPick: true,
     },
 
     // card
@@ -50,6 +52,12 @@ export default createStore({
       id: "",
       pseudo: "",
       token: "",
+    },
+
+    //form
+    formCompare: {
+      source: null,
+      modified: null,
     },
 
     //modal
