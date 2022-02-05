@@ -5,8 +5,9 @@
         class="container-fluid d-flex h-100 bg-body"
         :style="'background: radial-gradient(circle at 50% 215px, transparent 45px, rgba(var(--bs-body-bg-rgb)) 46px) !important'"
       >
+        <Doodle />
         <div
-          class="porthole border border-primary rounded-circle"
+          class="porthole border-2 bg-body border border-primary rounded-circle"
           :class="isLoading ? 'isLoading' : ''"
           style="box-shadow: inset 0 0 1.5rem rgba(var(--bs-body-bg-rgb))"
           :style="isLoading ? 'tabindex: -1' : ''"
@@ -39,12 +40,14 @@
 
 <script>
 import Card from "@/components/Card.vue";
+import Doodle from "@/components/Doodle.vue";
 import Loader from "@/components/Loader.vue";
 
 export default {
   name: "CardHider",
   components: {
     Card,
+    Doodle,
     Loader,
   },
   data() {
@@ -124,7 +127,7 @@ button:focus {
   border-color: $primary !important;
 }
 
-.porthole:not(.isLoading):focus-within {
-  box-shadow: 0 0 0 0.25rem rgba($primary, 0.5) !important;
-}
+// .porthole:not(.isLoading):focus-within {
+//   box-shadow: 0 0 0 0.25rem rgba($primary, 0.5) !important;
+// }
 </style>

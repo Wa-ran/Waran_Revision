@@ -7,7 +7,7 @@
     >
       <span class="italic">{{ date }}</span>
     </button>
-    <div v-if="show">
+    <div v-if="show" class="ms-3">
       <div v-if="bugs.length > 0">
         <h3 class="fs-5">Bugs réglés :</h3>
         <ul>

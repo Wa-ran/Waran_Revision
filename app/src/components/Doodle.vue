@@ -1,6 +1,12 @@
 <template>
   <div class="doodle">
-    <css-doodle
+    <css-doodle class="w-100 h-100">
+      @grid: 32 / 18rem; @size: 1px 100%; transform: rotate(@p(0, 90deg))
+      scaleY(calc(3 + @r(±0.6))) translate(@r(±10px), @r(±10px)); background:
+      #984c0c;
+    </css-doodle>
+
+    <!-- <css-doodle
       v-if="!darkMode"
       :seed="$store.state.user.id"
       class="w-100 h-100"
@@ -15,7 +21,8 @@
       translate(@r(±5px), @r(±5px)); background-color: rgba(calc(253 -
       ((@index/256)*(253 - 18))), calc(126 - ((@index/256)*(126 - 18))), calc(20
       - ((@index/256)*(20 - 18)))); opacity: calc(0.8 + @r(±0.2));
-    </css-doodle>
+    </css-doodle> -->
+
     <!-- <css-doodle
       v-if="!darkMode"
       :seed="$store.state.user.id"
