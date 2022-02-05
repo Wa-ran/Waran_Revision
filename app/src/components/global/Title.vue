@@ -4,7 +4,7 @@
     data-bs-toggle="tooltip"
     data-bs-html="true"
     @blur="dispose"
-    @click="dispose"
+    @click.capture="dispose"
   >
     <slot></slot>
   </div>
@@ -16,17 +16,10 @@ export default {
   props: {
     text: String,
   },
-  data() {
-    return {
-      showing: false,
-    };
-  },
   methods: {
     dispose() {
-      if (this.showing) {
-        this.$forceUpdate();
-        document.querySelector(".tooltip").remove();
-      }
+      this.$forceUpdate();
+      document.querySelector(".tooltip").remove();
     },
   },
   unmounted() {

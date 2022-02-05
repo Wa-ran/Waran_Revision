@@ -72,27 +72,7 @@ export default {
   },
   computed: {
     title() {
-      let route = this.$route.name;
-      switch (route) {
-        case "Home":
-          return "Accueil";
-        case "Library":
-          return "Vos decks";
-        case "DeckView":
-          return "Deck";
-        case "ModifDeck":
-          return "Modifier un deck";
-        case "Revision":
-          return "Révision";
-        case "CardView":
-          return "Carte";
-        case "ModifCard":
-          return "Modifier une carte";
-        case "ModifUser":
-          return "Profil";
-        default:
-          return "";
-      }
+      return this.$route.meta.desc;
     },
     user() {
       return this.$store.state.user;
