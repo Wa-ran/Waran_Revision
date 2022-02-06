@@ -4,6 +4,7 @@
       class="navbar navbar-expand-lg navbar-dark justify-content-end p-1"
       :class="!user.id ? 'flex-nowrap' : ''"
     >
+      <!-- User pseudo -->
       <div
         v-if="!connect || user.id"
         class="d-flex align-items-center border-end border-primary my-0 ms-0 py-2"
@@ -15,6 +16,7 @@
         />
       </div>
 
+      <!-- Connexion form -->
       <div
         v-if="!user.id"
         class="my-auto"
@@ -23,6 +25,7 @@
         <Connexion @displayForm="connect = true" @hidenForm="connect = false" />
       </div>
 
+      <!-- Current page desc -->
       <div
         v-if="user.id"
         class="d-flex align-items-center border-end border-primary my-0 ms-0 py-2 px-3 me-auto mx-3"
@@ -30,6 +33,7 @@
         <h2 class="fs-4 text-white m-0">{{ title }}</h2>
       </div>
 
+      <!-- Toogle nav -->
       <button
         v-if="user.id"
         class="navbar-toggler btn btn-outline-primary shadow-none"
@@ -43,6 +47,7 @@
         <font-awesome-icon :icon="['fas', 'bars']" size="lg" />
       </button>
 
+      <!-- Main navigation -->
       <div
         v-if="user.id"
         class="collapse navbar-collapse border-top border-primary mt-3"
@@ -51,16 +56,21 @@
         <Navigation class="navigation" />
       </div>
     </nav>
+
+    <!-- Breadcrumb -->
+    <BreadCrumb v-if="user.id" class="border-top border-primary" />
   </header>
 </template>
 
 <script>
+import BreadCrumb from "@/components/BreadCrumb";
 import Connexion from "@/components/Connexion";
 import Navigation from "@/components/Navigation";
 
 export default {
   name: "Header",
   components: {
+    BreadCrumb,
     Connexion,
     Navigation,
   },
@@ -100,7 +110,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/global.scss";
+@import "@/styles/_variables.scss";
 
 header {
   background-color: $dark;

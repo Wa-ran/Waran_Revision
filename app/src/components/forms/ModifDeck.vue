@@ -77,7 +77,7 @@ export default {
     },
     async submitDeck() {
       await this.$store.dispatch("putDeck", this.deck).then(() => {
-        this.$emit("submited");
+        this.$router.push({ name: "DeckView" });
       });
     },
     beforeExit() {

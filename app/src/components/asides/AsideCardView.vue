@@ -4,8 +4,8 @@
     @click="$router.push(positionSaved.path)"
     class="position-relative btn btn-outline-primary border-0 h-fit w-fit mt-1 mb-n5 py-1"
   >
-    <font-awesome-icon :icon="['fas', 'arrow-left']" size="lg" />
-    <span class="px-2"> {{ positionSavedDesc }}</span>
+    <font-awesome-icon :icon="['fas', 'arrow-left']" size="sm" />
+    <span class="px-1"> {{ positionSavedDesc }}</span>
   </button>
 </template>
 
@@ -30,3 +30,9 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+span {
+  font-size: 0.9rem;
+}
+</style>

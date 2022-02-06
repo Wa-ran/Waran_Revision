@@ -3,7 +3,6 @@
     class="homeContent position-fixed overflow-scroll container-fluid d-flex flex-column p-0 pb-5 h-100"
   >
     <Header class="sticky-top border-bottom border-primary" />
-    <!-- <BreadCrumb /> -->
     <div
       class="d-flex flex-column flex-md-row align-items-start flex-grow-1 h-fit pb-5"
     >
@@ -11,7 +10,7 @@
         <Aside />
       </aside>
       <main
-        class="d-flex justify-content-center align-items-start h-fit mx-auto px-3 py-md-4"
+        class="d-flex justify-content-center align-items-start h-fit mx-auto mt-1 px-3 py-md-4"
       >
         <ChangeLog v-if="$route.name == 'Home'" />
         <router-view v-else class="w-100" />
