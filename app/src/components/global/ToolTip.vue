@@ -6,7 +6,7 @@
     data-bs-toggle="tooltip"
     data-bs-html="true"
     tabindex="0"
-    @click="showing = true"
+    @click="showing = !showing"
     @blur="dispose"
   >
     <font-awesome-icon :icon="['far', 'question-circle']" size="sm" />
@@ -28,16 +28,16 @@ export default {
     dispose() {
       if (this.showing) {
         this.$forceUpdate();
-        document.querySelector(".tooltip").remove();
+        try {
+          document.querySelector(".tooltip").remove();
+        } catch (error) {
+          return;
+        }
       }
     },
   },
   unmounted() {
-    try {
-      document.querySelector(".tooltip").remove();
-    } catch (error) {
-      return;
-    }
+    this.dispose();
   },
 };
 </script>

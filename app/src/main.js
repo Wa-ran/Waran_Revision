@@ -178,15 +178,12 @@ const bsTooltipStretch = (el, binding) => {
     placement: binding.arg || "top",
     trigger: t.join(" "),
     html: true,
-    delay: { show: 500, hide: 0 },
+    delay: { show: 400, hide: 0 },
   });
 };
 
 VueApp.directive("tooltip-stretch", {
   beforeMount(el, binding) {
-    bsTooltipStretch(el, binding);
-  },
-  updated(el, binding) {
     bsTooltipStretch(el, binding);
   },
   unmounted(el) {

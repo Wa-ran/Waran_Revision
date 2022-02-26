@@ -17,14 +17,14 @@ UPDATE cards SET comment = NULL WHERE comment = '_';
 
 SET SQL_SAFE_UPDATES = ON;
 
-ALTER TABLE cards DROP recto_comment, DROP verso_comment, DROP has_image;
+#ALTER TABLE cards DROP recto_comment, DROP verso_comment, DROP has_image;
 ALTER TABLE cards RENAME COLUMN streak TO level;
 ALTER TABLE cards_revisions RENAME COLUMN new_streak TO new_level;
 
 DROP TABLE IF EXISTS decks;
 CREATE TABLE decks (
 				id SERIAL,
-                user_id BIGINT UNSIGNED NOT NULL,
+                user_id BIGINT UNSIGNED,
 				title VARCHAR(40),
                 text TINYTEXT,
                 sequence TINYINT(1) DEFAULT '0',
@@ -49,7 +49,7 @@ BEGIN
 
 	START TRANSACTION;
 	  WHILE user <= end DO
-		INSERT INTO decks VALUE(NULL, user, NULL, NULL);
+		INSERT INTO decks (user_id, title, text, sequence) VALUE(user, NULL, NULL, NULL);
         UPDATE decks SET user_id = user WHERE id = LAST_INSERT_ID();
         UPDATE cards SET deck_id = LAST_INSERT_ID() WHERE user_id = user;
 		SELECT MIN(id) FROM users WHERE id > user INTO user;
@@ -60,6 +60,8 @@ END #
 DELIMITER ;
 
 CALL new_decks();
+
+ALTER TABLE decks MODIFY user_id BIGINT UNSIGNED NOT NULL;
 
 ALTER TABLE cards ADD CONSTRAINT t_cards_t_decks_fk
 FOREIGN KEY (deck_id)

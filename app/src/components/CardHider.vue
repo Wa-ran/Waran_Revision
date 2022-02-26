@@ -104,7 +104,7 @@ button:focus {
   & .porthole {
     position: absolute;
     top: 169px;
-    left: 92px;
+    left: 96px;
     width: 92px;
     height: 92px;
     & > * {

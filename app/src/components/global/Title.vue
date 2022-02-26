@@ -4,7 +4,8 @@
     data-bs-toggle="tooltip"
     data-bs-html="true"
     @blur="dispose"
-    @click.capture="dispose"
+    @click="dispose"
+    class="stretch"
   >
     <slot></slot>
   </div>
@@ -18,16 +19,17 @@ export default {
   },
   methods: {
     dispose() {
+      clearInterval(this.interval)
       this.$forceUpdate();
-      document.querySelector(".tooltip").remove();
+      try {
+        document.querySelector(".tooltip").remove();
+      } catch (error) {
+        return;
+      }
     },
   },
   unmounted() {
-    try {
-      document.querySelector(".tooltip").remove();
-    } catch (error) {
-      return;
-    }
+    this.dispose();
   },
 };
 </script>
