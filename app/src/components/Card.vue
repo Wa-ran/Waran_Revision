@@ -3,15 +3,17 @@
     <slot name="topRight"></slot>
     <!-- <Doodle /> -->
     <div
-      class="card-body rounded overflow-hidden d-flex flex-column p-0 bg-transparent"
+      class="card-body d-flex flex-column bg-body rounded overflow-hidden p-0"
     >
-      <div class="h-100 overflow-scroll bg-body pb-2">
-        <slot name="body">card-body</slot>
+      <div class="position-relative bg-transparent flex-grow-1 w-100">
+        <div class="position-absolute top-0 start-0 w-100 h-100">
+          <slot name="body">card-body</slot>
+        </div>
       </div>
 
       <div
         v-if="this.$slots.footer"
-        class="card-footer bg-body border-0 d-flex flex-column mt-auto pt-0"
+        class="card-footer bg-transparent border-0 d-flex flex-column w-100 mt-auto pt-0"
       >
         <cust-hr class="mt-0 mb-1" />
         <slot name="footer"></slot>

@@ -7,30 +7,62 @@
           :title="'Modifier le deck'"
         />
       </template>
+
       <template v-slot:body>
-        <div class="bg-body d-flex flex-column flex-grow-1 h-100">
-          <div
-            class="d-flex flex-column justify-content-center align-self-center h-100"
-          >
-            <h3 class="card-title h-fit mx-auto p-2">
-              {{ deck.title || "Votre Deck" }}
+        <div
+          class="bg-body d-flex flex-column justify-content-center h-100 overflow-scroll pb-2"
+        >
+          <div class="d-flex flex-column justify-content-center">
+            <!-- Title -->
+            <h3 class="card-title h-fit mx-auto p-2 mt-3">
+              <router-link
+                :to="{ name: 'DeckView', params: { deck: deck.id } }"
+                class="link-current text-decoration-none"
+              >
+                {{ deck.title || "Votre Deck" }}
+              </router-link>
             </h3>
-            <p v-if="deck.text" class="card-text h-fit p-2">
+            <!-- Description -->
+            <p v-if="deck.text" class="card-text p-2">
               {{ deck.text }}
             </p>
           </div>
-          <button
-            @click="
-              $router.push({ name: 'Revision', params: { deck: deck.id } })
-            "
-            class="btn btn-primary w-fit mx-auto px-3 py-0"
-          >
-            Réviser
-          </button>
         </div>
       </template>
+
       <template v-slot:footer>
         <div class="footer">
+          <div class="mt-1">
+            <button
+              @click="
+                $router.push({ name: 'Revision', params: { deck: deck.id } })
+              "
+              class="btn btn-primary w-fit mx-auto px-3 py-0"
+            >
+              Réviser
+            </button>
+
+            <button
+              @click="
+                $router.push({ name: 'NewCard', params: { deck: deck.id } })
+              "
+              class="btn btn-outline-primary w-fit mx-auto px-3 py-0 mt-2"
+            >
+              Nouvelle carte
+            </button>
+
+            <button
+              @click="
+                $router.push({ name: 'AllCards', params: { deck: deck.id } })
+              "
+              class="btn btn-outline-primary w-fit mx-auto px-3 py-0 mt-2"
+            >
+              Voir mes cartes
+            </button>
+          </div>
+
+          <cust-hr class="mt-2 mb-1" />
+
           <span v-if="deck.cards_total_number == 0">Aucune carte</span>
           <div v-else>
             <span v-if="deck.cards_to_revise == 0">Aucune carte à réviser</span>

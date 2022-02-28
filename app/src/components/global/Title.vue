@@ -1,13 +1,17 @@
 <template>
-  <div
-    v-tooltip-stretch="text"
-    data-bs-toggle="tooltip"
-    data-bs-html="true"
-    @blur="dispose"
-    @click="dispose"
-    class="stretch"
-  >
-    <slot></slot>
+  <div>
+    <div
+      v-if="text"
+      v-tooltip-stretch="text"
+      data-bs-toggle="tooltip"
+      data-bs-html="true"
+      @blur="dispose"
+      @click="dispose"
+      class="stretch"
+    >
+      <slot><!-- Wrap an element => display title above that element --></slot>
+    </div>
+    <div v-else><slot></slot></div>
   </div>
 </template>
 
@@ -15,11 +19,14 @@
 export default {
   name: "Title",
   props: {
-    text: String,
+    text: {
+      type: String,
+      default: null,
+    },
   },
   methods: {
     dispose() {
-      clearInterval(this.interval)
+      clearInterval(this.interval);
       this.$forceUpdate();
       try {
         document.querySelector(".tooltip").remove();

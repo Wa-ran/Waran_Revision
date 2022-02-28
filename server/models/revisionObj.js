@@ -61,7 +61,8 @@ module.exports = class revisionObj {
   };
 
   tryParseInt(val) {
-    return Number.isInteger(val) ? val : (isNaN(Number.parseInt(val)) ? 0 : Number.parseInt(val));
+    if (!val) return null
+    else return Number.isInteger(val) ? val : (isNaN(Number.parseInt(val)) ? 0 : Number.parseInt(val));
   };
 
   isBoolean(val, canBeNull = false) {

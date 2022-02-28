@@ -20,7 +20,7 @@
             chrono = false;
             flipped = true;
           "
-          :title="'Voir la réponse'"
+          :title="flipped ? null : 'Voir la réponse'"
         >
           <template v-slot:btnBody>
             <font-awesome-icon :icon="['fas', 'share']" size="2x" /> </template
@@ -29,10 +29,10 @@
       <template v-slot:body>
         <div
           v-if="$store.state.app.cardReviserCharged"
-          class="w-100 h-100 bg-body"
+          class="w-100 h-100 bg-body overflow-scroll"
         >
           <!-- Contenu de la carte -->
-          <div class="d-flex flex-column overflow-scroll h-100">
+          <div class="d-flex flex-column h-100">
             <div
               class="flex-grow-1 d-flex flex-column justify-content-center align-items-center p-3"
             >

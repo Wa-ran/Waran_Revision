@@ -37,7 +37,9 @@ export default {
       if (link.props.default) {
         switch (link.name) {
           case "DeckView":
-            desc += ` (${this.$store.getters.actualDeck.title || 'Pas de titre'})`;
+            desc += ` (${
+              this.$store.getters.actualDeck.title || "Pas de titre"
+            })`;
             break;
           case "CardView":
             desc += ` (${this.$route.params.card})`;

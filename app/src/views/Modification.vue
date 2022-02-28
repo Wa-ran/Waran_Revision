@@ -10,6 +10,9 @@ import { defineAsyncComponent } from "vue";
 export default {
   name: "Modification",
   components: {
+    NewCard: defineAsyncComponent(() =>
+      import("@/components/forms/ModifCard.vue")
+    ),
     ModifCard: defineAsyncComponent(() =>
       import("@/components/forms/ModifCard.vue")
     ),

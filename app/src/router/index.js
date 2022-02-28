@@ -29,6 +29,18 @@ const routes = [
             props: true,
             children: [
               {
+                path: "all-cards",
+                name: "AllCards",
+                meta: { desc: "Toutes les cartes" },
+                component: lazyLoad("views/AllCards"),
+              },
+              {
+                path: "new-card",
+                name: "NewCard",
+                meta: { desc: "Création de carte" },
+                component: lazyLoad("views/Modification"),
+              },
+              {
                 path: "modification",
                 name: "ModifDeck",
                 meta: { desc: "Modifier un deck" },

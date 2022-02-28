@@ -177,7 +177,7 @@
       <cust-tooltip
         id="selectDeckDesc"
         class="mt-n4"
-        :text="'Vous pouvez transférez la carte dans un autre deck.'"
+        :text="'Choisissez à quel deck appartient la carte.'"
       />
     </div>
 
@@ -224,7 +224,8 @@ export default {
   },
   computed: {
     actualCard() {
-      return this.$store.state.actualCard;
+      if (this.$route.name === "NewCard") return this.$store.state.newCard;
+      else return this.$store.state.actualCard;
     },
   },
   methods: {
@@ -236,12 +237,13 @@ export default {
       }
     },
     annulForm() {
-      this.$router.push({ name: "CardView" });
+      if (this.card.id) this.$router.push({ name: "CardView" });
+      else this.$router.push({ name: "DeckView" });
     },
     async submitForm() {
       this.mutateKey("actualCard", this.card);
       await this.$store
-        .dispatch("putCard", this.actualCard)
+        .dispatch("submitCard")
         .then(() => this.$router.push({ name: "CardView" }));
     },
     beforeExit() {
@@ -252,7 +254,9 @@ export default {
     },
   },
   mounted() {
-    this.card = { ...this.$store.state.actualCard };
+    this.card = { ...this.actualCard };
+    if (!this.card.deck_id)
+      this.card.deck_id = this.$store.getters.actualDeck.id; // new card
   },
   watch: {
     options() {

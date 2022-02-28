@@ -10,7 +10,7 @@
         <Aside />
       </aside>
       <main
-        class="d-flex justify-content-center align-items-start h-fit mx-auto mt-1 px-3 py-md-4"
+        class="d-flex justify-content-center align-items-start h-fit mx-auto mt-1 px-md-3 py-md-4"
       >
         <ChangeLog v-if="$route.name == 'Home'" />
         <router-view v-else class="w-100" />
