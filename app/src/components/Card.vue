@@ -7,7 +7,7 @@
     >
       <div class="position-relative bg-transparent flex-grow-1 w-100">
         <div class="position-absolute top-0 start-0 w-100 h-100">
-          <slot name="body">card-body</slot>
+          <slot name="body"></slot>
         </div>
       </div>
 
@@ -44,6 +44,9 @@ export default {
   // }
   background-color: $primary !important;
   border-radius: 0.5rem !important;
+
+  width: 18rem;
+  height: 30rem;
 }
 .card-body {
   max-width: calc(100% - 0.2rem);

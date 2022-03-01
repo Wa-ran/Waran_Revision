@@ -16,6 +16,9 @@ export default {
     AsideCardView: defineAsyncComponent(() =>
       import("@/components/asides/AsideCardView.vue")
     ),
+    AsideModifCard: defineAsyncComponent(() =>
+      import("@/components/asides/AsideCardView.vue")
+    ),
   },
 };
 </script>

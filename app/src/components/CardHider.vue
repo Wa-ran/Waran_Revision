@@ -7,7 +7,7 @@
       >
         <Doodle />
         <div
-          class="porthole border-2 bg-body border border-primary rounded-circle"
+          class="porthole border-4 bg-body border border-primary rounded-circle"
           :class="isLoading ? 'isLoading' : ''"
           style="box-shadow: inset 0 0 1.5rem rgba(var(--bs-body-bg-rgb))"
           :style="isLoading ? 'tabindex: -1' : ''"
@@ -104,9 +104,9 @@ button:focus {
   & .porthole {
     position: absolute;
     top: 169px;
-    left: 96px;
-    width: 92px;
-    height: 92px;
+    left: 94px;
+    width: 96px;
+    height: 96px;
     & > * {
       position: absolute;
       top: 0;

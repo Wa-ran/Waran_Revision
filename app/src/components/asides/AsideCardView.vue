@@ -2,7 +2,7 @@
   <button
     v-if="positionSaved"
     @click="$router.push(positionSaved.path)"
-    class="position-relative btn btn-outline-primary border-0 h-fit w-fit mt-1 mb-n5 py-1"
+    class="position-absolute d-flex flex-row align-items-center btn btn-outline-primary border-0 h-fit w-fit mt-1 mb-n5 ms-md-3 py-1 text-nowrap"
   >
     <font-awesome-icon :icon="['fas', 'arrow-left']" size="sm" />
     <span class="px-1"> {{ positionSavedDesc }}</span>
@@ -17,11 +17,10 @@ export default {
       return this.$store.state.app.positionSaved;
     },
     positionSavedDesc() {
-      let positionSaved = this.positionSaved ? this.positionSaved.name : null;
-      switch (positionSaved) {
+      switch (this.positionSaved.name) {
         case "Revision":
           return "Retourner réviser";
-        case "Liste":
+        case "AllCards":
           return "Revenir à la liste de cartes";
         default:
           return null;

@@ -34,7 +34,7 @@
       </div>
 
       <!-- Summary -->
-      <div v-else>
+      <div v-else class="summary">
         <cust-hr class="my-3 mx-auto w-50" />
 
         <p class="text-center">
@@ -125,8 +125,8 @@ export default {
 .container-fluid {
   min-width: 300px;
 }
-.DeckView {
-  min-width: 250px;
-  max-width: 350px;
+.summary {
+  min-width: 200px;
+  max-width: 250px;
 }
 </style>

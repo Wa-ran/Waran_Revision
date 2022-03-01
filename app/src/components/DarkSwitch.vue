@@ -54,7 +54,7 @@ export default {
         document.getElementById("darkMode").checked = true;
         this.mutateApp("darkMode", true);
       } else {
-        document.documentElement.className = "";
+        document.documentElement.className = "light";
         this.mutateApp("darkMode", false);
       }
     },

@@ -119,6 +119,9 @@ input:not([type="text"]) {
 .nav-link {
   color: currentColor;
 }
+.text-primary {
+  font-weight: bold;
+}
 .tooltip.show {
   opacity: 1;
 }
@@ -130,6 +133,18 @@ input:not([type="text"]) {
 }
 
 // custom
+.above {
+  z-index: 1500;
+}
+.aria-only {
+  position: absolute;
+  overflow: hidden;
+  white-space: nowrap;
+  margin: 0;
+  padding: 0;
+  height: 0;
+  width: 0;
+}
 .bold {
   font-weight: bold;
 }
@@ -151,17 +166,14 @@ input:not([type="text"]) {
 .w-fit {
   width: fit-content;
 }
-.aria-only {
-  position: absolute;
-  overflow: hidden;
-  white-space: nowrap;
-  margin: 0;
-  padding: 0;
-  height: 0;
-  width: 0;
+
+// Thememode
+.light {
+  .text-primary {
+    font-weight: bold;
+  }
 }
 
-// Darkmode
 .dark {
   // --bs-primary: #" + $primary_svg + "; //$orange
   --bs-dark-rgb: 41, 37, 33; //$black

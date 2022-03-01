@@ -6,16 +6,16 @@
     <div
       class="d-flex flex-column flex-md-row align-items-start flex-grow-1 h-fit pb-5"
     >
-      <aside class="mt-md-4 w-100">
+      <aside class="above mt-md-3 w-100">
         <Aside />
       </aside>
       <main
-        class="d-flex justify-content-center align-items-start h-fit mx-auto mt-1 px-md-3 py-md-4"
+        class="d-flex justify-content-center align-items-start h-fit mx-auto mt-1 px-md-3 py-md-3"
       >
         <ChangeLog v-if="$route.name == 'Home'" />
         <router-view v-else class="w-100" />
       </main>
-      <aside class="mt-md-4 w-100">
+      <aside class="above mt-md-3 w-100">
         <Aside2 />
       </aside>
     </div>
@@ -25,6 +25,7 @@
 
 <script>
 import Aside from "@/views/Aside";
+import Aside2 from "@/views/Aside2";
 import ChangeLog from "@/views/ChangeLog";
 
 import Header from "@/components/Header";
@@ -34,6 +35,7 @@ export default {
   name: "Home",
   components: {
     Aside,
+    Aside2,
     ChangeLog,
     Header,
     Footer,
@@ -49,6 +51,9 @@ export default {
 @import "@/styles/_variables.scss";
 
 .homeContent {
+  & .sticky-top {
+    z-index: 2000;
+  }
   & > * {
     &:first-child,
     &:last-child {

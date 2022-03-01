@@ -35,10 +35,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss">
-.card {
-  width: 18rem;
-  height: 30rem;
-}
-</style>

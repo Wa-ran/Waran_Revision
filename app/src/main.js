@@ -41,6 +41,8 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 import VueMathjax from "vue-mathjax-next";
 
+import MasonryWall from "@yeger/vue-masonry-wall";
+
 import "css-doodle";
 // import VueCssDoodle from "@luxdamore/vue-css-doodle";
 // import "@luxdamore/vue-css-doodle/dist/VueCssDoodle.css";
@@ -200,6 +202,6 @@ VueApp.component("cust-title", Title);
 VueApp.component("cust-tooltip", ToolTip);
 VueApp.component("DoubleCheckButton", DoubleCheckButton);
 VueApp.component("ButtonTopRight", ButtonTopRight);
-VueApp.use(store).use(router).use(VueMathjax);
+VueApp.use(store).use(router).use(VueMathjax).use(MasonryWall);
 
 VueApp.mount("#app");

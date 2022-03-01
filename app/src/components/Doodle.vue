@@ -3,7 +3,7 @@
     <css-doodle class="w-100 h-100">
       @grid: 32 / 18rem; @size: 1px 100%; transform: rotate(@p(0, 90deg))
       scaleY(calc(3 + @r(±0.6))) translate(@r(±10px), @r(±10px)); background:
-      #984c0c;
+      #fd7e14;
     </css-doodle>
 
     <!-- <css-doodle

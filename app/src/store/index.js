@@ -24,6 +24,7 @@ export default createStore({
     },
 
     // card
+    allCardsList: [],
     cardsToReviseBaseList: [],
     cardsToReviseReserved: [],
     actualCard: {},
@@ -127,6 +128,14 @@ export default createStore({
         serverRoute: "/AllUserDecks",
         data: "user/" + this.state.user.id,
         mutate: "decksList",
+      });
+    },
+    async getAllUserCards() {
+      await this.dispatch("APIRequest", {
+        method: "GET",
+        serverRoute: "/AllUserCards",
+        data: "user/" + this.state.user.id,
+        mutate: "allCardsList",
       });
     },
     async getCardsToReviseOnDeck({ getters }) {

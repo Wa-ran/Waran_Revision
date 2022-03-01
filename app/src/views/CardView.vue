@@ -7,7 +7,7 @@
     <!-- Bouton supprimer -->
     <DoubleCheckButton
       @checkedClick="deleteCard"
-      class="btn ms-auto mt-2"
+      class="btn ms-auto mt-2 me-n2"
       :classDefault="'btn-danger'"
     >
       <template v-slot:default>
@@ -54,6 +54,7 @@ export default {
   mounted() {
     this.mutateApp("positionSaved", this.from);
   },
+  // see Aside
   beforeRouteEnter(to, from, next) {
     next((vm) => {
       vm.from = from;
