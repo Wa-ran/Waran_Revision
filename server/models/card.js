@@ -37,7 +37,7 @@ const HOURS_SUITE = {
 
 module.exports = class Card extends revisionObj {
 
-  constructor(id, recto, verso, level, user_id, next_revision, reverse, comment, deck_id, recto_formula, verso_formula, recto_image, verso_image, win, decalage, suggestion_down, suggestion_up, suggestion_accepted) {
+  constructor(id, recto, verso, level, user_id, next_revision, reverse, comment, deck_id, recto_formula, verso_formula, recto_image, verso_image, win, decalage, adapt_level_down, adapt_level_up, adapt_level_accepted) {
     super();
     this.id = this.tryParseInt(id);
     this.recto = recto;
@@ -54,19 +54,25 @@ module.exports = class Card extends revisionObj {
     this.reverse = this.isBoolean(reverse);
     this.win = this.isBoolean(win, true);
     this.decalage = decalage ? this.tryParseInt(decalage) : this.calculDecalage();
-    this.suggestion_down = suggestion_down ? this.tryParseInt(suggestion_down) : this.suggestDownLevel();
-    this.suggestion_up = suggestion_up ? this.tryParseInt(suggestion_up) : this.suggestUpLevel();
-    this.suggestion_accepted = this.isBoolean(suggestion_accepted);
+    this.adapt_level_down = adapt_level_down ? this.tryParseInt(adapt_level_down) : this.suggestDownLevel();
+    this.adapt_level_up = adapt_level_up ? this.tryParseInt(adapt_level_up) : this.suggestUpLevel();
+    this.adapt_level_refused = this.isBoolean(adapt_level_accepted);
     this.parseToJS();
   };
 
   newLevel() {
-    let newLevel = this.level;
     if (this.win === null) return;
-    else if (this.win) newLevel++;
-    else if (!this.win) {
-      newLevel--;
-      if (newLevel % 2 === 0) newLevel--
+    let newLevel = this.level;
+    if (this.decalage > 24 && this.adapt_level_refused) {
+      if (this.win) newLevel++;
+      else if (!this.win) {
+        newLevel--;
+        if (newLevel % 2 === 0) newLevel--
+      }
+    }
+    else {
+      if (this.win) newLevel = this.adapt_level_up
+      else newLevel = this.adapt_level_down
     }
     if (newLevel < 0) newLevel = 0;
     this.level = newLevel
@@ -106,28 +112,28 @@ module.exports = class Card extends revisionObj {
   };
 
   suggestDownLevel() {
-    let suggestion = null;
+    let adapt_level = null;
     if (this.decalage > 24) {
-      suggestion = this.level - 1;
+      adapt_level = this.level - 1;
       let level_hours = this.decalage;
       do {
-        level_hours -= HOURS_SUITE[suggestion];
-        suggestion--;
-      } while (level_hours >= 0 && suggestion > 0);
+        level_hours -= HOURS_SUITE[adapt_level];
+        adapt_level--;
+      } while (level_hours >= 0 && adapt_level > 0);
     }
-    return suggestion;
+    return adapt_level;
   };
   suggestUpLevel() {
-    let suggestion = null;
+    let adapt_level = null;
     if (this.decalage > 24) {
       let level_up = this.decalage + HOURS_SUITE[this.level];
       for (let [key, value] of Object.entries(HOURS_SUITE)) {
         if (value > level_up) {
-          suggestion = key - 2;
+          adapt_level = key - 2;
           break;
         }
       }
     }
-    return suggestion;
+    return adapt_level;
   };
 }
