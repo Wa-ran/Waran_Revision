@@ -51,7 +51,7 @@ export default {
       return level;
     },
     mixShowRevision(card) {
-      if (card.level === 0) return null;
+      if (card.level === 0 || card.level === null) return "dès que possible.";
       let next = new Date(
         new Date().setTime(
           new Date().getTime() + this.hours[card.level] * 60 * 60 * 1000
@@ -59,12 +59,12 @@ export default {
       );
       let showDate = new Date(next - Date.now());
       if (showDate.getTime() / 3600000 < 48)
-        return "toutes les " + Math.round(showDate / 3600000) + " heures.";
+        return "~ toutes les " + Math.round(showDate / 3600000) + " heures.";
       else if (
         showDate.getTime() / 3600000 > 48 &&
         showDate.getTime() / (3600000 * 24) < 14
       )
-        return "tous les " + Math.round(showDate / (3600000 * 24)) + " jours.";
+        return "~ tous les " + Math.round(showDate / (3600000 * 24)) + " jours.";
       else return "d'ici le " + next.getDate() + "/" + (1 + next.getMonth());
     },
   },

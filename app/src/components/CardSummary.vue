@@ -36,7 +36,7 @@
           <span class="text-primary">Niveau :&nbsp;&nbsp;</span>
           <span class="bold">{{ mixShowLevel(actualCard) }}</span>
           <span v-if="mixShowRevision(actualCard)" class="italic"
-            >&nbsp;&nbsp;(révision ~ {{ mixShowRevision(actualCard) }})</span
+            >&nbsp;&nbsp;(révision {{ mixShowRevision(actualCard) }})</span
           >
         </div>
 
