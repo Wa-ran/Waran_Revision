@@ -1,5 +1,5 @@
 <template>
-  <header @click.prevent="handleFocus" class="container-fluid dark shadow">
+  <header class="container-fluid dark shadow">
     <nav
       class="navbar navbar-expand-lg navbar-dark justify-content-end p-1"
       :class="!user.id ? 'flex-nowrap' : ''"
@@ -77,7 +77,6 @@ export default {
   data() {
     return {
       connect: false,
-      focus: false,
     };
   },
   computed: {
@@ -88,23 +87,19 @@ export default {
       return this.$store.state.user;
     },
   },
-  methods: {
-    handleFocus() {
-      this.focus = true;
-      setTimeout(() => {
-        this.focus = false;
-      }, 100);
-    },
-  },
   mounted() {
     document.getElementById("app").addEventListener("click", () => {
       let test = document.querySelector("#HeaderNav.navbar-collapse.show");
-      if (!this.focus && test) this.hideNavbar();
+      if (test) this.hideNavbar();
     });
   },
-  beforeRouteUpdate(to, from, next) {
-    this.hideNavbar();
-    next();
+  watch: {
+    $route() {
+      setTimeout(() => {
+        let test = document.querySelector("#HeaderNav.navbar-collapse.show");
+        if (test) this.hideNavbar();
+      });
+    },
   },
 };
 </script>
