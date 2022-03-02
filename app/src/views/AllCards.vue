@@ -43,6 +43,8 @@
             @click="goToCard(item)"
             role="button"
             class="card bg-body border border-primary shadow h-fit p-2 text-center m-auto"
+            :style="allCardsShowCheck || (new Date() - new Date(item.next_revision) > 0) ? '' : 'display: none'"
+            :key="allCardsShowCheck"
           >
             <div class="w-100 overflow-scroll">
               <div v-html="item.recto"></div>
@@ -65,6 +67,11 @@ export default {
   name: "AllCards",
   components: {
     Card,
+  },
+  computed: {
+    allCardsShowCheck() {
+      return this.$store.state.app.allCardsShowCheck;
+    }
   },
   methods: {
     goToCard(card) {

@@ -8,6 +8,7 @@ export default createStore({
       // state
       actionDisconnect: false,
       actualCardChange: 0,
+      allCardsShowCheck: false,
       cardsListCharged: false,
       cardReviserCharged: false,
       deckSelected: false,

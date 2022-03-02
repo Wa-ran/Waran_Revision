@@ -184,7 +184,9 @@ export default {
       });
     },
     setWin(win = null) {
-      this.actualCard.win = win;
+      let actualCard = this.actualCard;
+      actualCard.win = win;
+      this.mutateKey("actualCard", actualCard);
       if (this.$store.state.app.fastMode) this.submitCard();
       else this.winSetted = true;
     },
