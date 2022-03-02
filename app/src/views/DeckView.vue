@@ -127,6 +127,6 @@ export default {
 }
 .summary {
   min-width: 200px;
-  max-width: 250px;
+  max-width: 200px;
 }
 </style>

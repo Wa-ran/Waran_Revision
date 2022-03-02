@@ -17,21 +17,23 @@
 <script>
 export default {
   name: "AsideAllCards",
-  data() {return {
-    hide: true,
-  }},
+  data() {
+    return {
+      hide: true,
+    };
+  },
   computed: {
     allCardsShowCheck() {
       return this.$store.state.app.allCardsShowCheck;
     },
     sequence() {
-      return this.$store.getters.actualDeck.sequence
+      return this.$store.getters.actualDeck.sequence;
     },
   },
   mounted() {
-    if (this.sequence) this.mutateApp('allCardsShowCheck', true)
-    else this.mutateApp('allCardsShowCheck', false)
+    if (this.sequence) this.mutateApp("allCardsShowCheck", true);
+    else this.mutateApp("allCardsShowCheck", false);
     this.hide = this.allCardsShowCheck;
-  }
+  },
 };
 </script>

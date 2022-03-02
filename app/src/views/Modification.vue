@@ -13,6 +13,9 @@ export default {
     NewCard: defineAsyncComponent(() =>
       import("@/components/forms/ModifCard.vue")
     ),
+    NewDeck: defineAsyncComponent(() =>
+      import("@/components/forms/ModifDeck.vue")
+    ),
     ModifCard: defineAsyncComponent(() =>
       import("@/components/forms/ModifCard.vue")
     ),

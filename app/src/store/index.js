@@ -88,7 +88,10 @@ export default createStore({
   },
   mutations: {
     mergeReservedCards(state) {
-      state.cardsToReviseBaseList = [ ...state.cardsToReviseBaseList, ...state.cardsToReviseReserved ];
+      state.cardsToReviseBaseList = [
+        ...state.cardsToReviseBaseList,
+        ...state.cardsToReviseReserved,
+      ];
     },
     mutateKey(state, payload) {
       let mutate = payload.sKey;
@@ -130,6 +133,13 @@ export default createStore({
         data: { card: this.state.actualCard },
       });
     },
+    async deleteDeck() {
+      await this.dispatch("APIRequest", {
+        method: "DELETE",
+        serverRoute: "/Deck",
+        data: { deck: this.getters.actualDeck },
+      });
+    },
     async getAllUserDecks() {
       await this.dispatch("APIRequest", {
         method: "GET",
@@ -162,17 +172,24 @@ export default createStore({
         mutate: "user",
       });
     },
-    async putCard() {
-      await this.dispatch("APIRequest", {
-        method: "PUT",
-        serverRoute: "/Card",
-        data: { card: this.state.actualCard },
-        mutate: "actualCard",
-      });
-    },
     async postCard() {
       await this.dispatch("APIRequest", {
         method: "POST",
+        serverRoute: "/Card",
+        data: { card: this.state.actualCard },
+      });
+    },
+    async postDeck(context, deck) {
+      await this.dispatch("APIRequest", {
+        method: "POST",
+        serverRoute: "/Deck",
+        data: { deck },
+        mutate: "deckList",
+      });
+    },
+    async putCard() {
+      await this.dispatch("APIRequest", {
+        method: "PUT",
         serverRoute: "/Card",
         data: { card: this.state.actualCard },
         mutate: "actualCard",

@@ -2,7 +2,10 @@
   <div>
     <router-view v-if="$route.name != 'Library'" />
     <div v-else class="d-flex justify-content-center flex-column">
-      <button type="button" class="btn btn-outline-primary mx-auto">
+      <button
+        @click="$router.push({ name: 'NewDeck' })"
+        class="btn btn-outline-primary mx-auto"
+      >
         Créer un nouveau Deck
       </button>
       <div

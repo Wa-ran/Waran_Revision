@@ -180,7 +180,7 @@ export default {
         }
       }, 200);
       setTimeout(() => {
-        int;      
+        int;
       });
     },
     setWin(win = null) {

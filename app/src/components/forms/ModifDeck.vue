@@ -19,7 +19,7 @@
         id="DeckText"
       ></textarea>
     </div>
-    <div class="d-flex">
+    <div class="d-flex flex-wrap">
       <div class="d-flex mt-2">
         <div>Aléatoire</div>
         <div class="form-check form-switch ms-2">
@@ -42,14 +42,37 @@
           :text="'<span class=\'bold\'>Aléatoire</span> <span class=\'italic\'>(défaut)</span> : les cartes seront révisées de manière aléatoire.</br><span class=\'bold\'>Séquencé</span> : les cartes seront révisées dans l\'ordre et auront le même niveau (utile pour apprendre un plan ou des suites d\'idées).'"
         />
       </div>
-      <div class="flex-grow-1">
+      <div class="d-flex flex-row justify-content-end ms-auto my-2 me-2 w-100">
+        <button
+          @click="$router.push({ name: 'Library' })"
+          type="button"
+          class="btn btn-primary h-fit py-1 mx-2"
+        >
+          Arrêter
+        </button>
         <button
           @click="submitForm"
           type="button"
-          class="btn btn-primary h-fit py-0 m-3 me-0 ms-5"
+          class="btn btn-primary h-fit py-1"
         >
           Valider
         </button>
+      </div>
+
+      <!-- Bouton supprimer -->
+      <div v-if="$store.getters.actualDeck" class="w-100">
+        <DoubleCheckButton @checkedClick="deleteDeck" class="btn ms-auto py-1">
+          <template v-slot:default>
+            <font-awesome-icon :icon="['fas', 'trash-alt']" />
+            <span class="ms-2 flex-grow-1">Supprimer le deck</span>
+          </template>
+          <template v-slot:checked>
+            <font-awesome-icon :icon="['fas', 'trash-alt']" />
+            <span class="ms-2 flex-grow-1"
+              >Supprimer ? &nbsp; Toutes les cartes seront perdues !</span
+            >
+          </template>
+        </DoubleCheckButton>
       </div>
     </div>
   </form>
@@ -64,7 +87,9 @@ export default {
         title: null,
         text: null,
         sequence: false,
+        user_id: this.$store.state.user.id,
       },
+      origDeck: {},
     };
   },
   props: {
@@ -75,20 +100,33 @@ export default {
       if (!this.deck.title) document.getElementById("DeckTitle").focus();
       else this.submitDeck();
     },
-    async submitDeck() {
-      await this.$store.dispatch("putDeck", this.deck).then(() => {
-        this.$router.push({ name: "DeckView" });
+    async deleteDeck() {
+      await this.$store.dispatch("deleteDeck").then(() => {
+        this.$router.push({ name: "Library" });
       });
+    },
+    async submitDeck() {
+      if (this.$store.getters.actualDeck) {
+        await this.$store.dispatch("putDeck", this.deck).then(() => {
+          this.$router.push({ name: "DeckView" });
+        });
+      } else {
+        await this.$store.dispatch("postDeck", this.deck).then(() => {
+          this.$router.push({ name: "Library" });
+        });
+      }
     },
     beforeExit() {
       this.mutateKey("formCompare", {
-        source: { ...this.$store.getters.actualDeck },
+        source: this.origDeck,
         modified: this.deck,
       });
     },
   },
   mounted() {
-    this.deck = { ...this.$store.getters.actualDeck };
+    if (this.$store.getters.actualDeck)
+      this.deck = { ...this.$store.getters.actualDeck };
+    this.origDeck = this.deck;
   },
   watch: {
     exit() {
@@ -97,3 +135,9 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+form {
+  max-width: 400px;
+}
+</style>

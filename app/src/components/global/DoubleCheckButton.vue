@@ -2,7 +2,7 @@
   <button
     @click.prevent="doubleCheck($event)"
     @blur="checked = false"
-    :class="checked ? 'btn-primary' : classDefault"
+    :class="checked ? classChecked : classDefault"
   >
     <slot v-if="!checked"></slot>
     <slot v-else name="checked">Confirmer ?</slot>
@@ -13,7 +13,14 @@
 export default {
   name: "DoubleCheckButton",
   props: {
-    classDefault: String,
+    classDefault: {
+      type: String,
+      default: "btn-danger",
+    },
+    classChecked: {
+      type: String,
+      default: "btn-danger",
+    },
   },
   data() {
     return {

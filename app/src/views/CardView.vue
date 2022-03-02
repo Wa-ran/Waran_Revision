@@ -1,7 +1,11 @@
 <template>
   <div class="container-fluid flex-grow-1">
     <!-- View -->
-    <router-view v-if="$route.name == 'ModifCard'" class="px-0" :key="actualCardChange" />
+    <router-view
+      v-if="$route.name == 'ModifCard'"
+      class="px-0"
+      :key="actualCardChange"
+    />
     <CardSummary v-else class="p-0" :key="actualCardChange" />
 
     <!-- Bouton supprimer -->

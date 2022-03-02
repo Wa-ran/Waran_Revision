@@ -47,7 +47,10 @@ export default {
   },
   watch: {
     actualCard() {
-      this.mutateApp("actualCardChange", this.$store.state.app.actualCardChange + 1)
+      this.mutateApp(
+        "actualCardChange",
+        this.$store.state.app.actualCardChange + 1
+      );
     },
     cardChronoCheck() {
       if (this.cardChronoCheck && !this.cardHideCheck)

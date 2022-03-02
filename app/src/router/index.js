@@ -69,6 +69,12 @@ const routes = [
               },
             ],
           },
+          {
+            path: "new-deck",
+            name: "NewDeck",
+            meta: { desc: "Création de deck" },
+            component: lazyLoad("views/Modification"),
+          },
         ],
       },
       {
