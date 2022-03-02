@@ -43,12 +43,11 @@
             @click="goToCard(item)"
             role="button"
             class="card bg-body border border-primary shadow h-fit p-2 text-center m-auto"
-            :style="
+            :class="
               allCardsShowCheck || new Date() - new Date(item.next_revision) > 0
                 ? ''
-                : 'display: none'
+                : 'hideIt'
             "
-            :key="allCardsShowCheck"
           >
             <div class="w-100 overflow-scroll">
               <div v-html="item.recto"></div>
@@ -85,15 +84,29 @@ export default {
   },
   mounted() {
     this.$store.dispatch("getAllUserCards");
-    setTimeout(() => {
-      let views = document.querySelectorAll(".card .view");
-      for (let view of views) {
-        if (view.scrollHeight < view.parentNode.scrollHeight + 30) {
-          view.style.marginTop =
-            (view.parentNode.scrollHeight - view.scrollHeight) / 2 + "px";
+    if (this.$store.getters.actualDeck.sequence) {
+      setTimeout(() => {
+        let views = document.querySelectorAll(".card .view");
+        for (let view of views) {
+          if (view.scrollHeight < view.parentNode.scrollHeight + 30) {
+            view.style.marginTop =
+              (view.parentNode.scrollHeight - view.scrollHeight) / 2 + "px";
+          }
         }
-      }
-    });
+      });
+    } else if (!this.allCardsShowCheck) {
+      const int = setInterval(() => {
+        let masonsHidden = document.querySelectorAll(".hideIt");
+        for (let hide of masonsHidden) {
+          hide.parentNode.nextSibling.style.marginTop = "-20px";
+        }
+        if (masonsHidden) clearInterval(int);
+      }, 100);
+      int;
+      setTimeout(() => {
+        clearInterval(int);
+      }, 1000);
+    }
   },
 };
 </script>
@@ -112,6 +125,15 @@ export default {
     width: auto;
     height: fit-content !important;
     border-width: 3px !important;
+  }
+}
+.hideIt {
+  margin: 0 !important;
+  height: 0 !important;
+  border: none !important;
+  padding: 0 !important;
+  & * {
+    display: none;
   }
 }
 </style>
