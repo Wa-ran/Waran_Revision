@@ -7,6 +7,7 @@ export default createStore({
     app: {
       // state
       actionDisconnect: false,
+      actualCardChange: 0,
       cardsListCharged: false,
       cardReviserCharged: false,
       deckSelected: false,
@@ -85,6 +86,9 @@ export default createStore({
     },
   },
   mutations: {
+    mergeReservedCards(state) {
+      state.cardsToReviseBaseList = [ ...state.cardsToReviseBaseList, ...state.cardsToReviseReserved ];
+    },
     mutateKey(state, payload) {
       let mutate = payload.sKey;
       delete payload.sKey;
@@ -108,6 +112,9 @@ export default createStore({
     },
   },
   actions: {
+    mutateStore(context, payload) {
+      context.commit(payload.fct, payload.value || null);
+    },
     reserveCard(context) {
       context.commit("mutateKey", {
         sKey: "cardsToReviseReserved",
@@ -159,6 +166,7 @@ export default createStore({
         method: "PUT",
         serverRoute: "/Card",
         data: { card: this.state.actualCard },
+        mutate: "actualCard",
       });
     },
     async postCard() {
@@ -189,9 +197,6 @@ export default createStore({
         if (!this.state.actualCard.id) return this.dispatch("postCard");
         else return this.dispatch("putCard");
       });
-    },
-    mutateStore(context, payload) {
-      context.commit(payload.fct, payload.value || null);
     },
     async APIRequest(context, req) {
       if (!this.state.error.pending) {

@@ -43,9 +43,12 @@ module.exports = async (req, res, next) => {
         // On enlève les doublons
         for (obj of object) {
           let alreadyExist = 0;
-          idList.push(obj.id);
-          for (id of idList) {
-            if (id == object.id) {
+          idList.push({
+            "id": obj.id,
+            "name": objName,
+          });
+          for (double of idList) {
+            if (double.id == object.id && double.name == object.name) {
               alreadyExist++;
             };
           };

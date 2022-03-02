@@ -14,7 +14,7 @@ const decrypt = (hash) => {
   try {
     const decipher = crypto.createDecipheriv(algorithm, secretKey, Buffer.from(iv, 'hex'));
     const decrpyted = Buffer.concat([decipher.update(Buffer.from(hash, 'hex')), decipher.final()]);
-    if (decrpyted.toString() === '') throw error
+    if (decrpyted.toString() === '' || decrpyted.toString() === '�') throw error
     return decrpyted.toString();
   } catch (error) {
     return hash

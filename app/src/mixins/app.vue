@@ -7,6 +7,9 @@ export default {
     };
   },
   computed: {
+    actualCard() {
+      return this.$store.state.actualCard;
+    },
     cardChronoCheck() {
       return this.$store.state.app.cardChronoCheck;
     },
@@ -18,6 +21,9 @@ export default {
     },
     cardHiderKey() {
       return this.$store.state.app.cardHiderKey;
+    },
+    cardReviserCharged() {
+      return this.$store.state.app.cardReviserCharged;
     },
     darkMode() {
       return this.$store.state.app.darkMode;
@@ -40,6 +46,9 @@ export default {
     if (!this.user.id) this.$router.push({ name: "Home" });
   },
   watch: {
+    actualCard() {
+      this.mutateApp("actualCardChange", this.$store.state.app.actualCardChange + 1)
+    },
     cardChronoCheck() {
       if (this.cardChronoCheck && !this.cardHideCheck)
         this.mutateApp("cardHideCheck", true);
@@ -52,6 +61,9 @@ export default {
     },
     cardsListCharged() {
       this.mutateKey("cardsToReviseReserved", []);
+    },
+    cardReviserCharged() {
+      this.mutateStore("mergeReservedCards");
     },
     darkMode() {
       if (this.storeReset && this.darkMode !== undefined) {

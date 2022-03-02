@@ -22,16 +22,28 @@ exports.getLastCard = async (req) => {
 };
 
 exports.postCard = async (req) => {
+  let resCard;
   if (Number.isInteger(req.card.id)) {
     throw "Id déjà existant"
   } else {
     await dtbFct.createCard(req)
+      .then(() => {
+        req.user = createObj("user", req.card.user_id);
+        resCard = this.getLastCard(req)
+      })
   }
+  return resCard
 };
 
 exports.putCard = async (req) => {
+  let resCard;
   req.card.updateCard();
-  await dtbFct.updateCard(req);
+  await dtbFct.updateCard(req)
+    .then(() => {
+      req.user = createObj("user", req.card.user_id);
+      resCard = this.getCard(req)
+    })
+  return resCard
 };
 
 exports.deleteCard = async (req) => {

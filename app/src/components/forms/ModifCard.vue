@@ -150,7 +150,7 @@
         />
 
         <span v-if="mixShowRevision(card)" class="italic"
-          >&nbsp;&nbsp;(révision ~ {{ mixShowRevision(card) }})</span
+          >&nbsp;&nbsp;(révision {{ mixShowRevision(card) }})</span
         >
       </div>
     </div>
@@ -194,7 +194,7 @@
 
       <div class="d-flex ms-auto">
         <button @click.prevent="annulForm" class="btn btn-primary w-fit py-1">
-          Annuler
+          Arrêter
         </button>
         <button
           @click.prevent="submitForm"

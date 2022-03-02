@@ -2,7 +2,7 @@ const dtbFct = require('./dtb');
 const createObj = require('./createObj');
 const { encrypt, decrypt } = require('../middlewares/crypto');
 
-// Don't forget to drop the triggers !!
+// For v.2 : don't forget to drop the triggers !!
 
 exports.commentUpdateAllCard = async () => {
   await dtbFct.selectAllCards()

@@ -162,7 +162,7 @@ export default {
   methods: {
     async handleSubmit() {
       if (this.actualCard.level === 0) {
-        return this.mutateStore("reserveCard");
+        return this.$store.dispatch("reserveCard");
       } else {
         await this.$store.dispatch("putCard").then(() => {
           return this.$store.dispatch("mutateStore", { fct: "removeCard" });
@@ -179,7 +179,9 @@ export default {
           clearInterval(int);
         }
       }, 200);
-      int;
+      setTimeout(() => {
+        int;      
+      });
     },
     setWin(win = null) {
       this.actualCard.win = win;

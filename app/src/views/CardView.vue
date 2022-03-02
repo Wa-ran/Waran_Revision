@@ -1,8 +1,8 @@
 <template>
   <div class="container-fluid flex-grow-1">
     <!-- View -->
-    <router-view v-if="$route.name == 'ModifCard'" class="px-0" />
-    <CardSummary v-else class="p-0" />
+    <router-view v-if="$route.name == 'ModifCard'" class="px-0" :key="actualCardChange" />
+    <CardSummary v-else class="p-0" :key="actualCardChange" />
 
     <!-- Bouton supprimer -->
     <DoubleCheckButton
@@ -39,6 +39,9 @@ export default {
   computed: {
     actualCard() {
       return this.$store.state.actualCard;
+    },
+    actualCardChange() {
+      return this.$store.state.app.actualCardChange;
     },
     positionSaved() {
       return this.$store.state.app.positionSaved;

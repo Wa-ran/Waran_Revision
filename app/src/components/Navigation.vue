@@ -27,7 +27,7 @@
     <button
       type="button"
       @click="resetStore"
-      class="btn btn-outline-primary h-fit ms-auto mb-auto mt-3 mb-md-0 mt-md-0"
+      class="btn btn-outline-primary h-fit align-self-start ms-auto mt-3 mb-lg-0 mt-lg-0"
     >
       Déconnexion
     </button>
