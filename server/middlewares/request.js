@@ -87,9 +87,9 @@ exports.getAllUserCards = async (req) => {
   return resList
 };
 
-exports.getAllCardsOnDeck = async (req) => {
+exports.getAllDeckCards = async (req) => {
   let resList = [];
-  await dtbFct.selectAllCardsOnDeck(req)
+  await dtbFct.selectAllDeckCards(req)
     .then((list) => {
       for (card of list) {
         let objCard = createObj("card", card);

@@ -11,13 +11,8 @@
 </template>
 
 <script>
-import Loader from "@/components/Loader.vue";
-
 export default {
   name: "CardChrono",
-  components: {
-    Loader,
-  },
   methods: {
     chrono() {
       let container = document.querySelector(".chrono");

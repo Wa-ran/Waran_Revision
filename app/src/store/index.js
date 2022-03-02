@@ -148,11 +148,11 @@ export default createStore({
         mutate: "decksList",
       });
     },
-    async getAllUserCards() {
+    async getAllDeckCards({ getters }) {
       await this.dispatch("APIRequest", {
         method: "GET",
-        serverRoute: "/AllUserCards",
-        data: "user/" + this.state.user.id,
+        serverRoute: "/AllDeckCards",
+        data: "deck/" + getters.actualDeck.id,
         mutate: "allCardsList",
       });
     },

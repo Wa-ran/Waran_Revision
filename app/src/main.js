@@ -51,8 +51,9 @@ import Hr from "@/components/global/Hr.vue";
 import Link from "@/components/global/Link.vue";
 import Title from "@/components/global/Title.vue";
 import ToolTip from "@/components/global/ToolTip.vue";
-import DoubleCheckButton from "@/components/global/DoubleCheckButton.vue";
 import ButtonTopRight from "@/components/global/ButtonTopRight.vue";
+import DoubleCheckButton from "@/components/global/DoubleCheckButton.vue";
+import Loader from "@/components/global/Loader.vue";
 
 library.add(
   faArrowLeft,
@@ -200,8 +201,9 @@ VueApp.component("cust-hr", Hr);
 VueApp.component("cust-a", Link);
 VueApp.component("cust-title", Title);
 VueApp.component("cust-tooltip", ToolTip);
-VueApp.component("DoubleCheckButton", DoubleCheckButton);
 VueApp.component("ButtonTopRight", ButtonTopRight);
+VueApp.component("DoubleCheckButton", DoubleCheckButton);
+VueApp.component("Loader", Loader);
 VueApp.use(store).use(router).use(VueMathjax).use(MasonryWall);
 
 VueApp.mount("#app");

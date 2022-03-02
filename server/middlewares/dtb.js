@@ -93,8 +93,8 @@ exports.selectAllUserCards = async (req) => {
   return await this.connect("SELECT JSON_OBJECT(" + this.jsonObj('card') + ") FROM cards WHERE user_id = " + req.user.id + ";");
 };
 
-exports.selectAllCardsOnDeck = async (req) => {
-  return await this.connect("SELECT JSON_OBJECT(" + this.jsonObj('card') + ") FROM cards WHERE cards.user_id = " + req.user.id + " AND cards.deck_id = " + req.deck.id + ";");
+exports.selectAllDeckCards = async (req) => {
+  return await this.connect("SELECT JSON_OBJECT(" + this.jsonObj('card') + ") FROM cards WHERE cards.deck_id = " + req.deck.id + ";");
 };
 
 exports.selectAllUserDecks = async (req) => {

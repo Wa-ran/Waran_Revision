@@ -30,9 +30,13 @@
       </div>
     </div>
 
-    <div v-else class="row justify-content-center">
+    <div
+      v-else-if="selectedList && selectedList.length > 0"
+      class="row justify-content-center"
+      :key="allCardsShowCheck"
+    >
       <masonry-wall
-        :items="$store.state.allCardsList"
+        :items="allCardsShowCheck ? allCardsList : selectedList"
         :column-width="250"
         :rtl="true"
         :gap="20"
@@ -43,11 +47,6 @@
             @click="goToCard(item)"
             role="button"
             class="card bg-body border border-primary shadow h-fit p-2 text-center m-auto"
-            :class="
-              allCardsShowCheck || new Date() - new Date(item.next_revision) > 0
-                ? ''
-                : 'hideIt'
-            "
           >
             <div class="w-100 overflow-scroll">
               <div v-html="item.recto"></div>
@@ -60,6 +59,21 @@
         </template>
       </masonry-wall>
     </div>
+
+    <div v-else class="text-center">
+      <div v-if="isLoading">
+        <Loader
+          :size="'4x'"
+          class="position-absolute"
+          :style="
+            isLoading
+              ? 'opacity: 1; transform: scale(1)'
+              : 'opacity: 0; transform: scale(0)'
+          "
+        />
+      </div>
+      <div v-else>Aucune carte à afficher.</div>
+    </div>
   </div>
 </template>
 
@@ -71,9 +85,19 @@ export default {
   components: {
     Card,
   },
+  data() {
+    return {
+      allCardsList: null,
+      selectedList: null,
+      isLoading: true,
+    };
+  },
   computed: {
     allCardsShowCheck() {
       return this.$store.state.app.allCardsShowCheck;
+    },
+    list() {
+      return this.$store.state.allCardsList;
     },
   },
   methods: {
@@ -82,31 +106,39 @@ export default {
       this.$router.push({ name: "CardView", params: { card: card.id } });
     },
   },
-  mounted() {
-    this.$store.dispatch("getAllUserCards");
-    if (this.$store.getters.actualDeck.sequence) {
-      setTimeout(() => {
-        let views = document.querySelectorAll(".card .view");
-        for (let view of views) {
-          if (view.scrollHeight < view.parentNode.scrollHeight + 30) {
-            view.style.marginTop =
-              (view.parentNode.scrollHeight - view.scrollHeight) / 2 + "px";
+  async mounted() {
+    await this.$store.dispatch("getAllDeckCards").then(() => {
+      if (this.$store.getters.actualDeck.sequence) {
+        setTimeout(() => {
+          let views = document.querySelectorAll(".card .view");
+          for (let view of views) {
+            if (view.scrollHeight < view.parentNode.scrollHeight + 30) {
+              view.style.marginTop =
+                (view.parentNode.scrollHeight - view.scrollHeight) / 2 + "px";
+            }
           }
-        }
-      });
-    } else if (!this.allCardsShowCheck) {
-      const int = setInterval(() => {
-        let masonsHidden = document.querySelectorAll(".hideIt");
-        for (let hide of masonsHidden) {
-          hide.parentNode.nextSibling.style.marginTop = "-20px";
-        }
-        if (masonsHidden) clearInterval(int);
-      }, 100);
-      int;
-      setTimeout(() => {
-        clearInterval(int);
-      }, 1000);
-    }
+        });
+      } else {
+        const int = setInterval(() => {
+          if (this.list.length > 0) {
+            this.allCardsList = [...this.list];
+            this.selectedList = this.allCardsList.filter(
+              (card) => new Date() - new Date(card.next_revision) > 0
+            );
+            clearInterval(int);
+            this.isLoading = false;
+          }
+        }, 100);
+        int;
+        setTimeout(() => {
+          if (this.isLoading == true) {
+            clearInterval(int);
+            this.isLoading = false;
+          }
+        }, 1000);
+      }
+      return;
+    });
   },
 };
 </script>
@@ -125,15 +157,6 @@ export default {
     width: auto;
     height: fit-content !important;
     border-width: 3px !important;
-  }
-}
-.hideIt {
-  margin: 0 !important;
-  height: 0 !important;
-  border: none !important;
-  padding: 0 !important;
-  & * {
-    display: none;
   }
 }
 </style>

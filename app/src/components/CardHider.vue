@@ -41,14 +41,12 @@
 <script>
 import Card from "@/components/Card.vue";
 import Doodle from "@/components/Doodle.vue";
-import Loader from "@/components/Loader.vue";
 
 export default {
   name: "CardHider",
   components: {
     Card,
     Doodle,
-    Loader,
   },
   data() {
     return {

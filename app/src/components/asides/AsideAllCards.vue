@@ -1,16 +1,21 @@
 <template>
-  <div v-if="!sequence" class="form-check position-absolute ms-3">
-    <input
-      v-model="hide"
-      class="form-check-input"
-      type="checkbox"
-      id="allCardsShowCheck"
-      tabindex="1"
-      @click="mutateApp('allCardsShowCheck', !allCardsShowCheck)"
-    />
-    <label class="form-check-label text-nowrap" for="allCardsShowCheck">
-      Afficher les cartes à réviser
-    </label>
+  <div class="position-absolute mt-2 mt-md-0 w-100">
+    <div
+      v-if="!sequence"
+      class="form-check text-primary w-fit mx-auto ms-md-3 ms-auto"
+    >
+      <input
+        v-model="hide"
+        class="form-check-input"
+        type="checkbox"
+        id="allCardsShowCheck"
+        tabindex="1"
+        @click="mutateApp('allCardsShowCheck', !allCardsShowCheck)"
+      />
+      <label class="form-check-label text-nowrap" for="allCardsShowCheck">
+        Afficher les cartes à réviser
+      </label>
+    </div>
   </div>
 </template>
 
@@ -37,3 +42,9 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.form-check {
+  font-size: 0.9rem;
+}
+</style>
