@@ -10,8 +10,9 @@
 
     <!-- Bouton supprimer -->
     <DoubleCheckButton
+      v-if="actualCard.id"
       @checkedClick="deleteCard"
-      class="btn ms-auto mt-2 me-n2"
+      class="btn ms-auto mt-2"
       :classDefault="'btn-danger'"
     >
       <template v-slot:default>

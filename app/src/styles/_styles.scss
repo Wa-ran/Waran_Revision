@@ -133,6 +133,24 @@ input:not([type="text"]) {
 }
 
 // custom
+$colors: (
+  "cust_red" red,
+  "cust_orange" orange,
+  "cust_yellow" yellow,
+  "cust_green" limegreen,
+  "cust_blue" dodgerblue
+);
+
+@each $name, $color in $colors {
+  .#{$name} {
+    color: $color !important;
+    &.btn:hover,
+    &.btn:focus {
+      background-color: $color !important;
+    }
+  }
+}
+
 .above {
   z-index: 1500;
 }
@@ -153,6 +171,9 @@ input:not([type="text"]) {
 }
 .underline {
   text-decoration: underline;
+}
+.linethrough {
+  text-decoration: line-through;
 }
 .link-current {
   color: currentColor !important;

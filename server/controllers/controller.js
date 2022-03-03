@@ -73,6 +73,7 @@ module.exports = async (req, res, next) => {
     };
   })
     // .then(() => global.commentUpdateAllCard())
+    // .then(() => global.textUpdateAllCard())
     .then(() => requestFct[fctName](data))
     .then((response) => {
       if (response) {

@@ -64,7 +64,6 @@
       <div v-if="isLoading">
         <Loader
           :size="'4x'"
-          class="position-absolute"
           :style="
             isLoading
               ? 'opacity: 1; transform: scale(1)'

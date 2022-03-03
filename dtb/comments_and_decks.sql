@@ -3,17 +3,14 @@ USE waran_revision;
 DROP TRIGGER IF EXISTS after_insert_cards;
 DROP TRIGGER IF EXISTS after_update_cards;
 
-ALTER TABLE cards ADD deck_id BIGINT UNSIGNED NOT NULL;
-ALTER TABLE cards ADD comment TEXT;
-ALTER TABLE users ADD hide_card TINYINT(1) DEFAULT '1';
-ALTER TABLE users ADD chrono_card TINYINT(1) DEFAULT '1';
-ALTER TABLE users ADD fast_mode TINYINT(1) DEFAULT '1';
-ALTER TABLE users ADD dark_mode TINYINT(1) DEFAULT NULL;
+ALTER TABLE cards ADD deck_id BIGINT UNSIGNED NOT NULL, ADD comment TEXT;
+ALTER TABLE users ADD hide_card TINYINT(1) DEFAULT '1', ADD chrono_card TINYINT(1) DEFAULT '1', ADD fast_mode TINYINT(1) DEFAULT '1', ADD dark_mode TINYINT(1) DEFAULT NULL;
 
 SET SQL_SAFE_UPDATES = 0;
 
 UPDATE cards SET comment = CONCAT(COALESCE(recto_comment, ''), '_', COALESCE(verso_comment, ''));
 UPDATE cards SET comment = NULL WHERE comment = '_';
+ALTER TABLE cards DROP recto_comment, DROP verso_comment;
 
 SET SQL_SAFE_UPDATES = ON;
 

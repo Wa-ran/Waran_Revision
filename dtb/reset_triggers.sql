@@ -5,9 +5,14 @@ DROP TRIGGER IF EXISTS after_update_cards;
 
 DELIMITER ;;
 CREATE TRIGGER `after_insert_cards` AFTER INSERT ON `cards` FOR EACH ROW BEGIN
-	
+
 	DECLARE last_user_revision_date datetime;
 	DECLARE last_user_revision_id bigint unsigned;
+
+	DECLARE CONTINUE HANDLER FOR 1292
+		BEGIN
+			INSERT INTO revisions (user_id, date) VALUES (NEW.user_id, NOW());
+		END;
     
 	SELECT MAX(date)
         INTO last_user_revision_date
@@ -16,7 +21,7 @@ CREATE TRIGGER `after_insert_cards` AFTER INSERT ON `cards` FOR EACH ROW BEGIN
     
     IF 	(SELECT COUNT(*)
 			FROM revisions
-            WHERE (user_id = NEW.user_id) AND (TIMEDIFF(NOW(), last_user_revision_date) < "0000-00-00 01:00:00"))
+            WHERE (user_id = NEW.user_id) AND (TIMEDIFF(NOW(), last_user_revision_date) < "01:00:00"))
 		= 0
 		THEN BEGIN 
 			INSERT INTO revisions (user_id, date) VALUES (NEW.user_id, NOW());
@@ -46,9 +51,14 @@ CREATE TRIGGER `after_insert_cards` AFTER INSERT ON `cards` FOR EACH ROW BEGIN
 END ;;
 
 CREATE TRIGGER `after_update_cards` AFTER UPDATE ON `cards` FOR EACH ROW BEGIN
-	
+
 	DECLARE last_user_revision_date datetime;
 	DECLARE last_user_revision_id bigint unsigned;
+
+	DECLARE CONTINUE HANDLER FOR 1292
+		BEGIN
+			INSERT INTO revisions (user_id, date) VALUES (NEW.user_id, NOW());
+		END;
     
 	SELECT MAX(date)
         INTO last_user_revision_date
@@ -57,7 +67,7 @@ CREATE TRIGGER `after_update_cards` AFTER UPDATE ON `cards` FOR EACH ROW BEGIN
     
     IF 	(SELECT COUNT(*)
 			FROM revisions
-            WHERE (user_id = NEW.user_id) AND (TIMEDIFF(NOW(), last_user_revision_date) < "0000-00-00 01:00:00"))
+            WHERE (user_id = NEW.user_id) AND (TIMEDIFF(NOW(), last_user_revision_date) < "01:00:00"))
 		= 0
 		THEN BEGIN 
 			INSERT INTO revisions (user_id, date) VALUES (NEW.user_id, NOW());

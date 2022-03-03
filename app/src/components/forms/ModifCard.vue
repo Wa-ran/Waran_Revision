@@ -32,7 +32,7 @@
             class="form-check-input"
             type="checkbox"
             id="recto_formula"
-            @click="crad.recto_formula"
+            @click="card.recto_formula"
           />
           <label class="form-check-label italic" for="recto_formula">
             Ecrire une formule
@@ -193,14 +193,19 @@
       </button>
 
       <div class="d-flex ms-auto">
-        <button @click.prevent="annulForm" class="btn btn-primary w-fit py-1">
-          Arrêter
-        </button>
         <button
+          v-if="modif"
           @click.prevent="submitForm"
-          class="btn btn-primary w-fit py-1 ms-2"
+          class="btn btn-primary w-fit py-1"
         >
           Valider
+        </button>
+        <button
+          @click.prevent="annulForm"
+          class="btn w-fit ms-2 py-1"
+          :class="modif ? 'btn-primary' : 'btn-outline-primary'"
+        >
+          Terminer
         </button>
       </div>
     </div>
@@ -219,13 +224,18 @@ export default {
   data() {
     return {
       card: {},
+      change: 0,
       options: false,
+      modif: false,
     };
   },
   computed: {
     actualCard() {
       if (this.$route.name === "NewCard") return this.$store.state.newCard;
       else return this.$store.state.actualCard;
+    },
+    cardChange() {
+      return JSON.stringify(this.card);
     },
   },
   methods: {
@@ -259,6 +269,11 @@ export default {
       this.card.deck_id = this.$store.getters.actualDeck.id; // new card
   },
   watch: {
+    cardChange() {
+      if (JSON.stringify(this.card) != JSON.stringify(this.actualCard))
+        this.modif = true;
+      else this.modif = false;
+    },
     options() {
       if (this.options) this.selectDeck();
     },

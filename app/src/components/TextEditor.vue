@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div v-show="focus" class="editorOptions">
+    <div class="editorOptions">
       <div>
         <button
           @click.prevent="normalContent"
@@ -27,14 +27,16 @@
           <font-awesome-icon :icon="['fas', 'underline']" />
         </button>
         <button
-          @click.prevent="editContent('<del>', '</del>')"
+          @click.prevent="
+            editContent('<span class=\'linethrough\'>', '</span>')
+          "
           class="btn btn-outline-primary bg-body"
         >
           <font-awesome-icon :icon="['fas', 'strikethrough']" />
         </button>
       </div>
 
-      <div v-show="focus">
+      <div>
         <button
           class="color cust_red btn btn-outline-primary bg-body"
           @click.prevent="editContent('<span class=\'cust_red\'>', '</span>')"
@@ -72,7 +74,7 @@
       </div>
     </div>
 
-    <div v-if="focus" class="undo">
+    <div class="undo">
       <button
         class="resetButton btn btn-outline-primary bg-body"
         @click.prevent="resetText"
@@ -92,15 +94,10 @@
     <div class="editorArea border border-primary rounded">
       <div
         class="contentEditable text-center"
-        :class="focus ? '' : 'py-3'"
         v-html="textarea"
         contenteditable="true"
-        @focus="focus = !focus"
-        @blur="
-          focus = !focus;
-          validModif(true);
-        "
         @keydown.tab="tabHandle"
+        :id="randomNum"
       ></div>
     </div>
   </div>
@@ -116,15 +113,22 @@ export default {
   data() {
     return {
       contEdit: null,
-      focus: false,
       modifsHist: [],
       textarea: "",
       randomNum: null,
+      timer: null,
     };
   },
   methods: {
     wrapContent() {
       let selection = window.getSelection();
+      if (
+        selection.baseNode.id &&
+        selection.baseNode.id !== this.randomNum &&
+        selection.baseNode.parentNode.id &&
+        selection.baseNode.parentNode.id !== this.randomNum
+      )
+        throw Error;
 
       let startNode = selection.anchorNode;
       let startOffset = selection.anchorOffset;
@@ -190,10 +194,19 @@ export default {
       text.innerHTML = text.textContent;
     },
     validModif() {
-      let cardModif = this.lastOptiContent();
-      this.$emit("validModif", cardModif);
+      clearTimeout(this.timer);
+      this.timer = setTimeout(() => {
+        let cardModif = this.lastOptiContent();
+        this.$emit("validModif", cardModif);
+      }, 500);
     },
     optiContent() {
+      let useless = document.querySelectorAll(
+        ".contentEditable span:not([class])"
+      );
+      for (let span of useless) {
+        span.replaceWith(span.textContent);
+      }
       return this.contEdit.innerHTML
         .replace(/<div>/, "<br>")
         .replace(/<\/div>/, "")
@@ -229,8 +242,10 @@ export default {
         this.modifsHist.pop();
         this.contEdit.innerHTML = this.modifsHist.pop();
       }
+      this.validModif();
     },
     saveChange() {
+      this.validModif();
       if (
         this.modifsHist.length == 0 ||
         this.modifsHist[this.modifsHist.length - 1].length !=
@@ -281,24 +296,6 @@ export default {
 <style lang="scss" scoped>
 @import "@/styles/_variables.scss";
 
-$colors: (
-  "cust_red" red,
-  "cust_orange" orange,
-  "cust_yellow" yellow,
-  "cust_green" limegreen,
-  "cust_blue" dodgerblue
-);
-
-@each $name, $color in $colors {
-  .#{$name} {
-    color: $color !important;
-    &:hover,
-    &:focus {
-      background-color: $color !important;
-    }
-  }
-}
-
 button {
   z-index: 10;
   color: $primary;
@@ -332,7 +329,7 @@ button {
 .undo {
   position: absolute;
   top: 0.25rem;
-  right: -0.5rem;
+  right: -1rem;
   z-index: 10;
   & > button {
     margin-left: auto;
