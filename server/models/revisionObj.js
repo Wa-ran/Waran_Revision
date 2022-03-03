@@ -71,4 +71,8 @@ module.exports = class revisionObj {
     else if (val == 1) return true;
     else return false;
   }
+
+  beforeSend() {
+    return this;
+  };
 }

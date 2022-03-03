@@ -84,14 +84,14 @@ module.exports = async (req, res, next) => {
             if (method === 'get' && !verifIdByToken(obj)) {
               throw 'Token invalide'
             };
-            result.push(obj);
+            result.push(obj.beforeSend());
           };
         }
         else {
           if (method === 'get' && !verifIdByToken(response)) {
             throw 'Token invalide'
           };
-          result = response;
+          result = response.beforeSend();
         }
 
         res.send(result)

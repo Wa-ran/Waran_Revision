@@ -25,11 +25,8 @@ module.exports = class User extends revisionObj {
   };
 
   beforeSend() {
-    let token = this.token;
-    delete this.token;
     delete this.password;
     super.beforeSend();
-    this['token'] = token;
     return this;
   };
 
