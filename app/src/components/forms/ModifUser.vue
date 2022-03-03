@@ -139,10 +139,7 @@ export default {
     async submitUser() {
       await this.$store
         .dispatch("putUser", this.user)
-        .then(() => {
-          this.mutateKey("user", { ...this.user });
-        })
-        .then(() => this.$router.push({ name: "Profil" }))
+        .then(() => this.mutateKey("user", this.user))
         .then(() => this.change++);
     },
     verifEmpty() {

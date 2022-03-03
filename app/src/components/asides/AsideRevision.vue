@@ -1,16 +1,16 @@
 <template>
   <div class="container-fluid p-0 mb-n5">
-    <Options />
+    <OptionsRevisions />
   </div>
 </template>
 
 <script>
-import Options from "@/components/Options";
+import OptionsRevisions from "@/components/OptionsRevisions";
 
 export default {
   name: "AsideRevision",
   components: {
-    Options,
+    OptionsRevisions,
   },
 };
 </script>

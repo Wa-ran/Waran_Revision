@@ -194,16 +194,16 @@
 
       <div class="d-flex ms-auto">
         <button
-          v-if="modif"
           @click.prevent="submitForm"
-          class="btn btn-primary w-fit py-1"
+          class="btn w-fit py-1"
+          :class="modif ? 'btn-primary' : 'btn-outline-primary disabled'"
         >
           Valider
         </button>
         <button
           @click.prevent="annulForm"
           class="btn w-fit ms-2 py-1"
-          :class="modif ? 'btn-primary' : 'btn-outline-primary'"
+          :class="modif ? 'btn-outline-primary' : 'btn-primary'"
         >
           Terminer
         </button>
@@ -254,6 +254,7 @@ export default {
       this.mutateKey("actualCard", this.card);
       await this.$store
         .dispatch("submitCard")
+        .then(() => console.log("coucou"))
         .then(() => this.$router.push({ name: "CardView" }));
     },
     beforeExit() {
@@ -265,8 +266,10 @@ export default {
   },
   mounted() {
     this.card = { ...this.actualCard };
+    // new card
+    if (!this.card.user_id) this.card.user_id = this.$store.state.user.id;
     if (!this.card.deck_id)
-      this.card.deck_id = this.$store.getters.actualDeck.id; // new card
+      this.card.deck_id = this.$store.getters.actualDeck.id;
   },
   watch: {
     cardChange() {

@@ -198,7 +198,7 @@ export default {
       this.timer = setTimeout(() => {
         let cardModif = this.lastOptiContent();
         this.$emit("validModif", cardModif);
-      }, 500);
+      }, 200);
     },
     optiContent() {
       let useless = document.querySelectorAll(

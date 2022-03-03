@@ -76,7 +76,9 @@ export default {
         password: this.password,
       });
 
-      await this.$store.dispatch("getUserByPseudo");
+      await this.$store
+        .dispatch("getUserByPseudo")
+        .then(() => this.$router.push({ name: "Library" }));
       this.$emit("close");
       this.autofill = 0;
     },

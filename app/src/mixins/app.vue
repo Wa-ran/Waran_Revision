@@ -88,7 +88,6 @@ export default {
     },
     user() {
       if (this.user.id) {
-        this.$router.push({ name: "Library" });
         this.mutateKey("app", {
           cardHideCheck: this.user.hide_card,
           cardChronoCheck: this.user.chrono_card,

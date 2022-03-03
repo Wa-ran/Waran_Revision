@@ -54,6 +54,7 @@ import ToolTip from "@/components/global/ToolTip.vue";
 import ButtonTopRight from "@/components/global/ButtonTopRight.vue";
 import DoubleCheckButton from "@/components/global/DoubleCheckButton.vue";
 import Loader from "@/components/global/Loader.vue";
+import Options from "@/components/global/Options.vue";
 
 library.add(
   faArrowLeft,
@@ -204,6 +205,7 @@ VueApp.component("cust-tooltip", ToolTip);
 VueApp.component("ButtonTopRight", ButtonTopRight);
 VueApp.component("DoubleCheckButton", DoubleCheckButton);
 VueApp.component("Loader", Loader);
+VueApp.component("Options", Options);
 VueApp.use(store).use(router).use(VueMathjax).use(MasonryWall);
 
 VueApp.mount("#app");

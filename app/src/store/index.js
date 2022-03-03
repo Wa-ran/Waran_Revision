@@ -192,7 +192,6 @@ export default createStore({
         method: "PUT",
         serverRoute: "/Card",
         data: { card: this.state.actualCard },
-        mutate: "actualCard",
       });
     },
     async putDeck({ getters }, deck) {
@@ -211,10 +210,8 @@ export default createStore({
       });
     },
     async submitCard() {
-      await new Promise(() => {
-        if (!this.state.actualCard.id) return this.dispatch("postCard");
-        else return this.dispatch("putCard");
-      });
+      if (!this.state.actualCard.id) await this.dispatch("postCard");
+      else await this.dispatch("putCard");
     },
     async APIRequest(context, req) {
       if (!this.state.error.pending) {
