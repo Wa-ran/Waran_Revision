@@ -1,5 +1,5 @@
 <template>
-  <div class="btn-group dropend">
+  <div class="btn-group dropdown">
     <button
       class="nav-link dropdown-toggle"
       type="button"
@@ -10,23 +10,38 @@
       {{ btnText }}
     </button>
     <div
-      class="dropdown-menu dropdown-menu-dark bg-dark border border-primary w-fit mt-2"
+      class="dropdown-menu dropdown-menu-dark bg-dark border border-primary mt-2 ms-3"
       aria-labelledby="dropdownMenuButton2"
     >
       <div class="px-3">
-        <slot></slot>
+        <div
+          v-for="(option, index) of optionsList"
+          :key="index"
+          class="form-check"
+        >
+          <CheckInput :appKey="option.appKey" :desc="option.desc" />
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import CheckInput from "@/components/global/CheckInput.vue";
+
 export default {
   name: "Options",
+  components: {
+    CheckInput,
+  },
   props: {
     btnText: {
       type: String,
       default: "Options",
+    },
+    optionsList: {
+      type: Array,
+      default: () => [],
     },
   },
 };
@@ -37,8 +52,9 @@ button:not(:focus),
 button:focus-within {
   box-shadow: none !important;
 }
-label {
+.dropdown-menu {
   width: max-content;
+  max-width: 90vw;
 }
 .form-check {
   font-size: 0.9rem;

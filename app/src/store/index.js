@@ -23,6 +23,7 @@ export default createStore({
       fastMode: true,
       formVerif: true,
       randomCardPick: true,
+      windowSize: null,
     },
 
     // card

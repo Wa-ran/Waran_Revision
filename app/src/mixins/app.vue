@@ -38,7 +38,21 @@ export default {
       return this.$store.state.user;
     },
   },
+  methods: {
+    windowSize() {
+      let size = window.innerWidth;
+      if (size < 576) size = "xs";
+      else if (size < 768) size = "sm";
+      else if (size < 992) size = "md";
+      else if (size < 1200) size = "lg";
+      else if (size < 1400) size = "xl";
+      else size = "xxl";
+      this.mutateApp("windowSize", size);
+    },
+  },
   mounted() {
+    this.windowSize();
+    window.addEventListener("resize", this.windowSize());
     setTimeout(() => {
       // wait for user preferences (darkMode)
       this.storeReset = { ...this.$store.state };
