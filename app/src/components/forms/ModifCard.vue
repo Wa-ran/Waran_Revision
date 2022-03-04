@@ -227,6 +227,7 @@ export default {
       change: 0,
       options: false,
       modif: false,
+      submitted: false,
     };
   },
   computed: {
@@ -252,10 +253,14 @@ export default {
     },
     async submitForm() {
       this.mutateKey("actualCard", this.card);
-      await this.$store
-        .dispatch("submitCard")
-        .then(() => console.log("coucou"))
-        .then(() => this.$router.push({ name: "CardView" }));
+      await this.mixHandleSubmit()
+        .then(() => (this.submitted = true))
+        .then(() =>
+          this.$router.push({
+            name: "CardView",
+            params: { card: this.$store.state.actualCard.id },
+          })
+        );
     },
     beforeExit() {
       this.mutateKey("formCompare", {
@@ -273,7 +278,10 @@ export default {
   },
   watch: {
     cardChange() {
-      if (JSON.stringify(this.card) != JSON.stringify(this.actualCard))
+      if (
+        !this.submitted &&
+        JSON.stringify(this.card) !== JSON.stringify(this.actualCard)
+      )
         this.modif = true;
       else this.modif = false;
     },

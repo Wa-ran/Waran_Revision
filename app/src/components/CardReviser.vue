@@ -131,6 +131,7 @@
 import Card from "@/components/Card";
 import CardChrono from "@/components/CardChrono";
 import CardHider from "@/components/CardHider";
+import card from "@/mixins/card";
 
 export default {
   name: "revision",
@@ -160,15 +161,6 @@ export default {
     },
   },
   methods: {
-    async handleSubmit() {
-      if (this.actualCard.level === 0) {
-        return this.$store.dispatch("reserveCard");
-      } else {
-        await this.$store.dispatch("putCard").then(() => {
-          return this.$store.dispatch("mutateStore", { fct: "removeCard" });
-        });
-      }
-    },
     setActualCard() {
       this.mutateApp("cardReviserCharged", false);
       const int = setInterval(() => {
@@ -191,7 +183,7 @@ export default {
       else this.winSetted = true;
     },
     async submitCard() {
-      await this.handleSubmit().then(() => this.$emit("submitted"));
+      await this.mixHandleSubmit().then(() => this.$emit("submitted"));
     },
   },
   async mounted() {
@@ -205,6 +197,7 @@ export default {
       this.chrono = false;
     },
   },
+  mixins: [card],
 };
 </script>
 

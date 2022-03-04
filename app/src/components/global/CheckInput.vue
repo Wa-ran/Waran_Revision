@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="form-check">
     <input
       v-model="check"
       class="form-check-input"
@@ -7,7 +7,11 @@
       id="checkInput"
       tabindex="1"
     />
-    <label class="form-check-label text-white" for="checkInput">
+    <label
+      @click.prevent="check = !check"
+      class="form-check-label text-white"
+      for="checkInput"
+    >
       {{ desc }}
     </label>
   </div>

@@ -23,7 +23,7 @@ export default {
         case "AllCards":
           return "Revenir à la liste de cartes";
         default:
-          return null;
+          return "Voir le deck";
       }
     },
   },

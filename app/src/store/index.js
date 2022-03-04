@@ -98,6 +98,7 @@ export default createStore({
     },
     mutateKey(state, payload) {
       let mutate = payload.sKey;
+      console.log(mutate);
       delete payload.sKey;
       if (Array.isArray(state[mutate]) && !Array.isArray(payload.body)) {
         if (state[mutate].length > 0) {
@@ -167,6 +168,14 @@ export default createStore({
         mutate: "cardsToReviseBaseList",
       });
     },
+    async getLastUserCard() {
+      await this.dispatch("APIRequest", {
+        method: "GET",
+        serverRoute: "/LastUserCard",
+        data: "user/" + this.state.user.id,
+        mutate: "actualCard",
+      });
+    },
     async getUserByPseudo() {
       await this.dispatch("APIRequest", {
         method: "POST",
@@ -231,7 +240,7 @@ export default createStore({
           form_data: req.form_data || false,
         })
           .then((response) => {
-            if (response) {
+            if (response && req.mutate) {
               let result = {};
               result["sKey"] = req.mutate;
               result["body"] = response;

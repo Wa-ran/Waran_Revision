@@ -6,6 +6,7 @@
       id="dropdownMenuButton2"
       data-bs-toggle="dropdown"
       aria-expanded="false"
+      data-bs-auto-close="outside"
     >
       {{ btnText }}
     </button>
@@ -14,13 +15,12 @@
       aria-labelledby="dropdownMenuButton2"
     >
       <div class="px-3">
-        <div
+        <CheckInput
           v-for="(option, index) of optionsList"
           :key="index"
-          class="form-check"
-        >
-          <CheckInput :appKey="option.appKey" :desc="option.desc" />
-        </div>
+          :appKey="option.appKey"
+          :desc="option.desc"
+        />
       </div>
     </div>
   </div>

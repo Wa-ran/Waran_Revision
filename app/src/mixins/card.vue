@@ -69,6 +69,20 @@ export default {
         );
       else return "d'ici le " + next.getDate() + "/" + (1 + next.getMonth());
     },
+    async mixHandleSubmit() {
+      await this.$store
+        .dispatch("submitCard")
+        .then(() => {
+          return this.$store.dispatch("getLastUserCard");
+        })
+        .then(() => {
+          if (this.actualCard.level === 0) {
+            return this.$store.dispatch("reserveCard");
+          } else {
+            return this.$store.dispatch("mutateStore", { fct: "removeCard" });
+          }
+        });
+    },
   },
 };
 </script>

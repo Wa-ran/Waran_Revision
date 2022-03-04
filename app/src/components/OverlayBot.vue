@@ -7,7 +7,12 @@
         class="d-flex w-fit bg-dark border border-2 border-primary rounded mx-auto p-2"
       >
         <button class="btn btn-success">Valider</button>
-        <button class="btn btn-primary ms-2">Annuler</button>
+        <button
+          @click="mutateApp('allCardsDeckCheck', false)"
+          class="btn btn-primary ms-2"
+        >
+          Annuler
+        </button>
       </div>
 
       <!-- AllCards Deletion -->
@@ -16,7 +21,12 @@
         class="d-flex w-fit bg-dark border border-2 border-primary rounded mx-auto p-2"
       >
         <button class="btn btn-danger">Supprimer</button>
-        <button class="btn btn-primary ms-2">Annuler</button>
+        <button
+          @click="mutateApp('allCardsDropCheck', false)"
+          class="btn btn-primary ms-2"
+        >
+          Annuler
+        </button>
       </div>
 
       <!-- scroll to top button  -->

@@ -12,7 +12,7 @@ exports.getCard = async (req) => {
   return resCard
 };
 
-exports.getLastCard = async (req) => {
+exports.getLastUserCard = async (req) => {
   let resCard;
   await dtbFct.selectLastUserCard(req)
     .then(dtbCard => {
