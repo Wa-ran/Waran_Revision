@@ -1,7 +1,7 @@
 <template>
   <div class="btn-group dropdown">
     <button
-      class="nav-link dropdown-toggle"
+      class="nav-link dropdown-toggle bg-dark border border-primary rounded mt-2 px-2 py-1"
       type="button"
       id="dropdownMenuButton2"
       data-bs-toggle="dropdown"

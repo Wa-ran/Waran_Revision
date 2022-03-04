@@ -1,8 +1,11 @@
 <template>
-  <header class="container-fluid dark shadow">
+  <header
+    class="container-fluid bg-dark shadow"
+    :class="darkMode ? 'dark' : 'light'"
+  >
     <nav
-      class="navbar navbar-expand-lg navbar-dark justify-content-end p-1"
-      :class="!user.id ? 'flex-nowrap' : ''"
+      class="navbar navbar-expand-lg justify-content-end p-1"
+      :class="navbarClasses"
     >
       <!-- User pseudo -->
       <div
@@ -80,6 +83,16 @@ export default {
     };
   },
   computed: {
+    darkMode() {
+      return this.$store.state.app.darkMode;
+    },
+    navbarClasses() {
+      let classes = "";
+      if (!this.user.id) classes += "flex-nowrap";
+      if (this.darkMode) classes += "navbar-dark";
+      else classes += "navbar-light";
+      return classes;
+    },
     title() {
       return this.$route.meta.desc;
     },

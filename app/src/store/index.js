@@ -9,6 +9,8 @@ export default createStore({
       actionDisconnect: false,
       actualCardChange: 0,
       allCardsShowCheck: false,
+      allCardsDeckCheck: false,
+      allCardsDropCheck: false,
       cardsListCharged: false,
       cardReviserCharged: false,
       deckSelected: false,
@@ -19,8 +21,8 @@ export default createStore({
       // check
       cardHideCheck: true,
       cardChronoCheck: true,
+      cardFastCheck: true,
       darkMode: false,
-      fastMode: true,
       formVerif: true,
       randomCardPick: true,
       windowSize: null,

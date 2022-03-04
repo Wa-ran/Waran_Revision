@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex ms-3">
-    <div class="text-yellow-600 has-icon">
+    <div class="text-yellow-500 has-icon">
       <font-awesome-icon :icon="['fas', 'sun']" />
     </div>
     <div class="form-check form-switch m-0 ms-2">
@@ -86,11 +86,11 @@ export default {
 input.form-check-input {
   box-shadow: none !important;
   &:not(:checked) {
-    border-color: $yellow-600;
+    border-color: $yellow-500;
     background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'><circle r='3' fill='%23ffc107'/></svg>") !important;
     &:hover,
     &:focus {
-      box-shadow: 0 0 0 0.25rem rgba($yellow-600, 0.3) !important;
+      box-shadow: 0 0 0 0.25rem rgba($yellow-500, 0.3) !important;
     }
   }
   &:checked {

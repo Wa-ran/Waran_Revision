@@ -58,7 +58,7 @@ button {
   &.has-icon {
     color: $primary;
     &:hover {
-      color: $body-bg;
+      color: $body-bg !important;
     }
   }
   &:not(.btn) {
@@ -190,8 +190,28 @@ $colors: (
 
 // Thememode
 .light {
+  --bs-dark-rgb: 239, 236, 233; //$gray-200
+  .bg-dark {
+    a:not(.active) {
+      color: $black !important;
+      &:hover, &:focus {
+        text-decoration: underline !important;
+      }
+    }
+    .text-primary {
+      color: $black !important;
+    }
+    .text-white {
+      color: $black !important;
+    }
+  }
   .text-primary {
     font-weight: bold;
+  }
+  .tooltip-inner {
+    background-color: rgba(var(--bs-dark-rgb), 1);
+    color: currentColor;
+    opacity: 1;
   }
 }
 

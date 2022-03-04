@@ -7,7 +7,7 @@
       id="checkInput"
       tabindex="1"
     />
-    <label class="form-check-label" for="checkInput">
+    <label class="form-check-label text-white" for="checkInput">
       {{ desc }}
     </label>
   </div>

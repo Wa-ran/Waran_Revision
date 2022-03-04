@@ -2,22 +2,26 @@
   <div
     class="homeContent position-fixed overflow-scroll container-fluid d-flex flex-column p-0 pb-5 h-100"
   >
-    <Header class="sticky-top border-bottom border-primary" />
+    <div class="sticky-top">
+      <Header class="border-bottom border-primary" />
+      <OverlayTop class="above position-absolute w-100" />
+    </div>
     <div
-      class="d-flex flex-column flex-md-row align-items-start flex-grow-1 h-fit pb-5"
+      class="d-flex flex-column flex-md-row align-items-start flex-grow-1 h-fit pb-5 pt-4"
     >
-      <aside class="above mt-md-3 w-100">
+      <aside class="mt-md-3 w-100">
         <Aside />
       </aside>
       <main
-        class="d-flex justify-content-center align-items-start h-fit mx-auto mt-1 px-md-3 py-md-3 w-100"
+        class="d-flex justify-content-center align-items-start h-fit mx-auto px-md-3 py-md-3 w-100"
       >
-        <ChangeLog v-if="$route.name == 'Home'" />
+        <ChangeLog v-if="$route.name == 'Home'" class="mt-n3" />
         <router-view v-else class="w-100" />
       </main>
-      <aside class="above mt-md-3 w-100">
+      <aside class="mt-md-3 w-100">
         <Aside2 />
       </aside>
+      <OverlayBot class="above fixed-bottom w-100 mb-5" />
     </div>
     <Footer class="border-top border-primary fixed-bottom" />
   </div>
@@ -30,6 +34,8 @@ import ChangeLog from "@/views/ChangeLog";
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import OverlayBot from "@/components/OverlayBot";
+import OverlayTop from "@/components/OverlayTop";
 
 export default {
   name: "Home",
@@ -39,6 +45,8 @@ export default {
     ChangeLog,
     Header,
     Footer,
+    OverlayBot,
+    OverlayTop,
   },
   created() {
     if (location.protocol == "https:") location.protocol = "http:";

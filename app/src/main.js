@@ -10,6 +10,7 @@ import { Collapse, Modal, Tooltip } from "bootstrap";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faArrowLeft,
+  faArrowUp,
   faBars,
   faBold,
   faCaretDown,
@@ -58,6 +59,7 @@ import Options from "@/components/global/Options.vue";
 
 library.add(
   faArrowLeft,
+  faArrowUp,
   faBars,
   faBold,
   faCaretDown,

@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
     <div
-      class="DeckView position-relative w-fit mx-auto px-sm-4 p-3"
+      class="DeckView position-relative w-fit mx-auto px-sm-4 p-3 pt-0"
       :class="$route.name === 'DeckView' ? 'border border-primary rounded' : ''"
     >
       <ButtonTopRight

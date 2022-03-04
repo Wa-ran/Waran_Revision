@@ -15,14 +15,6 @@
           class="nav-link"
         />
       </li>
-      <li class="nav-item">
-        <cust-a
-          :linkObj="{ name: 'Disabled' }"
-          :linkText="'Disabled'"
-          :disabled="true"
-          class="nav-link disabled"
-        />
-      </li>
     </ul>
     <button
       type="button"

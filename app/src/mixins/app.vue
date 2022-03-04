@@ -10,6 +10,12 @@ export default {
     actualCard() {
       return this.$store.state.actualCard;
     },
+    allCardsDeckCheck() {
+      return this.$store.state.app.allCardsDeckCheck;
+    },
+    allCardsDropCheck() {
+      return this.$store.state.app.allCardsDropCheck;
+    },
     cardChronoCheck() {
       return this.$store.state.app.cardChronoCheck;
     },
@@ -47,6 +53,7 @@ export default {
       else if (size < 1200) size = "lg";
       else if (size < 1400) size = "xl";
       else size = "xxl";
+      this.mutateApp("windowSize", "reactive");
       this.mutateApp("windowSize", size);
     },
   },
@@ -65,6 +72,16 @@ export default {
         "actualCardChange",
         this.$store.state.app.actualCardChange + 1
       );
+    },
+    allCardsDeckCheck() {
+      if (this.allCardsDeckCheck) {
+        this.mutateApp("allCardsDropCheck", false);
+      }
+    },
+    allCardsDropCheck() {
+      if (this.allCardsDropCheck) {
+        this.mutateApp("allCardsDeckCheck", false);
+      }
     },
     cardChronoCheck() {
       if (this.cardChronoCheck && !this.cardHideCheck)
@@ -105,9 +122,9 @@ export default {
         this.mutateKey("app", {
           cardHideCheck: this.user.hide_card,
           cardChronoCheck: this.user.chrono_card,
+          cardFastCheck: this.user.fast_mode,
           darkMode:
             this.user.dark_mode === null ? this.darkMode : this.user.dark_mode,
-          fastMode: this.user.fast_mode,
         });
       }
     },

@@ -1,5 +1,5 @@
 <template>
-  <Options :btnText="'Options de révisions'" :optionsList="optionsList" />
+  <Options :btnText="'Options'" :optionsList="optionsList" />
 </template>
 
 <script>
@@ -13,7 +13,7 @@ export default {
           desc: "Afficher les cartes à réviser",
         },
         {
-          appKey: "allCardsChangeDeck",
+          appKey: "allCardsDeckCheck",
           desc: "Transférer des cartes dans un autre deck",
         },
         {

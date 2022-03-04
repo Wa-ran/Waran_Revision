@@ -43,11 +43,11 @@
         class="form-check-input"
         type="checkbox"
         id="fast_mode"
-        @click="mutateApp('fastMode', $event)"
+        @click="mutateApp('cardFastCheck', $event)"
       />
       <label class="form-check-label ms-2" for="fast_mode"> Mode rapide </label>
       <cust-tooltip
-        :text="'Pendant les révisions, les cartes s\'enchaînent rapidement, <span class=\'bold\'>mais vous ne pouvez pas les modifiers</span>.'"
+        :text="'En révision les cartes s\'enchaîneront <span class=\'bold\'>rapidement</span>, sans pouvoir les modifier.'"
       />
     </div>
 

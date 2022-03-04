@@ -17,7 +17,7 @@ export default {
           desc: "Chronomètre",
         },
         {
-          appKey: "fastMode",
+          appKey: "cardFastCheck",
           desc: "Mode rapide",
         },
       ],
