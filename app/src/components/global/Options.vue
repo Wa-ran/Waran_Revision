@@ -20,6 +20,7 @@
           :key="index"
           :appKey="option.appKey"
           :desc="option.desc"
+          v-show="option"
         />
       </div>
     </div>

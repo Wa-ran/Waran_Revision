@@ -21,9 +21,9 @@
       <aside class="mt-md-3 w-100">
         <Aside2 />
       </aside>
-      <OverlayBot class="above fixed-bottom w-100 mb-5" />
+      <OverlayBot class="above fixed-bottom w-100 mx-auto mb-5" />
     </div>
-    <Footer class="border-top border-primary fixed-bottom" />
+    <Footer class="above border-top border-primary fixed-bottom" />
   </div>
 </template>
 

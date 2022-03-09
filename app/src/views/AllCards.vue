@@ -1,5 +1,5 @@
 <template>
-  <div class="w-100 mt-3">
+  <div class="allCards w-100 mt-3">
     <div
       v-if="$store.getters.actualDeck.sequence"
       class="d-flex flex-row justify-content-evenly flex-wrap w-100"
@@ -14,7 +14,11 @@
         >
           {{ index + 1 }}
         </div>
-        <Card :id="card.id" @click="goToCard(card)" role="button">
+        <Card
+          :id="card.id"
+          @click.capture="handleClick($event, card)"
+          role="button"
+        >
           <template #body>
             <div class="d-flex flex-column p-2 h-100 text-center">
               <div class="flex-grow-1 w-100 h-25 overflow-scroll">
@@ -38,13 +42,12 @@
       <masonry-wall
         :items="allCardsShowCheck ? allCardsList : selectedList"
         :column-width="250"
-        :rtl="true"
         :gap="20"
       >
         <template #default="{ item }">
           <div
             :id="item.id"
-            @click="goToCard(item)"
+            @click.capture="handleClick($event, item)"
             role="button"
             class="card bg-body border border-primary shadow h-fit p-2 text-center m-auto"
           >
@@ -89,20 +92,59 @@ export default {
       allCardsList: null,
       selectedList: null,
       isLoading: true,
+      test: [],
     };
   },
   computed: {
     allCardsShowCheck() {
       return this.$store.state.app.allCardsShowCheck;
     },
+    allCardsDeckCheck() {
+      return this.$store.state.app.allCardsDeckCheck;
+    },
+    allCardsDropCheck() {
+      return this.$store.state.app.allCardsDropCheck;
+    },
     list() {
       return this.$store.state.allCardsList;
     },
   },
   methods: {
-    goToCard(card) {
-      this.mutateKey("actualCard", card);
-      this.$router.push({ name: "CardView", params: { card: card.id } });
+    handleClick(event, card) {
+      if (this.allCardsDeckCheck || this.allCardsDropCheck) {
+        let deck = "bg-success";
+        let drop = "bg-danger";
+        let choice = this.allCardsDeckCheck ? deck : drop;
+        let other = this.allCardsDeckCheck ? drop : deck;
+        let elem = event.srcElement;
+        while (![...elem.classList].includes("card") || elem == document) {
+          elem = elem.parentNode;
+        }
+        elem.classList.remove(other);
+        this.mutateStore("removeListItem", {
+          list: "cardsReservedList",
+          item: card,
+        });
+        this.test = this.test.filter((item) => item.id !== card.id);
+        if (elem.classList.contains(choice)) elem.classList.remove(choice);
+        else {
+          elem.classList.add(choice);
+          this.test.push(card);
+          this.mutateKey("cardsReservedList", this.test);
+        }
+      } else {
+        this.mutateKey("actualCard", card);
+        this.$router.push({ name: "CardView", params: { card: card.id } });
+      }
+    },
+    dropSelected() {
+      this.test = [];
+      this.mutateKey("cardsReservedList", []);
+      let cards = document.querySelectorAll(".allCards .card");
+      for (let card of cards) {
+        card.classList.remove("bg-success");
+        card.classList.remove("bg-danger");
+      }
     },
   },
   async mounted() {
@@ -139,13 +181,40 @@ export default {
       return;
     });
   },
+  unmounted() {
+    this.mutateApp("allCardsDeckCheck", false);
+    this.mutateApp("allCardsDropCheck", false);
+    this.mutateKey("cardsReservedList", []);
+  },
+  watch: {
+    allCardsDeckCheck() {
+      this.dropSelected();
+    },
+    allCardsDropCheck() {
+      this.dropSelected();
+    },
+  },
 };
 </script>
 
 <style lang="scss" scoped>
+@import "@/styles/_variables.scss";
+
 .card {
   width: 250px;
   height: 250px;
+  &.bg-success {
+    background-color: $success !important;
+    &:not(:bg-body) {
+      color: $white !important;
+    }
+  }
+  &.bg-danger {
+    background-color: $danger !important;
+    &:not(:bg-body) {
+      color: $white !important;
+    }
+  }
 }
 .row {
   min-width: 85vw;

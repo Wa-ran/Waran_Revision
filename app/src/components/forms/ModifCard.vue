@@ -158,28 +158,7 @@
     <cust-hr class="w-25 my-3" />
 
     <!-- Deck -->
-    <div class="form-check d-flex align-items-center mt-2 p-0">
-      <div class="italic me-2">Deck :</div>
-      <select
-        class="form-select form-select-sm w-fit h-fit bg-body m-0"
-        aria-label="Transérer dans un autre deck"
-        aria-describedby="selectDeckDesc"
-        v-model="card.deck_id"
-      >
-        <option
-          v-for="deck of $store.state.decksList"
-          :key="deck.id"
-          :value="deck.id"
-        >
-          {{ deck.title }}
-        </option>
-      </select>
-      <cust-tooltip
-        id="selectDeckDesc"
-        class="mt-n4"
-        :text="'Choisissez à quel deck appartient la carte.'"
-      />
-    </div>
+    <SelectDeck @changeDeck="card.deck_id = $event.target.value" />
 
     <cust-hr class="w-25 my-3" />
 
@@ -214,12 +193,17 @@
 
 <script>
 import TextEditor from "@/components/TextEditor";
+import SelectDeck from "@/components/forms/components/SelectDeck";
 import card from "@/mixins/card";
 
 export default {
   name: "ModifCard",
   components: {
     TextEditor,
+    SelectDeck,
+  },
+  props: {
+    exit: Boolean,
   },
   data() {
     return {
@@ -252,15 +236,22 @@ export default {
       else this.$router.push({ name: "DeckView" });
     },
     async submitForm() {
-      this.mutateKey("actualCard", this.card);
-      await this.mixHandleSubmit()
+      let newCard = !this.card.id;
+      await this.mixHandleSubmit(this.card)
         .then(() => (this.submitted = true))
+        .then(() => this.$router.push({ name: "Library" }))
         .then(() =>
           this.$router.push({
             name: "CardView",
-            params: { card: this.$store.state.actualCard.id },
+            params: {
+              card: this.$store.state.actualCard.id,
+              deck: this.$store.state.actualCard.deck_id,
+            },
           })
-        );
+        )
+        .then(() => {
+          if (newCard) this.mutateApp("positionSaved", { name: "NewCard" });
+        });
     },
     beforeExit() {
       this.mutateKey("formCompare", {
@@ -284,6 +275,9 @@ export default {
       )
         this.modif = true;
       else this.modif = false;
+    },
+    exit() {
+      if (this.exit) this.beforeExit();
     },
     options() {
       if (this.options) this.selectDeck();

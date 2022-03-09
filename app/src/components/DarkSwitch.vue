@@ -9,8 +9,9 @@
         type="checkbox"
         role="switch"
         id="darkMode"
-        @change="toogleDarkMode"
+        @click="mutateApp('darkMode', $event.target.checked)"
         tabindex="0"
+        v-model="appDarkMode"
       />
       <label class="form-check-label aria-only" for="darkMode"
         >Activer le mode nuit</label
@@ -33,42 +34,6 @@ export default {
   computed: {
     appDarkMode() {
       return this.$store.state.app.darkMode;
-    },
-  },
-  methods: {
-    toogleDarkMode(event) {
-      if (
-        (event && event.target.checked) ||
-        (!event &&
-          window.matchMedia &&
-          window.matchMedia("(prefers-color-scheme: dark)").matches)
-      ) {
-        this.setDarkMode(true);
-      } else {
-        this.setDarkMode(false);
-      }
-    },
-    setDarkMode(bool) {
-      if (bool) {
-        document.documentElement.className = "dark";
-        document.getElementById("darkMode").checked = true;
-        this.mutateApp("darkMode", true);
-      } else {
-        document.documentElement.className = "light";
-        this.mutateApp("darkMode", false);
-      }
-    },
-  },
-  mounted() {
-    this.toogleDarkMode();
-    this.watch = true;
-  },
-  watch: {
-    appDarkMode() {
-      if (this.watch) {
-        if (this.appDarkMode === null) this.toogleDarkMode();
-        else this.setDarkMode(this.appDarkMode);
-      }
     },
   },
 };

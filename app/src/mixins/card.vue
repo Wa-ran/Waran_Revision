@@ -38,7 +38,30 @@ export default {
       },
     };
   },
+  computed: {
+    actualCard() {
+      return this.$store.state.actualCard;
+    },
+  },
   methods: {
+    async mixNewDeck(card) {
+      if (card.deck_id === "new") {
+        if (
+          this.$store.state.decksList[this.$store.state.decksList.length - 1]
+            .title !== "Nouveau deck"
+        ) {
+          return this.$store
+            .dispatch("postDeck", {
+              title: "Nouveau deck",
+              user_id: this.$store.state.user.id,
+            })
+            .then(() => {
+              return this.$store.dispatch("getLastUserDeck");
+            });
+        }
+        return true;
+      }
+    },
     mixShowDeck(card) {
       for (let deck of this.$store.state.decksList) {
         if (deck.id == card.deck_id) return deck.title;
@@ -69,17 +92,31 @@ export default {
         );
       else return "d'ici le " + next.getDate() + "/" + (1 + next.getMonth());
     },
-    async mixHandleSubmit() {
-      await this.$store
-        .dispatch("submitCard")
-        .then(() => {
-          return this.$store.dispatch("getLastUserCard");
+    async mixHandleSubmit(card) {
+      await this.mixNewDeck(card)
+        .then((res) => {
+          if (res)
+            card.deck_id =
+              this.$store.state.decksList[
+                this.$store.state.decksList.length - 1
+              ].id;
+          return this.mutateKey("actualCard", card);
         })
         .then(() => {
-          if (this.actualCard.level === 0) {
-            return this.$store.dispatch("reserveCard");
+          return this.$store.dispatch("submitCard");
+        })
+        .then(() => {
+          if (!this.actualCard.id) {
+            return this.$store.dispatch("getLastUserCard");
+          } else if (this.actualCard.level === 0) {
+            return this.$store.dispatch("reserveCard", {
+              list: "cardsToReviseBaseList",
+            });
           } else {
-            return this.$store.dispatch("mutateStore", { fct: "removeCard" });
+            return this.$store.dispatch("mutateStore", {
+              fct: "removeListItem",
+              value: { list: "cardsToReviseBaseList", item: this.actualCard },
+            });
           }
         });
     },

@@ -1,8 +1,10 @@
 <template>
   <div class="container-fluid">
     <div
-      class="DeckView position-relative w-fit mx-auto px-sm-4 p-3 pt-0"
-      :class="$route.name === 'DeckView' ? 'border border-primary rounded' : ''"
+      class="DeckView position-relative w-fit mx-auto px-sm-4 p-3"
+      :class="
+        $route.name === 'DeckView' ? 'border border-primary rounded' : 'pt-0'
+      "
     >
       <ButtonTopRight
         v-if="$route.name == 'DeckView'"
@@ -51,10 +53,18 @@
               }}</span>
               carte{{ actualDeck.cards_to_revise > 1 ? "s" : "" }} à réviser
             </p>
-            <p>
+            <p v-if="!actualDeck.sequence">
               Total : {{ actualDeck.cards_total_number || 0 }} carte{{
                 actualDeck.cards_total_number > 1 ? "s" : ""
               }}
+            </p>
+            <p v-else>
+              Niveau : <span class="fw-bold">{{ actualDeck.min_level }}</span>
+              <br />
+              (<span class="fst-italic"
+                >révision
+                {{ mixShowRevision({ level: actualDeck.min_level }) }}</span
+              >)
             </p>
 
             <div v-if="actualDeck.sequence" class="d-flex">
@@ -105,6 +115,8 @@
 </template>
 
 <script>
+import card from "@/mixins/card";
+
 export default {
   name: "DeckView",
   computed: {
@@ -118,6 +130,7 @@ export default {
   unmounted() {
     this.mutateApp("deckSelected", false);
   },
+  mixins: [card],
 };
 </script>
 

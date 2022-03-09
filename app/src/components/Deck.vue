@@ -32,12 +32,12 @@
 
       <template v-slot:footer>
         <div class="footer">
-          <div class="mt-1">
+          <div class="mt-1 px-2">
             <button
               @click="
                 $router.push({ name: 'Revision', params: { deck: deck.id } })
               "
-              class="btn btn-primary w-fit mx-auto px-3 py-0"
+              class="btn btn-primary w-fit w-100 px-3 py-0"
             >
               Réviser
             </button>
@@ -46,7 +46,7 @@
               @click="
                 $router.push({ name: 'NewCard', params: { deck: deck.id } })
               "
-              class="btn btn-outline-primary w-fit mx-auto px-3 py-0 mt-2"
+              class="btn btn-outline-primary w-fit w-100 px-3 py-0 mt-2"
             >
               Nouvelle carte
             </button>
@@ -55,7 +55,7 @@
               @click="
                 $router.push({ name: 'AllCards', params: { deck: deck.id } })
               "
-              class="btn btn-outline-primary w-fit mx-auto px-3 py-0 mt-2"
+              class="btn btn-outline-primary w-fit w-100 px-3 py-0 mt-2"
             >
               Voir mes cartes
             </button>
@@ -64,6 +64,9 @@
           <cust-hr class="mt-2 mb-1" />
 
           <span v-if="deck.cards_total_number == 0">Aucune carte</span>
+          <div v-else-if="deck.sequence">
+            <span class="fw-bold">{{ deck.cards_total_number }}</span> cartes
+          </div>
           <div v-else>
             <span v-if="deck.cards_to_revise == 0">Aucune carte à réviser</span>
             <span v-else>

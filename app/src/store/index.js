@@ -31,10 +31,11 @@ export default createStore({
     // card
     allCardsList: [],
     cardsToReviseBaseList: [],
-    cardsToReviseReserved: [],
+    cardsReservedList: [],
     actualCard: {},
     cardModifInProgress: false, // true when forms/modifCard mounted ; false when card submit
     newCard: {
+      id: null,
       recto: "Une carte toute neuve :)",
       verso: "",
       level: 0,
@@ -90,20 +91,17 @@ export default createStore({
     },
   },
   mutations: {
-    mergeReservedCards(state) {
-      state.cardsToReviseBaseList = [
-        ...state.cardsToReviseBaseList,
-        ...state.cardsToReviseReserved,
-      ];
+    mergeReservedCards(state, payload) {
+      if (state.cardsReservedList.length > 0) {
+        state[payload] = [...state[payload], ...state.cardsReservedList];
+      }
     },
     mutateKey(state, payload) {
       let mutate = payload.sKey;
-      console.log(mutate);
-      delete payload.sKey;
       if (Array.isArray(state[mutate]) && !Array.isArray(payload.body)) {
         if (state[mutate].length > 0) {
           for (let elem of state[mutate]) {
-            if (JSON.stringify(elem) == JSON.stringify(payload.body)) return;
+            if (JSON.stringify(elem) === JSON.stringify(payload.body)) return;
           }
         }
         state[mutate].push(payload.body);
@@ -111,9 +109,10 @@ export default createStore({
         state[mutate] = payload.body;
       }
     },
-    removeCard(state) {
-      let index = state.cardsToReviseBaseList.indexOf(state.actualCard.key);
-      state.cardsToReviseBaseList.splice(index, 1);
+    removeListItem(state, payload) {
+      state[payload.list] = state[payload.list].filter(
+        (item) => item.id !== payload.item.id
+      );
     },
     setState(state, payload) {
       Object.assign(state, payload);
@@ -123,18 +122,18 @@ export default createStore({
     mutateStore(context, payload) {
       context.commit(payload.fct, payload.value || null);
     },
-    reserveCard(context) {
+    reserveCard(context, payload) {
       context.commit("mutateKey", {
-        sKey: "cardsToReviseReserved",
-        body: this.state.actualCard,
+        sKey: "cardsReservedList",
+        body: payload.item || this.state.actualCard,
       });
-      context.commit("removeCard");
+      context.commit("removeListItem", payload);
     },
-    async deleteCard() {
+    async deleteCard(context, payload) {
       await this.dispatch("APIRequest", {
         method: "DELETE",
         serverRoute: "/Card",
-        data: { card: this.state.actualCard },
+        data: { card: payload.card || this.state.actualCard },
       });
     },
     async deleteDeck() {
@@ -174,6 +173,14 @@ export default createStore({
         serverRoute: "/LastUserCard",
         data: "user/" + this.state.user.id,
         mutate: "actualCard",
+      });
+    },
+    async getLastUserDeck() {
+      await this.dispatch("APIRequest", {
+        method: "GET",
+        serverRoute: "/LastUserDeck",
+        data: "user/" + this.state.user.id,
+        mutate: "decksList",
       });
     },
     async getUserByPseudo() {
@@ -329,10 +336,8 @@ export default createStore({
       if (state.app.randomCardPick) {
         let rand = Math.floor(Math.random() * list.length);
         pickCard = list[rand];
-        pickCard.key = rand;
       } else {
         pickCard = list[0];
-        pickCard.key = 0;
       }
       return pickCard;
     },

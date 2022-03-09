@@ -60,11 +60,9 @@ export default {
   mounted() {
     this.windowSize();
     window.addEventListener("resize", this.windowSize());
-    setTimeout(() => {
-      // wait for user preferences (darkMode)
-      this.storeReset = { ...this.$store.state };
-    }, 200);
+    this.storeReset = { ...this.$store.state };
     if (!this.user.id) this.$router.push({ name: "Home" });
+    this.mutateApp("darkMode", null);
   },
   watch: {
     actualCard() {
@@ -94,7 +92,7 @@ export default {
         this.mutateApp("cardChronoCheck", false);
     },
     cardsListCharged() {
-      this.mutateKey("cardsToReviseReserved", []);
+      this.mutateKey("cardsReservedList", []);
     },
     cardReviserCharged() {
       this.mutateStore("mergeReservedCards");
@@ -104,6 +102,15 @@ export default {
         // because setState in $store use Object.assign which briefly delete the $store.state, causing this.DarkMode = undefined
         this.storeReset.app.darkMode = this.darkMode;
       }
+      if (
+        this.darkMode === null &&
+        window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+      ) {
+        return this.mutateApp("darkMode", true);
+      }
+      if (this.darkMode) document.documentElement.className = "dark";
+      else document.documentElement.className = "light";
     },
     deckSelected() {
       this.mutateApp(

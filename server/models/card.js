@@ -63,7 +63,7 @@ module.exports = class Card extends revisionObj {
   newLevel() {
     if (this.win === null) return;
     let newLevel = this.level;
-    if (this.decalage > 24 && this.adapt_level_refused) {
+    if (this.decalage < 24 || this.adapt_level_refused) {
       if (this.win) newLevel++;
       else if (!this.win) {
         newLevel--;

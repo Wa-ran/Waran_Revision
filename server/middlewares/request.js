@@ -21,6 +21,15 @@ exports.getLastUserCard = async (req) => {
   return resCard
 };
 
+exports.getLastUserDeck = async (req) => {
+  let resDeck;
+  await dtbFct.selectLastUserDeck(req)
+    .then(dtbDeck => {
+      resDeck = createObj("deck", dtbDeck[0])
+    })
+  return resDeck
+};
+
 exports.postCard = async (req) => {
   if (Number.isInteger(req.card.id)) {
     throw "Id déjà existant"

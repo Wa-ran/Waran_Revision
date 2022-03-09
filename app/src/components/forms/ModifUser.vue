@@ -62,10 +62,8 @@
         type="checkbox"
         id="default_mode"
         @click="
-          mutateApp('darkMode', null);
-          light_mode = false;
           user.dark_mode = null;
-          verifEmpty();
+          verifEmpty($event);
         "
       />
       <label class="form-check-label" for="default_mode">
@@ -78,12 +76,10 @@
         v-model="light_mode"
         class="form-check-input"
         type="checkbox"
-        id="dark_mode"
+        id="light_mode"
         @click="
-          mutateApp('darkMode', false);
           user.dark_mode = false;
-          default_mode = false;
-          verifEmpty();
+          verifEmpty($event);
         "
       />
       <label class="form-check-label" for="dark_mode"> Clair </label>
@@ -91,15 +87,13 @@
 
     <div class="form-check mt-2 ms-3">
       <input
-        v-model="user.dark_mode"
+        v-model="dark_mode"
         class="form-check-input"
         type="checkbox"
         id="dark_mode"
         @click="
-          mutateApp('darkMode', true);
-          light_mode = false;
-          default_mode = false;
-          verifEmpty();
+          user.dark_mode = true;
+          verifEmpty($event);
         "
       />
       <label class="form-check-label" for="dark_mode"> Sombre </label>
@@ -123,14 +117,24 @@ export default {
   name: "ModifUser",
   data() {
     return {
-      default_mode: true,
-      light_mode: false,
       user: null,
       change: 0,
       hasChanged: false,
     };
   },
+  props: {
+    exit: Boolean,
+  },
   computed: {
+    dark_mode() {
+      return this.user.dark_mode === true;
+    },
+    default_mode() {
+      return this.user.dark_mode === null;
+    },
+    light_mode() {
+      return this.user.dark_mode === false;
+    },
     stateUser() {
       return this.$store.state.user;
     },
@@ -142,12 +146,14 @@ export default {
         .then(() => this.mutateKey("user", this.user))
         .then(() => this.change++);
     },
-    verifEmpty() {
-      setTimeout(() => {
-        if (!this.default_mode && !this.light_mode && !this.user.dark_mode) {
-          this.default_mode = true;
-        }
-      });
+    verifEmpty(event) {
+      if (
+        !document.getElementById("default_mode").checked &&
+        !document.getElementById("light_mode").checked &&
+        !document.getElementById("dark_mode").checked
+      ) {
+        event.target.checked = true;
+      }
     },
     beforeExit() {
       this.mutateKey("formCompare", {
@@ -159,11 +165,19 @@ export default {
   created() {
     this.user = { ...this.stateUser };
   },
+  mounted() {
+    if (this.user.dark_mode === null) this.default_mode = true;
+    else this.default_mode = false;
+  },
   watch: {
     change() {
+      this.mutateApp("darkMode", this.user.dark_mode);
       if (JSON.stringify(this.user) !== JSON.stringify(this.stateUser))
         this.hasChanged = true;
       else this.hasChanged = false;
+    },
+    exit() {
+      if (this.exit) this.beforeExit();
     },
   },
 };

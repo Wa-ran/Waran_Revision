@@ -1,6 +1,6 @@
 <template>
   <footer class="footer bg-dark py-2">
-    <DarkSwitch />
+    <DarkSwitch v-if="$route.name !== 'ModifUser'" />
   </footer>
 </template>
 

@@ -1,18 +1,26 @@
 <template>
-  <div class="overlay w-100">
-    <div class="position-relative w-100 p-2">
+  <div class="overlay">
+    <div class="position-absolute bottom-0 end-0 d-flex w-fit p-2">
       <!-- AllCards Transfert -->
       <div
         v-if="$store.state.app.allCardsDeckCheck"
-        class="d-flex w-fit bg-dark border border-2 border-primary rounded mx-auto p-2"
+        class="w-fit bg-dark border border-2 border-primary rounded mx-auto p-2 pt-0"
       >
-        <button class="btn btn-success">Valider</button>
-        <button
-          @click="mutateApp('allCardsDeckCheck', false)"
-          class="btn btn-primary ms-2"
-        >
-          Annuler
-        </button>
+        <SelectDeck @change="selectDeck = $event.target.value" class="me-n1" />
+        <div class="d-flex mt-2">
+          <button @click="transfert" class="flex-grow-1 btn btn-success">
+            Valider
+          </button>
+          <button
+            @click="
+              mutateApp('allCardsDeckCheck', false);
+              annulation();
+            "
+            class="btn btn-primary ms-2"
+          >
+            Annuler
+          </button>
+        </div>
       </div>
 
       <!-- AllCards Deletion -->
@@ -20,9 +28,12 @@
         v-if="$store.state.app.allCardsDropCheck"
         class="d-flex w-fit bg-dark border border-2 border-primary rounded mx-auto p-2"
       >
-        <button class="btn btn-danger">Supprimer</button>
+        <button @click="drop" class="btn btn-danger">Supprimer</button>
         <button
-          @click="mutateApp('allCardsDropCheck', false)"
+          @click="
+            mutateApp('allCardsDropCheck', false);
+            annulation();
+          "
           class="btn btn-primary ms-2"
         >
           Annuler
@@ -30,7 +41,7 @@
       </div>
 
       <!-- scroll to top button  -->
-      <div v-if="!toTop" class="position-absolute bottom-0 end-0 w-fit p-2">
+      <div v-if="!toTop" class="w-fit h-fit ms-2 mt-auto">
         <button
           @click="goTop"
           class="has-icon bg-dark btn btn-outline-primary border-2 px-2"
@@ -43,15 +54,58 @@
 </template>
 
 <script>
+import SelectDeck from "@/components/forms/components/SelectDeck";
+import card from "@/mixins/card";
+
 export default {
   name: "Overlay",
+  components: {
+    SelectDeck,
+  },
   data() {
     return {
+      selectDeck: null,
       elemScroll: null,
       toTop: true,
     };
   },
   methods: {
+    annulation() {
+      for (let card of document.querySelectorAll(".allCards .card")) {
+        card.classList.remove("bg-success");
+        card.classList.remove("bg-danger");
+      }
+      this.mutateKey("cardsReservedList", []);
+    },
+    async transfert() {
+      if (
+        this.selectDeck &&
+        this.selectDeck !== this.$store.getters.actualDeck.id
+      ) {
+        for (let card of this.$store.state.cardsReservedList) {
+          if (this.$store.state.app.allCardsDeckCheck) {
+            card.deck_id = this.selectDeck;
+            await this.mixHandleSubmit(card);
+            this.$router.push({ name: "DeckView" });
+            setTimeout(() => {
+              this.$router.push({ name: "AllCards" });
+            });
+          }
+        }
+      }
+    },
+    async drop() {
+      for (let card of this.$store.state.cardsReservedList) {
+        if (this.$store.state.app.allCardsDropCheck) {
+          card.deck_id = this.selectDeck;
+          await this.$store.dispatch("deleteCard", { card });
+          this.$router.push({ name: "DeckView" });
+          setTimeout(() => {
+            this.$router.push({ name: "AllCards" });
+          });
+        }
+      }
+    },
     goTop() {
       this.elemScroll.scrollTo({
         top: 0,
@@ -71,6 +125,7 @@ export default {
       { capture: true }
     );
   },
+  mixins: [card],
 };
 </script>
 

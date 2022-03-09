@@ -183,7 +183,9 @@ export default {
       else this.winSetted = true;
     },
     async submitCard() {
-      await this.mixHandleSubmit().then(() => this.$emit("submitted"));
+      await this.mixHandleSubmit(this.actualCard).then(() =>
+        this.$emit("submitted")
+      );
     },
   },
   async mounted() {

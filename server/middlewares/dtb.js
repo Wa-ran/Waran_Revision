@@ -125,12 +125,19 @@ exports.selectLastUserCard = async (req) => {
   return await this.connect("SELECT JSON_OBJECT(" + this.jsonObj('card') + ") FROM cards WHERE user_id = " + req.user.id + " ORDER BY id DESC LIMIT 1;");
 };
 
+exports.selectLastUserDeck = async (req) => {
+  return await this.connect("SELECT JSON_OBJECT(" + this.jsonObj('deck') + ") FROM decks WHERE user_id = " + req.user.id + " ORDER BY id DESC LIMIT 1;");
+};
+
 exports.selectDeck = async (req) => {
   return await this.connect("SELECT JSON_OBJECT(" + this.jsonObj('deck') + ") FROM decks WHERE id = " + req.deck.id + ";");
 };
 
 exports.selectDeckInfos = async (req) => {
-  return await this.connect("SELECT JSON_OBJECT('cards_total_number', COUNT(*), 'cards_to_revise', SUM(CASE WHEN next_revision < NOW() THEN 1 WHEN next_revision IS NULL THEN 1 ELSE 0 END)) FROM cards WHERE deck_id = " + req.deck.id + ";");
+  let res = await this.connect("SELECT JSON_OBJECT('cards_total_number', COUNT(*), 'cards_to_revise', SUM(CASE WHEN next_revision < NOW() THEN 1 WHEN next_revision IS NULL THEN 1 ELSE 0 END)) FROM cards WHERE deck_id = " + req.deck.id + ";");
+  let min_level = await this.connect("SELECT MIN(IFNULL(level, 0)) FROM cards WHERE deck_id = " + req.deck.id + ";");
+  res[0]['min_level'] = min_level[0];
+  return res
 };
 
 exports.updateCard = async (req) => {
