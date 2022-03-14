@@ -53,7 +53,7 @@ module.exports = async (req, res, next) => {
             };
           };
 
-          if (alreadyExist == 2) return
+          if (alreadyExist == 2) continue
           else {
             let newObj = createObj(objName, obj);
             if (method !== 'get' && !verifIdByToken(newObj)) {

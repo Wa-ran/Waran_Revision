@@ -232,6 +232,7 @@ export default {
               : opti.slice(0, opti.length - 1);
         }
       }
+      if (opti === "") opti = null
       return opti;
     },
     reverseChange() {

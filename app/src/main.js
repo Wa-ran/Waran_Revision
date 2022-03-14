@@ -14,6 +14,7 @@ import {
   faArrowUp,
   faBars,
   faBold,
+  faCamera,
   faCaretDown,
   faCheck,
   faChevronLeft,
@@ -57,6 +58,7 @@ import ButtonTopRight from "@/components/global/ButtonTopRight.vue";
 import DoubleCheckButton from "@/components/global/DoubleCheckButton.vue";
 import Loader from "@/components/global/Loader.vue";
 import Options from "@/components/global/Options.vue";
+import CardImage from "@/components/global/CardImage.vue"
 
 library.add(
   faArrowLeft,
@@ -64,6 +66,7 @@ library.add(
   faArrowUp,
   faBars,
   faBold,
+  faCamera,
   faCaretDown,
   faCheck,
   faChevronLeft,
@@ -140,6 +143,7 @@ VueApp.mixin({
             button: "Continuer",
           });
           this.displayModal();
+          this.mutateKey("formCompare", {});
           // Wait for user choice
           const int = setInterval(() => {
             if (!this.$store.state.modalDisplay) {
@@ -210,6 +214,7 @@ VueApp.component("ButtonTopRight", ButtonTopRight);
 VueApp.component("DoubleCheckButton", DoubleCheckButton);
 VueApp.component("Loader", Loader);
 VueApp.component("Options", Options);
+VueApp.component("CardImage", CardImage);
 VueApp.use(store).use(router).use(VueMathjax).use(MasonryWall);
 
 VueApp.mount("#app");

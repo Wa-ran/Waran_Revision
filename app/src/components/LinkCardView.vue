@@ -1,5 +1,5 @@
 <template>
-  <div class="w-100">
+  <div class="position-absolute top-0 w-100">
     <button
       v-if="positionSaved"
       @click="
@@ -14,7 +14,7 @@
     </button>
 
     <button
-      v-if="positionSaved.name && positionSaved.name === 'NewCard'"
+      v-if="positionSaved && positionSaved.name === 'NewCard'"
       @click="$router.push({ name: 'NewCard' })"
       class="position-absolute end-0 d-flex flex-row align-items-center btn btn-outline-primary border-0 h-fit w-fit mt-1 mb-n5 me-3 me-md-4 py-1 text-nowrap"
     >
@@ -26,7 +26,7 @@
 
 <script>
 export default {
-  name: "AsideCardView",
+  name: "LinkCardView",
   computed: {
     positionSaved() {
       return this.$store.state.app.positionSaved;

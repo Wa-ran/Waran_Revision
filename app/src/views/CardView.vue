@@ -7,23 +7,6 @@
       :key="actualCardChange"
     />
     <CardSummary v-else class="p-0" :key="actualCardChange" />
-
-    <!-- Bouton supprimer -->
-    <DoubleCheckButton
-      v-if="actualCard.id"
-      @checkedClick="deleteCard"
-      class="btn ms-auto mt-2"
-      :classDefault="'btn-danger'"
-    >
-      <template v-slot:default>
-        <font-awesome-icon :icon="['fas', 'trash-alt']" />
-        <span class="ms-2 flex-grow-1">Supprimer la carte</span>
-      </template>
-      <template v-slot:checked>
-        <font-awesome-icon :icon="['fas', 'trash-alt']" />
-        <span class="ms-2 flex-grow-1">Supprimer ?</span>
-      </template>
-    </DoubleCheckButton>
   </div>
 </template>
 
@@ -50,13 +33,6 @@ export default {
     },
     positionSaved() {
       return this.$store.state.app.positionSaved;
-    },
-  },
-  methods: {
-    async deleteCard() {
-      await this.$store
-        .dispatch("deleteCard")
-        .then(() => this.$router.push(this.positionSaved.path));
     },
   },
   mounted() {

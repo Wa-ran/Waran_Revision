@@ -5,7 +5,17 @@
 </template>
 
 <script>
+import { defineAsyncComponent } from "vue";
+
 export default {
   name: "Aside",
+  components: {
+    AsideCardView: defineAsyncComponent(() =>
+      import("@/components/LinkCardView.vue")
+    ),
+    AsideModifCard: defineAsyncComponent(() =>
+      import("@/components/LinkCardView.vue")
+    ),
+  },
 };
 </script>

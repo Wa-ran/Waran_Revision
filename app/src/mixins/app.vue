@@ -40,6 +40,9 @@ export default {
     disconnect() {
       return this.$store.state.app.actionDisconnect;
     },
+    loading() {
+      return this.$store.state.loading;
+    },
     user() {
       return this.$store.state.user;
     },
@@ -66,7 +69,7 @@ export default {
   },
   watch: {
     actualCard() {
-      this.mutateApp(
+      if (!this.loading) this.mutateApp(
         "actualCardChange",
         this.$store.state.app.actualCardChange + 1
       );

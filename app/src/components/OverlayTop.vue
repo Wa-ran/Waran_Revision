@@ -18,12 +18,6 @@ export default {
     OptionsAllCards: defineAsyncComponent(() =>
       import("@/components/OptionsAllCards.vue")
     ),
-    OptionsCardView: defineAsyncComponent(() =>
-      import("@/components/OptionsCardView.vue")
-    ),
-    OptionsModifCard: defineAsyncComponent(() =>
-      import("@/components/OptionsCardView.vue")
-    ),
     OptionsRevision: defineAsyncComponent(() =>
       import("@/components/OptionsRevisions.vue")
     ),

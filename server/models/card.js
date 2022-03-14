@@ -49,8 +49,8 @@ module.exports = class Card extends revisionObj {
     this.deck_id = deck_id;
     this.recto_formula = this.isBoolean(recto_formula);
     this.verso_formula = this.isBoolean(verso_formula);
-    this.recto_image = this.isBoolean(recto_image);
-    this.verso_image = this.isBoolean(verso_image);
+    this.recto_image = recto_image;
+    this.verso_image = verso_image;
     this.reverse = this.isBoolean(reverse);
     this.win = this.isBoolean(win, true);
     this.decalage = decalage ? this.tryParseInt(decalage) : this.calculDecalage();
@@ -97,6 +97,12 @@ module.exports = class Card extends revisionObj {
       let recto = this.recto;
       this.recto = this.verso;
       this.verso = recto;
+      recto = this.recto_image;
+      this.recto_image = this.verso_image;
+      this.verso_image = recto;
+      recto = this.recto_formula;
+      this.recto_formula = this.verso_formula;
+      this.verso_formula = recto;
     }
   };
 

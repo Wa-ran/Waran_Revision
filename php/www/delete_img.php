@@ -1,33 +1,33 @@
 <?php
-$user = $_POST["user"];
-$user = json_decode($user, true);
-$card = $_POST["card"];
-$card = json_decode($card, true);
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization');
+header("Access-Control-Allow-Credentials: true");
+header('Content-Type: application/json');
+header("Access-Control-Allow-Methods: DELETE, OPTIONS");
+$method = $_SERVER['REQUEST_METHOD'];
+if ($method == "OPTIONS") {
+  header('Access-Control-Allow-Origin: *');
+  header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method,Access-Control-Request-Headers, Authorization");
+  header("HTTP/1.1 200 OK");
+  die();
+}
+
+$data = json_decode(substr($_SERVER['PATH_INFO'], 1), true);
+$user = $data["user"];
+$image1 = $data["images"][0];
+$image2 = $data["images"][1];
 
 function getCard($id, $token) {
   $ch = curl_init();
 
   curl_setopt($ch, CURLOPT_URL,'http://localhost:3008/Card/card/'.$id);
   curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json', $token));
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
-  curl_exec($ch);
-  $res = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-  curl_close($ch);
-
-  return $res;
-};
-
-function putCard($body, $token) {
-  $ch = curl_init();
-
-  curl_setopt($ch, CURLOPT_URL,'http://localhost:3008/Card');
-  curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
-  curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($body));
-  curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json', $token));
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-  curl_exec($ch);
-  $res = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+  $res = json_decode(curl_exec($ch));
+  if (curl_getinfo($ch, CURLINFO_HTTP_CODE) != 200) {
+    $res = false;
+  }
   curl_close($ch);
 
   return $res;
@@ -35,33 +35,21 @@ function putCard($body, $token) {
 
 $authorization = "Authorization: ".$user['token'];
 
-if(getCard($card['id'], $authorization) == 200) {
-  try {
-    mkdir("images/".$user['id']);
+$call = (array)getCard($card['id'], $authorization);
 
-    $file_name = key($_FILES);
-    $target_file = "images/".$user['id']."/".$card['id']."_".$file_name.".webp";
-
-    $iMagick = new Imagick($_FILES[$file_name]["tmp_name"]);
-    $iMagick->scaleImage(500, 0);
-    $iMagick->stripImage();
-    $iMagick->writeImage($target_file);
-    echo "\nAll good !";
+if($call) {
+  if (file_exists($image1.'.webp')) {
+    unlink($image1.'.webp');
+    echo "\nRecto deleted.";
+  } else {
+    echo "\nNothing to delete (recto).";
+  };
+  if(file_exists($image2.'.webp')) {
+    unlink($image2.'.webp');
+    echo "\nVerso deleted.";
   }
-  catch (\Throwable $th) {
-    $card[$file_name."_image"] = 0;
-    $data = array(
-      "user" => json_encode($user),
-      "card" => json_encode($card),
-    );
-    echo "\nPb with image write... ";
-    if (putCard($data, $authorization) == 200) {
-      echo "\nDTB unwriting ok.";
-    } else {
-      echo "\nDTB unwriting failed...";
-    }
-  }
-} else {
-  echo "\nServer failed...";
+  else {
+    echo "\nNothing to delete (verso).";
+  };
 }
 ?>

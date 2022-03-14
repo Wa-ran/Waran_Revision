@@ -50,7 +50,7 @@ export default {
           this.$store.state.decksList[this.$store.state.decksList.length - 1]
             .title !== "Nouveau deck"
         ) {
-          return this.$store
+          await this.$store
             .dispatch("postDeck", {
               title: "Nouveau deck",
               user_id: this.$store.state.user.id,
@@ -61,6 +61,7 @@ export default {
         }
         return true;
       }
+      else return
     },
     mixShowDeck(card) {
       for (let deck of this.$store.state.decksList) {

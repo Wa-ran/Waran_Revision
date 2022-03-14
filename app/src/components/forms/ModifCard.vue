@@ -5,7 +5,9 @@
       <label for="CardRecto" class="fs-5 ms-n3">
         {{ card.reverse ? "Recto" : "Question" }} :
       </label>
+      <ImageInput v-if="card.recto_image" @fileChange="card.recto_image = !!$event ? $event : origCard.recto_image" :card="card" :face="'recto'" class="my-2" />
       <TextEditor
+        v-else
         id="CardRecto"
         :contentId="'CardRecto'"
         :text="card.recto"
@@ -15,11 +17,11 @@
       <div v-if="options">
         <div class="form-check mt-2">
           <input
-            v-model="card.recto_image"
+            :checked="!!card.recto_image"
             class="form-check-input"
             type="checkbox"
             id="recto_image"
-            @click="card.recto_image = $event"
+            @click="card.recto_image = card.recto_image ? null : origCard.recto_image || true"
           />
           <label class="form-check-label italic" for="recto_image">
             Insérer une image
@@ -32,7 +34,7 @@
             class="form-check-input"
             type="checkbox"
             id="recto_formula"
-            @click="card.recto_formula"
+            @click="card.recto_formula = !card.recto_formula"
           />
           <label class="form-check-label italic" for="recto_formula">
             Ecrire une formule
@@ -48,7 +50,9 @@
       <label for="CardVerso" class="fs-5 ms-n3">
         {{ card.reverse ? "Verso" : "Réponse" }} :
       </label>
+      <ImageInput v-if="card.verso_image" @fileChange="card.verso_image = !!$event ? $event : origCard.verso_image" :card="card" :face="'verso'" class="my-2" />
       <TextEditor
+        v-else
         id="CardVerso"
         :contentId="'CardVerso'"
         :text="card.verso"
@@ -58,11 +62,11 @@
       <div v-if="options">
         <div class="form-check mt-2">
           <input
-            v-model="card.verso_image"
+            :checked="!!card.verso_image"
             class="form-check-input"
             type="checkbox"
             id="verso_image"
-            @click="card.verso_image = $event"
+            @click="card.verso_image = card.verso_image ? null : origCard.verso_image || true"
           />
           <label class="form-check-label italic" for="verso_image">
             Insérer une image
@@ -75,7 +79,7 @@
             class="form-check-input"
             type="checkbox"
             id="verso_formula"
-            @click="card.verso_formula = $event"
+            @click="card.verso_formula = !card.verso_formula"
           />
           <label class="form-check-label italic" for="verso_formula">
             Ecrire une formule
@@ -121,7 +125,7 @@
         />
       </div>
 
-      <cust-hr class="w-25 my-3" />
+      <cust-hr class="w-50 ms-n3 my-3" />
 
       <!-- Level -->
       <div class="form-check d-flex align-items-center mt-2 ps-0">
@@ -155,12 +159,12 @@
       </div>
     </div>
 
-    <cust-hr class="w-25 my-3" />
+    <cust-hr class="w-50 ms-n3 my-3" />
 
     <!-- Deck -->
     <SelectDeck @changeDeck="card.deck_id = $event.target.value" />
 
-    <cust-hr class="w-25 my-3" />
+    <cust-hr class="w-50 ms-n3 my-3 mb-4" />
 
     <!-- Boutons -->
     <div class="d-flex justify-content-between flex-wrap mt-3">
@@ -187,6 +191,23 @@
           Terminer
         </button>
       </div>
+
+      <!-- Bouton supprimer -->
+      <DoubleCheckButton
+        v-if="actualCard.id"
+        @checkedClick="deleteCard"
+        class="btn ms-auto mt-2"
+        :classDefault="'btn-danger'"
+      >
+        <template v-slot:default>
+          <font-awesome-icon :icon="['fas', 'trash-alt']" />
+          <span class="ms-2 flex-grow-1">Supprimer la carte</span>
+        </template>
+        <template v-slot:checked>
+          <font-awesome-icon :icon="['fas', 'trash-alt']" />
+          <span class="ms-2 flex-grow-1">Supprimer ?</span>
+        </template>
+      </DoubleCheckButton>
     </div>
   </form>
 </template>
@@ -194,6 +215,7 @@
 <script>
 import TextEditor from "@/components/TextEditor";
 import SelectDeck from "@/components/forms/components/SelectDeck";
+import ImageInput from "@/components/forms/components/ImageInput";
 import card from "@/mixins/card";
 
 export default {
@@ -201,6 +223,7 @@ export default {
   components: {
     TextEditor,
     SelectDeck,
+    ImageInput,
   },
   props: {
     exit: Boolean,
@@ -209,15 +232,16 @@ export default {
     return {
       card: {},
       change: 0,
+      load: false,
       options: false,
+      origCard: null,
       modif: false,
       submitted: false,
     };
   },
   computed: {
     actualCard() {
-      if (this.$route.name === "NewCard") return this.$store.state.newCard;
-      else return this.$store.state.actualCard;
+      return this.$store.state.actualCard;
     },
     cardChange() {
       return JSON.stringify(this.card);
@@ -236,42 +260,82 @@ export default {
       else this.$router.push({ name: "DeckView" });
     },
     async submitForm() {
-      let newCard = !this.card.id;
-      await this.mixHandleSubmit(this.card)
-        .then(() => (this.submitted = true))
-        .then(() => this.$router.push({ name: "Library" }))
-        .then(() =>
-          this.$router.push({
-            name: "CardView",
-            params: {
-              card: this.$store.state.actualCard.id,
-              deck: this.$store.state.actualCard.deck_id,
-            },
+      this.mutateApp('loading', true);
+      if ((this.card.recto || this.card.recto_image) && (this.card.verso || this.card.verso_image)) {
+        let newCard = !this.card.id;
+        let files = [];
+        for (let input of document.querySelectorAll('input[type="file"]')) {
+          if (!document.getElementById(this.card.id + input.name)) {
+          // check if img is present
+            this.files = [];
+            return input.focus();
+          }
+          if (input.files[0]) files.push(input.files[0]);
+        }
+        this.mutateKey('filesInputs', files);
+        if (this.card.recto_image) this.card.recto = "";
+        if (this.card.verso_image) this.card.verso = "";
+        if (this.card.recto_image !== this.origCard.recto_image && this.origCard.recto_image) this.card['recto_delete'] = this.origCard.recto_image;
+        if (this.card.verso_image !== this.origCard.verso_image && this.origCard.verso_image) this.card['verso_delete'] = this.origCard.verso_image;
+        this.mutateKey('actualCard', this.card);
+        await this.mixHandleSubmit(this.card)
+          .then(() => {
+            this.submitted = true;
+            if (newCard) return this.$store.dispatch('getLastUserCard')
+            else return this.$store.dispatch('getCard')
           })
-        )
-        .then(() => {
-          if (newCard) this.mutateApp("positionSaved", { name: "NewCard" });
-        });
+          .then(() =>
+            this.$router.push({
+              name: "CardView",
+              params: {
+                card: this.$store.state.actualCard.id,
+                deck: this.$store.state.actualCard.deck_id,
+              },
+            })
+          )
+          .then(() => {
+            if (newCard) this.mutateApp("positionSaved", { name: "NewCard" });
+            this.mutateApp('loading', false);
+          });
+      }
+    },
+    async deleteCard() {
+      if (this.origCard.recto_image) this.card['recto_delete'] = this.origCard.recto_image;
+      if (this.origCard.verso_image) this.card['verso_delete'] = this.origCard.verso_image;
+      this.mutateKey('actualCard', this.card);
+      await this.$store
+        .dispatch("deleteCard")
+        .then(() => this.$router.push(this.positionSaved.path))
+        .then(() => this.mutateApp('loading', false))
     },
     beforeExit() {
-      this.mutateKey("formCompare", {
-        source: { ...this.actualCard },
-        modified: this.$store.state.cardsToReviseBaseList[this.actualCard.key],
+      if (!this.submitted) this.mutateKey("formCompare", {
+        source: this.origCard,
+        modified: this.card,
       });
     },
   },
-  mounted() {
+  beforeMount() {
     this.card = { ...this.actualCard };
-    // new card
-    if (!this.card.user_id) this.card.user_id = this.$store.state.user.id;
-    if (!this.card.deck_id)
+    if (this.$route.name === "NewCard") {
+      this.card = { ...this.$store.state.newCard };
+      this.card.user_id = this.$store.state.user.id;
       this.card.deck_id = this.$store.getters.actualDeck.id;
+      this.modif = false;
+    }
+    if (this.card.recto_image || this.card.verso_image || this.card.recto_formula || this.card.verso_formula || this.card.comment || !this.card.reverse) this.options = true;
+    this.origCard = { ...this.card };
+  },
+  mounted() {
+    console.log('coucou')
+    this.mutateKey('filesInputs', []);
+    this.load = true;
   },
   watch: {
     cardChange() {
       if (
-        !this.submitted &&
-        JSON.stringify(this.card) !== JSON.stringify(this.actualCard)
+        this.load && !this.submitted &&
+        JSON.stringify(this.card) !== JSON.stringify(this.origCard)
       )
         this.modif = true;
       else this.modif = false;
@@ -297,5 +361,8 @@ export default {
 .level {
   width: 20px;
   text-align: center;
+}
+.img {
+  max-height: 250px;
 }
 </style>

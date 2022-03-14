@@ -16,6 +16,7 @@ export default createStore({
       deckSelected: false,
       decksCharged: false,
       isFormPage: false,
+      loading: false,
       positionSaved: null,
       revealCard: false,
       // check
@@ -36,18 +37,18 @@ export default createStore({
     cardModifInProgress: false, // true when forms/modifCard mounted ; false when card submit
     newCard: {
       id: null,
-      recto: "Une carte toute neuve :)",
-      verso: "",
+      deck_id: null,
+      recto: null,
+      verso: null,
       level: 0,
-      next_revision: "",
-      user_id: "",
-      comment: "",
+      next_revision: null,
+      user_id: null,
+      comment: null,
       recto_formula: false,
       verso_formula: false,
-      recto_image: false,
-      verso_image: false,
+      recto_image: null,
+      verso_image: null,
       reverse: true,
-      new: true,
       win: null,
     },
 
@@ -67,6 +68,11 @@ export default createStore({
       modified: null,
     },
 
+    //image
+    filePreview: null,
+    imagePath: "http://127.0.0.1:8887/",
+    filesInputs: [],
+
     //modal
     modal: {
       title: null,
@@ -82,11 +88,11 @@ export default createStore({
     },
     loading: false,
     serverAddress: {
-      // php_server: "http://waran.xyz/",
+      // php_server: "https://waran.xyz/",
       // waran_revision: "http://195.110.59.46:3008",
 
       // Local Dev
-      php_server: "http://localhost:8000",
+      php_server: "http://localhost:8000/",
       waran_revision: "http://localhost:3008",
     },
   },
@@ -130,11 +136,14 @@ export default createStore({
       context.commit("removeListItem", payload);
     },
     async deleteCard(context, payload) {
-      await this.dispatch("APIRequest", {
-        method: "DELETE",
-        serverRoute: "/Card",
-        data: { card: payload.card || this.state.actualCard },
-      });
+      await this.dispatch("deleteImg")
+      .then(() => {
+        this.dispatch("APIRequest", {
+          method: "DELETE",
+          serverRoute: "/Card",
+          data: { card: payload.card || this.state.actualCard },
+        })
+      })
     },
     async deleteDeck() {
       await this.dispatch("APIRequest", {
@@ -142,6 +151,25 @@ export default createStore({
         serverRoute: "/Deck",
         data: { deck: this.getters.actualDeck },
       });
+    },
+    async deleteImg(context, req = null) {
+      if (this.state.actualCard.recto_delete || this.state.actualCard.verso_delete) {
+        req = {};
+        req['method'] = "DELETE";
+        req['serverRoute'] = "";
+        req['serverAddress'] = this.state.serverAddress.php_server + 'delete_img.php';
+        req['headers'] = { 'Authorization': this.state.user.token };
+        req['data'] = {};
+        req.data['user'] = this.state.user.id;
+        req.data['images'] = [];
+        req.data.images.push(this.state.actualCard.recto_delete || null);
+        req.data.images.push(this.state.actualCard.verso_delete || null);
+        req.data = JSON.stringify(req.data);
+      };
+      if (req) {
+        await this.dispatch("APIRequest", req);
+      }
+      else return
     },
     async getAllUserDecks() {
       await this.dispatch("APIRequest", {
@@ -157,6 +185,15 @@ export default createStore({
         serverRoute: "/AllDeckCards",
         data: "deck/" + getters.actualDeck.id,
         mutate: "allCardsList",
+      });
+    },
+    async getCard(context, payload) {
+      let cardId = payload ? payload.id : this.state.actualCard.id;
+      await this.dispatch("APIRequest", {
+        method: "GET",
+        serverRoute: "/Card",
+        data: "card/" + cardId,
+        mutate: "actualCard",
       });
     },
     async getCardsToReviseOnDeck({ getters }) {
@@ -191,12 +228,13 @@ export default createStore({
         mutate: "user",
       });
     },
-    async postCard() {
-      await this.dispatch("APIRequest", {
+    async postCard(context, req = null) {
+      req = req ? req : {
         method: "POST",
         serverRoute: "/Card",
         data: { card: this.state.actualCard },
-      });
+      };
+      await this.dispatch("APIRequest", req);
     },
     async postDeck(context, deck) {
       await this.dispatch("APIRequest", {
@@ -206,12 +244,13 @@ export default createStore({
         mutate: "deckList",
       });
     },
-    async putCard() {
-      await this.dispatch("APIRequest", {
+    async putCard(context, req = null) {
+      req = req ? req : {
         method: "PUT",
         serverRoute: "/Card",
         data: { card: this.state.actualCard },
-      });
+      };
+      await this.dispatch("APIRequest", req);
     },
     async putDeck({ getters }, deck) {
       await this.dispatch("APIRequest", {
@@ -229,8 +268,23 @@ export default createStore({
       });
     },
     async submitCard() {
-      if (!this.state.actualCard.id) await this.dispatch("postCard");
-      else await this.dispatch("putCard");
+      await this.dispatch("deleteImg")
+      .then(() => {
+        let req = null;
+        if (this.state.filesInputs.length > 0) {
+          req = {};
+          req['method'] = "POST";
+          req['serverRoute'] = "";
+          req['serverAddress'] = this.state.serverAddress.php_server + 'post_img.php';
+          req['headers'] = { 'Authorization': this.state.user.token };
+          req['formData'] = true;
+          req['data'] = {};
+          req.data['user'] = this.state.user;
+          req.data['card'] = this.state.actualCard;
+        };
+        if (!this.state.actualCard.id) return this.dispatch("postCard", req);
+        else return this.dispatch("putCard", req);
+      })
     },
     async APIRequest(context, req) {
       if (!this.state.error.pending) {
@@ -238,13 +292,13 @@ export default createStore({
           fct: "mutateKey",
           value: { sKey: "loading", body: true },
         });
-        return this.dispatch("callAPI", {
+        await this.dispatch("callAPI", {
           method: req.method,
           address: req.serverAddress || this.state.serverAddress.waran_revision,
           route: req.serverRoute,
           headers: req.headers || this.getters.defaultHeaders,
           data: req.data,
-          form_data: req.form_data || false,
+          formData: req.formData || false,
         })
           .then((response) => {
             if (response && req.mutate) {
@@ -260,12 +314,12 @@ export default createStore({
             return response;
           })
           .catch((error) => {
-            if (error.status !== 404) console.log(error);
-            context.commit("triggError", {
-              bool: true,
-              status: error.status,
-              msg: error.msg,
-            });
+            if (error.status !== 404) console.log("Error : " + error);
+            // context.commit("triggError", {
+            //   bool: true,
+            //   status: error.status,
+            //   msg: error.msg,
+            // });
             this.dispatch("mutateStore", {
               fct: "mutateKey",
               value: { sKey: "loading", body: false },
@@ -283,17 +337,20 @@ export default createStore({
 
       method = method.toUpperCase();
 
-      if (method == "GET") {
+      if (method === "GET" || method === "DELETE") {
         route = route + "/" + body;
         body = null;
-      } else if (req.form_data) {
+      } else if (req.formData) {
+        route = '';
         let form = new FormData();
         for (let [key, value] of Object.entries(body)) {
           form.append(key, JSON.stringify(value));
         }
+        for (let input of this.state.filesInputs) {
+          form.append('files[]', input);
+        }
         body = form;
       } else if (typeof body === "object") {
-        // body = object to send
         body = JSON.stringify(body);
       }
 
@@ -319,9 +376,7 @@ export default createStore({
           throw err;
         } else {
           try {
-            return (res = await res.json().then((res) => {
-              return res;
-            }));
+            return await res.json()
           } catch (error) {
             return null; // Si le serveur renvois un statut 2XX/3XX seul
           }

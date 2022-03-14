@@ -1,28 +1,47 @@
 <?php
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization');
+header("Access-Control-Allow-Credentials: true");
+header('Content-Type: application/json');
+header("Access-Control-Allow-Methods: POST, OPTIONS");
+$method = $_SERVER['REQUEST_METHOD'];
+if ($method == "OPTIONS") {
+  header('Access-Control-Allow-Origin: *');
+  header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method,Access-Control-Request-Headers, Authorization");
+  header("HTTP/1.1 200 OK");
+  die();
+}
+
 $user = $_POST["user"];
 $user = json_decode($user, true);
 $card = $_POST["card"];
 $card = json_decode($card, true);
-$dtb;
 
 function getCard($id, $token) {
   $ch = curl_init();
 
   curl_setopt($ch, CURLOPT_URL,'http://localhost:3008/Card/card/'.$id);
   curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json', $token));
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
-  $dtb = json_decode(curl_exec($ch));
-  $res = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+  $res = json_decode(curl_exec($ch));
+  if (curl_getinfo($ch, CURLINFO_HTTP_CODE) != 200) {
+    $res = false;
+  }
   curl_close($ch);
 
   return $res;
 };
 
-function putCard($body, $token) {
+function sendCard($body, $token) {
   $ch = curl_init();
 
   curl_setopt($ch, CURLOPT_URL,'http://localhost:3008/Card');
-  curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+  if ((bool)$body['card']['id']) {
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+  } else {
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+  }
   curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($body));
   curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json', $token));
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -34,36 +53,74 @@ function putCard($body, $token) {
   return $res;
 };
 
-$authorization = "Authorization: ".$user['token'];
-
-if(getCard($card['id'], $authorization) == 200) {
+function writeImage($dir_name, $img_name, $face, $pos) {
+  $write = true;
   try {
-    mkdir("images/".$user['id']);
+    mkdir("images/".$dir_name);
 
-    $file_name = key($_FILES);
-    $target_file = "images/".$user['id']."/".$card['id']."_".$file_name.".webp";
-
-print_r('coucou');
-
-    $iMagick = new Imagick($_FILES[$file_name]["tmp_name"]);
+    $iMagick = new imagick();
+    $iMagick->readImage($_FILES['files']['tmp_name'][$pos]);
     $iMagick->scaleImage(500, 0);
     $iMagick->stripImage();
-    $iMagick->writeImage($target_file);
+    $iMagick->writeImage($img_name);
     echo "\nAll good !";
   }
   catch (\Throwable $th) {
-    $card[$file_name."_image"] = 0;
+    $write = false;
+    unlink($img_name);
+    $card[$face] = "Image non trouvée";
+    $card[$face."_image"] = null;
     $data = array(
-      "user" => json_encode($user),
-      "card" => json_encode($card),
+      "user" => $user,
+      "card" => $card,
     );
     echo "\nPb with image write... ";
-    if (putCard($data, $authorization) == 200) {
+    if (sendCard($data, $authorization) == 200) {
       echo "\nDTB unwriting ok.";
     } else {
       echo "\nDTB unwriting failed...";
     }
   }
+  return $write;
+};
+
+$authorization = "Authorization: ".$user['token'];
+
+$time = time();
+$dir = substr($time, -3);
+$file_name = "images/".$dir."/".$time.$card['id'];
+$target_file = $file_name.".webp";
+
+if ((bool)$card['recto_image'] && (bool)$card['recto_delete']) {
+  $card['recto_image'] = $file_name;
+  $card_face = 'recto';
+} else {
+  $card['verso_image'] = $file_name;
+  $card_face = 'verso';
+}
+
+if (count($_FILES['files']['name']) == 2) {
+  $time2 = time() + 1;
+  $dir2 = substr($time2, -3);
+  $file_name2 = "images/".$dir2."/".$time2.$card['id'];
+  $target_file2 = $file_name2.".webp";
+  $card['verso_image'] = $file_name2;
+}
+
+$data = array(
+  "user" => $user,
+  "card" => $card,
+);
+
+if (sendCard($data, $authorization) != 200) {
+  echo "\nBad server response";
+  die();
+}
+$call = (array)getCard($card['id'], $authorization);
+
+if($call) {
+  writeImage($dir, $target_file, $card_face, 0);
+  if (count($_FILES['files']['name']) == 2) writeImage($dir2, $target_file2, 'verso', 1);
 } else {
   echo "\nServer failed...";
 }

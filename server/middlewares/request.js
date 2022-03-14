@@ -2,6 +2,7 @@ const dtbFct = require('./dtb');
 const createObj = require('./createObj');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const axios = require('axios')
 
 exports.getCard = async (req) => {
   let resCard;
@@ -45,6 +46,15 @@ exports.putCard = async (req) => {
 
 exports.deleteCard = async (req) => {
   await dtbFct.deleteCard(req)
+};
+
+exports.deleteImg = async (req) => {
+  // php_server: "https://waran.xyz/",
+  // local: "http://localhost:8000/",
+  await axios
+  .delete('http://localhost:8000/delete_img.php', {
+    card: JSON.stringify(req.card)
+  })
 };
 
 exports.getDeck = async (req) => {

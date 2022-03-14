@@ -7,7 +7,7 @@
       <OverlayTop class="above position-absolute w-100" />
     </div>
     <div
-      class="d-flex flex-column flex-md-row align-items-start flex-grow-1 h-fit pb-5 pt-4"
+      class="position-relative d-flex flex-column flex-md-row align-items-start flex-grow-1 h-fit pb-5 pt-4"
     >
       <aside class="mt-md-3 w-100">
         <Aside />
