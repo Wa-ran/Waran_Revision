@@ -144,11 +144,11 @@ export default createStore({
         data: "card/" + cardId,
       });
     },
-    async deleteDeck() {
+    async deleteDeck({ getters }) {
       await this.dispatch("APIRequest", {
         method: "DELETE",
         serverRoute: "/Deck",
-        data: { deck: this.getters.actualDeck },
+        data: "deck/" + getters.actualDeck.id,
       });
     },
     async getAllUserDecks() {

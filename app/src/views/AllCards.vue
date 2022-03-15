@@ -2,7 +2,7 @@
   <div class="allCards w-100 mt-3">
     <button
       @click="$router.push({ name: 'NewCard' })"
-      class="btn btn-outline-primary h-fit w-fit mx-auto px-3 py-0 mt-2"
+      class="btn btn-outline-primary h-fit w-fit mx-auto px-3 py-0 mb-3"
     >
       Nouvelle carte
     </button>
@@ -69,11 +69,13 @@
             class="card bg-body border border-primary shadow h-fit p-2 text-center m-auto"
           >
             <div class="w-100 overflow-scroll">
-              <div v-html="item.recto"></div>
+              <div v-if="!item.recto_image" v-html="item.recto"></div>
+              <CardImage v-else :card="item" :face="'recto'" />
             </div>
             <cust-hr class="w-75 mx-auto my-2" />
             <div class="w-100 overflow-scroll">
-              <div v-html="item.verso"></div>
+              <div v-if="!item.verso_image" v-html="item.verso"></div>
+              <CardImage v-else :card="item" :face="'verso'" />
             </div>
           </div>
         </template>

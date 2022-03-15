@@ -116,7 +116,24 @@ exports.putDeck = async (req) => {
 };
 
 exports.deleteDeck = async (req) => {
-  await dtbFct.deleteDeck(req)
+  await this.getAllDeckCards(req)
+  .then(async (res) => {
+    for (let card of res) {
+      if (card.recto_image || card.verso_image) {
+        let del = [];
+        del.push(card.recto_image);
+        del.push(card.verso_image);
+        del = JSON.stringify(del);
+        // php_server: "https://waran.xyz/",
+        // local: "http://localhost:8000/",
+        await axios
+        .delete('http://localhost:8000/delete_img.php/' + del)
+      }
+      else continue
+    }
+    return
+  })
+  .then(() => { return dtbFct.deleteDeck(req) })
 };
 
 exports.getAllUserCards = async (req) => {

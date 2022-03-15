@@ -46,9 +46,9 @@
         <button
           @click="$router.push({ name: 'Library' })"
           type="button"
-          class="btn btn-primary h-fit py-1 mx-2"
+          class="btn btn-outline-primary h-fit py-1 mx-2"
         >
-          Arrêter
+          Annuler
         </button>
         <button
           @click="submitForm"

@@ -3,12 +3,12 @@ USE waran_revision;
 DROP TRIGGER IF EXISTS after_insert_cards;
 DROP TRIGGER IF EXISTS after_update_cards;
 
+SET SQL_SAFE_UPDATES = 0;
+
 ALTER TABLE cards ADD deck_id BIGINT UNSIGNED NOT NULL, ADD comment TEXT;
 ALTER TABLE cards MODIFY recto TEXT, MODIFY verso TEXT, MODIFY recto_image VARCHAR(50), MODIFY verso_image VARCHAR(50);
 UPDATE cards SET verso_image = NULL, recto_image = NULL;
 ALTER TABLE users ADD hide_card TINYINT(1) DEFAULT '1', ADD chrono_card TINYINT(1) DEFAULT '1', ADD fast_mode TINYINT(1) DEFAULT '1', ADD dark_mode TINYINT(1) DEFAULT NULL;
-
-SET SQL_SAFE_UPDATES = 0;
 
 UPDATE cards SET comment = CONCAT(COALESCE(recto_comment, ''), '_', COALESCE(verso_comment, ''));
 UPDATE cards SET comment = NULL WHERE comment = '_';
@@ -60,7 +60,7 @@ DELIMITER ;
 
 CALL new_decks();
 
-ALTER TABLE decks MODIFY user_id BIGINT UNSIGNED NOT NULL;
+ALTER TABLE decks MODIFY user_id BIGINT UNSIGNED NOT NULL, MODIFY sequence TEXT;
 
 ALTER TABLE cards ADD CONSTRAINT t_cards_t_decks_fk
 FOREIGN KEY (deck_id)
