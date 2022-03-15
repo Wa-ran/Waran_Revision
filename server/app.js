@@ -18,25 +18,6 @@ app.use((req, res, next) => {
 // Parser pour exploiter les données plus facilement
 app.use(bodyParser.json());
 
-app.use('/images',
-  (req, res, next) => {
-    fs.access('./images/' + req.path, error => {
-      if (error) {
-        if (req.path.match(/(avatar)/)) {
-          if (req.path.match(/(mini)/)) res.redirect('/images/avatars/user404_mini.webp')
-          else res.redirect('/images/avatars/user404.webp')
-          next()
-        }
-        else {
-          res.sendStatus(204)
-        }
-      } else {
-        next()
-      }
-    })
-  },
-  express.static(path.join(__dirname, 'images')));
-
 app.use('/', router);
 
 module.exports = app;

@@ -41,20 +41,57 @@ exports.postCard = async (req) => {
 
 exports.putCard = async (req) => {
   req.card.updateCard();
-  await dtbFct.updateCard(req)
+  await this.updateImgs(req)
+  .then(() => { return dtbFct.updateCard(req) })
 };
 
 exports.deleteCard = async (req) => {
-  await dtbFct.deleteCard(req)
+  await this.deleteImgs(req)
+  .then(() => { return dtbFct.deleteCard(req) })
 };
 
-exports.deleteImg = async (req) => {
-  // php_server: "https://waran.xyz/",
-  // local: "http://localhost:8000/",
-  await axios
-  .delete('http://localhost:8000/delete_img.php', {
-    card: JSON.stringify(req.card)
+exports.deleteImgs = async (req) => {
+  await dtbFct.selectCard(req)
+  .then(dtbCard => {
+    return createObj("card", dtbCard[0])
   })
+  .then((dtbCard) => {
+    if (dtbCard.recto_image || dtbCard.verso_image) {
+      let del = [];
+      del.push(dtbCard.recto_image);
+      del.push(dtbCard.verso_image);
+      del = JSON.stringify(del);
+      // php_server: "https://waran.xyz/",
+      // local: "http://localhost:8000/",
+      return axios
+      .delete('http://localhost:8000/delete_img.php/' + del)
+    }
+    else return
+  })
+};
+
+exports.updateImgs = async (req) => {
+  if (!req.card.recto_image && !req.card.verso_image) {
+    // Si image = géré par serveur php
+    await dtbFct.selectCard(req)
+    .then(dtbCard => {
+      return createObj("card", dtbCard[0])
+    })
+    .then((dtbCard) => {
+      if (dtbCard.recto_image || dtbCard.verso_image) {
+        let del = [];
+        if (dtbCard.recto_image !== req.card.recto_image && dtbCard.recto_image !== req.card.verso_image) del.push(dtbCard.recto_image);
+        if (dtbCard.verso_image !== req.card.recto_image && dtbCard.verso_image !== req.card.verso_image) del.push(dtbCard.verso_image);
+        del = JSON.stringify(del);
+        // php_server: "https://waran.xyz/",
+        // local: "http://localhost:8000/",
+        return axios
+        .delete('http://localhost:8000/delete_img.php/' + del)
+      }
+      else return
+    })
+  }
+  else return
 };
 
 exports.getDeck = async (req) => {

@@ -13,43 +13,23 @@ if ($method == "OPTIONS") {
 }
 
 $data = json_decode(substr($_SERVER['PATH_INFO'], 1), true);
-$user = $data["user"];
-$image1 = $data["images"][0];
-$image2 = $data["images"][1];
-
-function getCard($id, $token) {
-  $ch = curl_init();
-
-  curl_setopt($ch, CURLOPT_URL,'http://localhost:3008/Card/card/'.$id);
-  curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json', $token));
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-
-  $res = json_decode(curl_exec($ch));
-  if (curl_getinfo($ch, CURLINFO_HTTP_CODE) != 200) {
-    $res = false;
-  }
-  curl_close($ch);
-
-  return $res;
+$image1 = $data[0];
+$image2 = $data[1];
+echo $data;
+echo json_encode($data);
+echo $image1;
+echo $image2;
+if (file_exists($image1.'.webp')) {
+  unlink($image1.'.webp');
+  echo "\nRecto deleted.";
+} else {
+  echo "\nNothing to delete (recto).";
 };
-
-$authorization = "Authorization: ".$user['token'];
-
-$call = (array)getCard($card['id'], $authorization);
-
-if($call) {
-  if (file_exists($image1.'.webp')) {
-    unlink($image1.'.webp');
-    echo "\nRecto deleted.";
-  } else {
-    echo "\nNothing to delete (recto).";
-  };
-  if(file_exists($image2.'.webp')) {
-    unlink($image2.'.webp');
-    echo "\nVerso deleted.";
-  }
-  else {
-    echo "\nNothing to delete (verso).";
-  };
+if(file_exists($image2.'.webp')) {
+  unlink($image2.'.webp');
+  echo "\nVerso deleted.";
 }
+else {
+  echo "\nNothing to delete (verso).";
+};
 ?>

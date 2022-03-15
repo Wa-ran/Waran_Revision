@@ -30,7 +30,7 @@ module.exports = async (req, res, next) => {
   };
 
   needToken().then(() => {
-    if (method === "get") {
+    if (method === "get" || method === "delete") {
       let objName = req.params.object;
       let object = { 'id': req.params.id };
       req.body[objName] = object;

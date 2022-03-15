@@ -91,7 +91,7 @@ $dir = substr($time, -3);
 $file_name = "images/".$dir."/".$time.$card['id'];
 $target_file = $file_name.".webp";
 
-if ((bool)$card['recto_image'] && (bool)$card['recto_delete']) {
+if ((bool)$card['recto_image'] && !file_exists($file_name)) {
   $card['recto_image'] = $file_name;
   $card_face = 'recto';
 } else {
@@ -112,15 +112,20 @@ $data = array(
   "card" => $card,
 );
 
-if (sendCard($data, $authorization) != 200) {
-  echo "\nBad server response";
-  die();
-}
 $call = (array)getCard($card['id'], $authorization);
 
 if($call) {
+  $img_array = array($card['recto_image'], $card['verso_image']);
+  if (!in_array($call['recto_image'], $img_array)) unlink($call['recto_image'].'.webp');
+  if (!in_array($call['verso_image'], $img_array)) unlink($call['verso_image'].'.webp');
   writeImage($dir, $target_file, $card_face, 0);
   if (count($_FILES['files']['name']) == 2) writeImage($dir2, $target_file2, 'verso', 1);
+  if (sendCard($data, $authorization) != 200) {
+    unlink($target_file);
+    if ($target_file2) unlink($target_file2);
+    echo "\nBad server response";
+    die();
+  }
 } else {
   echo "\nServer failed...";
 }

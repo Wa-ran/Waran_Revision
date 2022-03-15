@@ -6,7 +6,7 @@ const ctrl = require('../controllers/controller');
 router.get('/:fctName/:object/:id', ctrl);
 router.post('/:fctName', ctrl)
 router.put('/:fctName', ctrl);
-router.delete('/:fctName', ctrl);
+router.delete('/:fctName/:object/:id', ctrl);
 
 
 // router.post('/signup', userCtrl.signup);

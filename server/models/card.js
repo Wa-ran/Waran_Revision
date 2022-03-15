@@ -129,6 +129,7 @@ module.exports = class Card extends revisionObj {
     }
     return adapt_level;
   };
+
   suggestUpLevel() {
     let adapt_level = null;
     if (this.decalage > 24) {

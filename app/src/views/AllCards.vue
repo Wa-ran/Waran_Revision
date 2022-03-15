@@ -1,5 +1,12 @@
 <template>
   <div class="allCards w-100 mt-3">
+    <button
+      @click="$router.push({ name: 'NewCard' })"
+      class="btn btn-outline-primary h-fit w-fit mx-auto px-3 py-0 mt-2"
+    >
+      Nouvelle carte
+    </button>
+
     <div
       v-if="$store.getters.actualDeck.sequence"
       class="d-flex flex-row justify-content-evenly flex-wrap w-100"
@@ -22,12 +29,20 @@
           <template #body>
             <div class="d-flex flex-column p-2 h-100 text-center">
               <div class="flex-grow-1 w-100 h-25 overflow-scroll">
-                <div v-if="!card.recto_image" v-html="card.recto" class="view"></div>
+                <div
+                  v-if="!card.recto_image"
+                  v-html="card.recto"
+                  class="view"
+                ></div>
                 <CardImage v-else :card="card" :face="'recto'" />
               </div>
               <cust-hr class="w-75 mx-auto my-2" />
               <div class="flex-grow-1 w-100 h-25 overflow-scroll">
-                <div v-if="!card.verso_image" v-html="card.verso" class="view"></div>
+                <div
+                  v-if="!card.verso_image"
+                  v-html="card.verso"
+                  class="view"
+                ></div>
                 <CardImage v-else :card="card" :face="'verso'" />
               </div>
             </div>

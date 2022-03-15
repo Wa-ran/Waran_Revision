@@ -60,8 +60,7 @@ export default {
             });
         }
         return true;
-      }
-      else return
+      } else return;
     },
     mixShowDeck(card) {
       for (let deck of this.$store.state.decksList) {

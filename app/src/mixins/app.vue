@@ -69,10 +69,11 @@ export default {
   },
   watch: {
     actualCard() {
-      if (!this.loading) this.mutateApp(
-        "actualCardChange",
-        this.$store.state.app.actualCardChange + 1
-      );
+      if (!this.loading)
+        this.mutateApp(
+          "actualCardChange",
+          this.$store.state.app.actualCardChange + 1
+        );
     },
     allCardsDeckCheck() {
       if (this.allCardsDeckCheck) {

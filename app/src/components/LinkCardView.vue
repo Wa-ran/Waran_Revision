@@ -4,13 +4,15 @@
       v-if="positionSaved"
       @click="
         $router.push(
-          positionSavedDesc ? positionSaved.path : { name: 'DeckView' }
+          positionSavedDesc ? positionSaved.path : { name: 'AllCards' }
         )
       "
       class="position-absolute d-flex flex-row align-items-center btn btn-outline-primary border-0 h-fit w-fit mt-1 mb-n5 ms-md-3 py-1 text-nowrap"
     >
       <font-awesome-icon :icon="['fas', 'arrow-left']" size="sm" />
-      <span class="px-1"> {{ positionSavedDesc || "Voir le deck" }}</span>
+      <span class="px-1">
+        {{ positionSavedDesc || "Voir la liste des cartes" }}</span
+      >
     </button>
 
     <button
@@ -18,7 +20,7 @@
       @click="$router.push({ name: 'NewCard' })"
       class="position-absolute end-0 d-flex flex-row align-items-center btn btn-outline-primary border-0 h-fit w-fit mt-1 mb-n5 me-3 me-md-4 py-1 text-nowrap"
     >
-      <span class="px-1"> {{ "Créer une autre carte" }}</span>
+      <span class="px-1">Créer une autre carte</span>
       <font-awesome-icon :icon="['fas', 'arrow-right']" size="sm" />
     </button>
   </div>

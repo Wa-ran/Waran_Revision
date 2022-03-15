@@ -17,13 +17,21 @@
         <span class="text-primary">{{
           actualCard.reverse ? "Recto :" : "Question"
         }}</span>
-        <div v-if="!actualCard.recto_image" v-html="actualCard.recto" class="text-center px-3 mb-3"></div>
+        <div
+          v-if="!actualCard.recto_image"
+          v-html="actualCard.recto"
+          class="text-center px-3 mb-3"
+        ></div>
         <CardImage v-else :card="actualCard" :face="'recto'" />
 
         <span class="text-primary">{{
           actualCard.reverse ? "Verso :" : "Réponse"
         }}</span>
-        <div v-if="!actualCard.verso_image" v-html="actualCard.verso" class="text-center px-3 mb-3"></div>
+        <div
+          v-if="!actualCard.verso_image"
+          v-html="actualCard.verso"
+          class="text-center px-3 mb-3"
+        ></div>
         <CardImage v-else :card="actualCard" :face="'verso'" />
 
         <cust-hr class="w-75 mx-auto" />

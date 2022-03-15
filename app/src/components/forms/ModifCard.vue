@@ -5,7 +5,15 @@
       <label for="CardRecto" class="fs-5 ms-n3">
         {{ card.reverse ? "Recto" : "Question" }} :
       </label>
-      <ImageInput v-if="card.recto_image" @fileChange="card.recto_image = !!$event ? $event : origCard.recto_image" :card="card" :face="'recto'" class="my-2" />
+      <ImageInput
+        v-if="card.recto_image"
+        @fileChange="
+          card.recto_image = !!$event ? $event : origCard.recto_image
+        "
+        :card="card"
+        :face="'recto'"
+        class="my-2"
+      />
       <TextEditor
         v-else
         id="CardRecto"
@@ -21,7 +29,11 @@
             class="form-check-input"
             type="checkbox"
             id="recto_image"
-            @click="card.recto_image = card.recto_image ? null : origCard.recto_image || true"
+            @click="
+              card.recto_image = card.recto_image
+                ? null
+                : origCard.recto_image || true
+            "
           />
           <label class="form-check-label italic" for="recto_image">
             Insérer une image
@@ -50,7 +62,15 @@
       <label for="CardVerso" class="fs-5 ms-n3">
         {{ card.reverse ? "Verso" : "Réponse" }} :
       </label>
-      <ImageInput v-if="card.verso_image" @fileChange="card.verso_image = !!$event ? $event : origCard.verso_image" :card="card" :face="'verso'" class="my-2" />
+      <ImageInput
+        v-if="card.verso_image"
+        @fileChange="
+          card.verso_image = !!$event ? $event : origCard.verso_image
+        "
+        :card="card"
+        :face="'verso'"
+        class="my-2"
+      />
       <TextEditor
         v-else
         id="CardVerso"
@@ -66,7 +86,11 @@
             class="form-check-input"
             type="checkbox"
             id="verso_image"
-            @click="card.verso_image = card.verso_image ? null : origCard.verso_image || true"
+            @click="
+              card.verso_image = card.verso_image
+                ? null
+                : origCard.verso_image || true
+            "
           />
           <label class="form-check-label italic" for="verso_image">
             Insérer une image
@@ -175,39 +199,40 @@
         {{ options ? "Masquer les options" : "Afficher plus d'options" }}
       </button>
 
-      <div class="d-flex ms-auto">
-        <button
-          @click.prevent="submitForm"
-          class="btn w-fit py-1"
-          :class="modif ? 'btn-primary' : 'btn-outline-primary disabled'"
+      <div class="d-flex flex-column ms-auto">
+        <div class="d-flex">
+          <button
+            @click.prevent="submitForm"
+            class="btn w-100 py-1"
+            :class="modif ? 'btn-primary' : 'btn-outline-primary disabled'"
+          >
+            Valider
+          </button>
+          <button
+            @click.prevent="annulForm"
+            class="btn w-fit ms-2 py-1"
+            :class="modif ? 'btn-outline-primary' : 'btn-primary'"
+          >
+            Terminer
+          </button>
+        </div>
+        <!-- Bouton supprimer -->
+        <DoubleCheckButton
+          v-if="card.id"
+          @checkedClick="deleteCard"
+          class="btn ms-auto mt-2"
+          :classDefault="'btn-danger'"
         >
-          Valider
-        </button>
-        <button
-          @click.prevent="annulForm"
-          class="btn w-fit ms-2 py-1"
-          :class="modif ? 'btn-outline-primary' : 'btn-primary'"
-        >
-          Terminer
-        </button>
+          <template v-slot:default>
+            <font-awesome-icon :icon="['fas', 'trash-alt']" />
+            <span class="ms-2 flex-grow-1">Supprimer la carte</span>
+          </template>
+          <template v-slot:checked>
+            <font-awesome-icon :icon="['fas', 'trash-alt']" />
+            <span class="ms-2 flex-grow-1">Supprimer ?</span>
+          </template>
+        </DoubleCheckButton>
       </div>
-
-      <!-- Bouton supprimer -->
-      <DoubleCheckButton
-        v-if="actualCard.id"
-        @checkedClick="deleteCard"
-        class="btn ms-auto mt-2"
-        :classDefault="'btn-danger'"
-      >
-        <template v-slot:default>
-          <font-awesome-icon :icon="['fas', 'trash-alt']" />
-          <span class="ms-2 flex-grow-1">Supprimer la carte</span>
-        </template>
-        <template v-slot:checked>
-          <font-awesome-icon :icon="['fas', 'trash-alt']" />
-          <span class="ms-2 flex-grow-1">Supprimer ?</span>
-        </template>
-      </DoubleCheckButton>
     </div>
   </form>
 </template>
@@ -232,7 +257,7 @@ export default {
     return {
       card: {},
       change: 0,
-      load: false,
+      charged: false,
       options: false,
       origCard: null,
       modif: false,
@@ -260,30 +285,42 @@ export default {
       else this.$router.push({ name: "DeckView" });
     },
     async submitForm() {
-      this.mutateApp('loading', true);
-      if ((this.card.recto || this.card.recto_image) && (this.card.verso || this.card.verso_image)) {
+      if (!this.card.recto && !this.card.recto_image) {
+        document
+          .querySelector("#CardRecto .contentEditable")
+          .scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+      if (!this.card.verso && !this.card.verso_image) {
+        document
+          .querySelector("#CardVerso .contentEditable")
+          .scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+      if (
+        (this.card.recto || this.card.recto_image) &&
+        (this.card.verso || this.card.verso_image)
+      ) {
         let newCard = !this.card.id;
         let files = [];
         for (let input of document.querySelectorAll('input[type="file"]')) {
           if (!document.getElementById(this.card.id + input.name)) {
-          // check if img is present
+            // check if img is present
             this.files = [];
             return input.focus();
           }
           if (input.files[0]) files.push(input.files[0]);
         }
-        this.mutateKey('filesInputs', files);
+        this.mutateKey("filesInputs", files);
         if (this.card.recto_image) this.card.recto = "";
         if (this.card.verso_image) this.card.verso = "";
-        if (this.card.recto_image !== this.origCard.recto_image && this.origCard.recto_image) this.card['recto_delete'] = this.origCard.recto_image;
-        if (this.card.verso_image !== this.origCard.verso_image && this.origCard.verso_image) this.card['verso_delete'] = this.origCard.verso_image;
-        this.mutateKey('actualCard', this.card);
+        this.mutateKey("actualCard", this.card);
+        this.mutateApp("loading", true);
+        this.submitted = true;
         await this.mixHandleSubmit(this.card)
           .then(() => {
-            this.submitted = true;
-            if (newCard) return this.$store.dispatch('getLastUserCard')
-            else return this.$store.dispatch('getCard')
+            if (newCard) return this.$store.dispatch("getLastUserCard");
+            else return this.$store.dispatch("getCard");
           })
+          .then(() => this.$router.push({ name: "Library" }))
           .then(() =>
             this.$router.push({
               name: "CardView",
@@ -295,24 +332,40 @@ export default {
           )
           .then(() => {
             if (newCard) this.mutateApp("positionSaved", { name: "NewCard" });
-            this.mutateApp('loading', false);
-          });
+            this.mutateApp("loading", false);
+          })
+          .catch(() => (this.submitted = false));
       }
     },
     async deleteCard() {
-      if (this.origCard.recto_image) this.card['recto_delete'] = this.origCard.recto_image;
-      if (this.origCard.verso_image) this.card['verso_delete'] = this.origCard.verso_image;
-      this.mutateKey('actualCard', this.card);
+      this.mutateKey("actualCard", this.card);
       await this.$store
         .dispatch("deleteCard")
-        .then(() => this.$router.push(this.positionSaved.path))
-        .then(() => this.mutateApp('loading', false))
+        .then(() => {
+          this.$router.push({ name: "Library" });
+        })
+        .then(() => {
+          setTimeout(() => {
+            if (
+              this.$store.state.app.positionSaved &&
+              this.$store.state.app.positionSaved.path
+            )
+              this.$router.push(this.$store.state.app.positionSaved.path);
+            else
+              this.$router.push({
+                name: "DeckView",
+                params: { deck: this.card.deck_id },
+              });
+          });
+        })
+        .then(() => this.mutateApp("loading", false));
     },
     beforeExit() {
-      if (!this.submitted) this.mutateKey("formCompare", {
-        source: this.origCard,
-        modified: this.card,
-      });
+      if (!this.submitted)
+        this.mutateKey("formCompare", {
+          source: this.origCard,
+          modified: this.card,
+        });
     },
   },
   beforeMount() {
@@ -323,18 +376,26 @@ export default {
       this.card.deck_id = this.$store.getters.actualDeck.id;
       this.modif = false;
     }
-    if (this.card.recto_image || this.card.verso_image || this.card.recto_formula || this.card.verso_formula || this.card.comment || !this.card.reverse) this.options = true;
+    if (
+      this.card.recto_image ||
+      this.card.verso_image ||
+      this.card.recto_formula ||
+      this.card.verso_formula ||
+      this.card.comment ||
+      !this.card.reverse
+    )
+      this.options = true;
     this.origCard = { ...this.card };
   },
   mounted() {
-    console.log('coucou')
-    this.mutateKey('filesInputs', []);
-    this.load = true;
+    this.mutateKey("filesInputs", []);
+    this.charged = true;
   },
   watch: {
     cardChange() {
       if (
-        this.load && !this.submitted &&
+        this.charged &&
+        !this.submitted &&
         JSON.stringify(this.card) !== JSON.stringify(this.origCard)
       )
         this.modif = true;

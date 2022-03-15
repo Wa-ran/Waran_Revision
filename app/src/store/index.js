@@ -136,14 +136,13 @@ export default createStore({
       context.commit("removeListItem", payload);
     },
     async deleteCard(context, payload) {
-      await this.dispatch("deleteImg")
-      .then(() => {
-        this.dispatch("APIRequest", {
-          method: "DELETE",
-          serverRoute: "/Card",
-          data: { card: payload.card || this.state.actualCard },
-        })
-      })
+      let cardId =
+        payload && payload.card ? payload.card.id : this.state.actualCard.id;
+      await this.dispatch("APIRequest", {
+        method: "DELETE",
+        serverRoute: "/Card",
+        data: "card/" + cardId,
+      });
     },
     async deleteDeck() {
       await this.dispatch("APIRequest", {
@@ -151,25 +150,6 @@ export default createStore({
         serverRoute: "/Deck",
         data: { deck: this.getters.actualDeck },
       });
-    },
-    async deleteImg(context, req = null) {
-      if (this.state.actualCard.recto_delete || this.state.actualCard.verso_delete) {
-        req = {};
-        req['method'] = "DELETE";
-        req['serverRoute'] = "";
-        req['serverAddress'] = this.state.serverAddress.php_server + 'delete_img.php';
-        req['headers'] = { 'Authorization': this.state.user.token };
-        req['data'] = {};
-        req.data['user'] = this.state.user.id;
-        req.data['images'] = [];
-        req.data.images.push(this.state.actualCard.recto_delete || null);
-        req.data.images.push(this.state.actualCard.verso_delete || null);
-        req.data = JSON.stringify(req.data);
-      };
-      if (req) {
-        await this.dispatch("APIRequest", req);
-      }
-      else return
     },
     async getAllUserDecks() {
       await this.dispatch("APIRequest", {
@@ -229,11 +209,13 @@ export default createStore({
       });
     },
     async postCard(context, req = null) {
-      req = req ? req : {
-        method: "POST",
-        serverRoute: "/Card",
-        data: { card: this.state.actualCard },
-      };
+      req = req
+        ? req
+        : {
+            method: "POST",
+            serverRoute: "/Card",
+            data: { card: this.state.actualCard },
+          };
       await this.dispatch("APIRequest", req);
     },
     async postDeck(context, deck) {
@@ -245,11 +227,13 @@ export default createStore({
       });
     },
     async putCard(context, req = null) {
-      req = req ? req : {
-        method: "PUT",
-        serverRoute: "/Card",
-        data: { card: this.state.actualCard },
-      };
+      req = req
+        ? req
+        : {
+            method: "PUT",
+            serverRoute: "/Card",
+            data: { card: this.state.actualCard },
+          };
       await this.dispatch("APIRequest", req);
     },
     async putDeck({ getters }, deck) {
@@ -268,23 +252,21 @@ export default createStore({
       });
     },
     async submitCard() {
-      await this.dispatch("deleteImg")
-      .then(() => {
-        let req = null;
-        if (this.state.filesInputs.length > 0) {
-          req = {};
-          req['method'] = "POST";
-          req['serverRoute'] = "";
-          req['serverAddress'] = this.state.serverAddress.php_server + 'post_img.php';
-          req['headers'] = { 'Authorization': this.state.user.token };
-          req['formData'] = true;
-          req['data'] = {};
-          req.data['user'] = this.state.user;
-          req.data['card'] = this.state.actualCard;
-        };
-        if (!this.state.actualCard.id) return this.dispatch("postCard", req);
-        else return this.dispatch("putCard", req);
-      })
+      let req = null;
+      if (this.state.filesInputs.length > 0) {
+        req = {};
+        req["method"] = "POST";
+        req["serverRoute"] = "";
+        req["serverAddress"] =
+          this.state.serverAddress.php_server + "post_img.php";
+        req["headers"] = { Authorization: this.state.user.token };
+        req["formData"] = true;
+        req["data"] = {};
+        req.data["user"] = this.state.user;
+        req.data["card"] = this.state.actualCard;
+      }
+      if (!this.state.actualCard.id) await this.dispatch("postCard", req);
+      else await this.dispatch("putCard", req);
     },
     async APIRequest(context, req) {
       if (!this.state.error.pending) {
@@ -341,13 +323,13 @@ export default createStore({
         route = route + "/" + body;
         body = null;
       } else if (req.formData) {
-        route = '';
+        route = "";
         let form = new FormData();
         for (let [key, value] of Object.entries(body)) {
           form.append(key, JSON.stringify(value));
         }
         for (let input of this.state.filesInputs) {
-          form.append('files[]', input);
+          form.append("files[]", input);
         }
         body = form;
       } else if (typeof body === "object") {
@@ -376,7 +358,7 @@ export default createStore({
           throw err;
         } else {
           try {
-            return await res.json()
+            return await res.json();
           } catch (error) {
             return null; // Si le serveur renvois un statut 2XX/3XX seul
           }

@@ -17,7 +17,7 @@
 
 <script>
 export default {
-  name: 'ImageInput',
+  name: "ImageInput",
   props: {
     card: {
       type: Object,
@@ -36,26 +36,24 @@ export default {
     return {
       alert: null,
       path: null,
-    }
+    };
   },
   methods: {
     filePreview(event) {
       if (event.target.files[0].size > 2097152) {
         event.target.value = null;
-        this.$emit('fileChange', null);
         this.path = null;
-        return this.alert = "Image trop volumineuse (2MB max)"
-      }
-      else this.alert = null;
+        return (this.alert = "Image trop volumineuse (2MB max)");
+      } else this.alert = null;
       let url = URL.createObjectURL(event.target.files[0]);
       this.path = url;
-      this.$emit('fileChange', new Date());
+      this.$emit("fileChange", new Date());
     },
   },
   mounted() {
     this.path = this.filePath;
-  }
-}
+  },
+};
 </script>
 
 <style lang="scss" scoped>

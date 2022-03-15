@@ -58,7 +58,7 @@ import ButtonTopRight from "@/components/global/ButtonTopRight.vue";
 import DoubleCheckButton from "@/components/global/DoubleCheckButton.vue";
 import Loader from "@/components/global/Loader.vue";
 import Options from "@/components/global/Options.vue";
-import CardImage from "@/components/global/CardImage.vue"
+import CardImage from "@/components/global/CardImage.vue";
 
 library.add(
   faArrowLeft,
