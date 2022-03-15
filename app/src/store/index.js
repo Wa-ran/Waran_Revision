@@ -97,10 +97,14 @@ export default createStore({
     },
   },
   mutations: {
-    mergeReservedCards(state, payload) {
+    mergeReservedCards(state) {
       if (state.cardsReservedList.length > 0) {
-        state[payload] = [...state[payload], ...state.cardsReservedList];
+        state.cardsToReviseBaseList = [
+          ...state.cardsToReviseBaseList,
+          ...state.cardsReservedList,
+        ];
       }
+      state.cardsReservedList = [];
     },
     mutateKey(state, payload) {
       let mutate = payload.sKey;
@@ -131,7 +135,7 @@ export default createStore({
     reserveCard(context, payload) {
       context.commit("mutateKey", {
         sKey: "cardsReservedList",
-        body: payload.item || this.state.actualCard,
+        body: payload.item,
       });
       context.commit("removeListItem", payload);
     },

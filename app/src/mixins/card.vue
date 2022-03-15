@@ -67,9 +67,9 @@ export default {
         if (deck.id == card.deck_id) return deck.title;
       }
     },
-    mixShowLevel(card) {
-      let level = Math.trunc(card.level / 2);
-      if (card.level % 2 === 1) level++;
+    mixShowLevel(cardLevel) {
+      let level = Math.trunc(cardLevel / 2);
+      if (cardLevel % 2 === 1) level++;
       else if (level !== 0) level += "+";
       return level;
     },
@@ -108,9 +108,13 @@ export default {
         .then(() => {
           if (!this.actualCard.id) {
             return this.$store.dispatch("getLastUserCard");
-          } else if (this.actualCard.level === 0) {
+          } else if (
+            this.actualCard.level === 0 ||
+            (!this.actualCard.win && this.actualCard.adapt_level_down === 0)
+          ) {
             return this.$store.dispatch("reserveCard", {
               list: "cardsToReviseBaseList",
+              item: this.actualCard,
             });
           } else {
             return this.$store.dispatch("mutateStore", {

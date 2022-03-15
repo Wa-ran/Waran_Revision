@@ -45,7 +45,7 @@
         <cust-hr class="w-75 mx-auto" />
         <div class="mb-2">
           <span class="text-primary">Niveau :&nbsp;&nbsp;</span>
-          <span class="bold">{{ mixShowLevel(actualCard) }}</span>
+          <span class="bold">{{ mixShowLevel(actualCard.level) }}</span>
           <span v-if="mixShowRevision(actualCard)" class="italic"
             >&nbsp;&nbsp;(révision {{ mixShowRevision(actualCard) }})</span
           >

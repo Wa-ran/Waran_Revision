@@ -61,17 +61,17 @@
               <button
                 v-else-if="actualCard.comment && !displayComment && flipped"
                 @click="displayComment = true"
-                class="btn btn-primary py-0 mx-auto mb-1"
+                class="btn btn-primary py-0 mx-auto mb-2"
               >
-                Voir mes notes
+                Voir les commentaires
               </button>
 
               <button
                 v-if="actualCard.comment && displayComment"
                 @click="displayComment = false"
-                class="btn btn-primary py-0 mx-auto mb-1"
+                class="btn btn-primary py-0 mx-auto mb-2"
               >
-                Cacher mes notes
+                Cacher les commentaires
               </button>
             </div>
           </div>
@@ -190,6 +190,7 @@ export default {
   },
   async mounted() {
     this.setActualCard();
+    this.mutateStore("mergeReservedCards");
   },
   unmounted() {
     this.mutateApp("cardReviserCharged", false);

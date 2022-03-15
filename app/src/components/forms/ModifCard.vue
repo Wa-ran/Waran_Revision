@@ -163,7 +163,7 @@
           <font-awesome-icon :icon="['far', 'minus-square']" />
         </button>
 
-        <div class="level bold mx-1">{{ mixShowLevel(card) }}</div>
+        <div class="level bold mx-1">{{ mixShowLevel(card.level) }}</div>
 
         <button
           @click.prevent="card.level++"
@@ -172,14 +172,27 @@
         >
           <font-awesome-icon :icon="['far', 'plus-square']" />
         </button>
-        <cust-tooltip
-          class="ms-0 me-0 mt-n3"
-          :text="'Si vous venez de réviser la carte, la réussite/défaite est prise en compte.'"
-        />
 
         <span v-if="mixShowRevision(card)" class="italic"
           >&nbsp;&nbsp;(révision {{ mixShowRevision(card) }})</span
         >
+      </div>
+      <div class="mt-2">
+        Si vous venez de réviser, il est conseillé de passer la carte :
+        <ul>
+          <li>
+            au niveau
+            <span class="fw-bold">{{
+              mixShowLevel(card.adapt_level_down)
+            }}</span>
+            si vous avez <span class="fst-italic">perdu</span> ;
+          </li>
+          <li>
+            au niveau
+            <span class="fw-bold">{{ mixShowLevel(card.adapt_level_up) }}</span>
+            si vous avez <span class="fst-italic">gagné</span>.
+          </li>
+        </ul>
       </div>
     </div>
 
@@ -204,7 +217,7 @@
           <button
             @click.prevent="submitForm"
             class="btn w-100 py-1"
-            :class="modif ? 'btn-primary' : 'btn-outline-primary disabled'"
+            :class="modif ? 'btn-primary' : 'btn-outline-primary'"
           >
             Valider
           </button>
@@ -370,6 +383,7 @@ export default {
   },
   beforeMount() {
     this.card = { ...this.actualCard };
+    this.card.win = null;
     if (this.$route.name === "NewCard") {
       this.card = { ...this.$store.state.newCard };
       this.card.user_id = this.$store.state.user.id;

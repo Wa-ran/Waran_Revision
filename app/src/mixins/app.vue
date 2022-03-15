@@ -98,9 +98,9 @@ export default {
     cardsListCharged() {
       this.mutateKey("cardsReservedList", []);
     },
-    cardReviserCharged() {
-      this.mutateStore("mergeReservedCards");
-    },
+    // cardReviserCharged() {
+    //   this.mutateStore("mergeReservedCards");
+    // },
     darkMode() {
       if (this.storeReset && this.darkMode !== undefined) {
         // because setState in $store use Object.assign which briefly delete the $store.state, causing this.DarkMode = undefined

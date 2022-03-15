@@ -118,7 +118,7 @@ module.exports = class Card extends revisionObj {
   };
 
   suggestDownLevel() {
-    let adapt_level = null;
+    let adapt_level = this.level - 1;
     if (this.decalage > 24) {
       adapt_level = this.level - 1;
       let level_hours = this.decalage;
@@ -127,11 +127,13 @@ module.exports = class Card extends revisionObj {
         adapt_level--;
       } while (level_hours >= 0 && adapt_level > 0);
     }
+    if (adapt_level % 2 === 0) adapt_level--;
+    if (adapt_level < 0) adapt_level = 0;
     return adapt_level;
   };
 
   suggestUpLevel() {
-    let adapt_level = null;
+    let adapt_level = this.level + 1;
     if (this.decalage > 24) {
       let level_up = this.decalage + HOURS_SUITE[this.level];
       for (let [key, value] of Object.entries(HOURS_SUITE)) {
@@ -141,6 +143,7 @@ module.exports = class Card extends revisionObj {
         }
       }
     }
+    if (adapt_level === this.level) adapt_level++;
     return adapt_level;
   };
 }
