@@ -38,7 +38,7 @@ export default {
         switch (link.name) {
           case "DeckView":
             desc += ` (${
-              this.$store.getters.actualDeck.title || "Pas de titre"
+              this.$store.state.actualDeck.title || "Pas de titre"
             })`;
             break;
           case "CardView":

@@ -289,7 +289,7 @@ export default {
     selectDeck() {
       let select = document.querySelectorAll("select option");
       for (let option of select) {
-        if (option.value == this.$store.getters.actualDeck.id)
+        if (option.value == this.$store.state.actualDeck.id)
           return (option.selected = true);
       }
     },
@@ -387,7 +387,7 @@ export default {
     if (this.$route.name === "NewCard") {
       this.card = { ...this.$store.state.newCard };
       this.card.user_id = this.$store.state.user.id;
-      this.card.deck_id = this.$store.getters.actualDeck.id;
+      this.card.deck_id = this.$store.state.actualDeck.id;
       this.modif = false;
     }
     if (

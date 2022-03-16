@@ -121,7 +121,7 @@ export default {
   name: "DeckView",
   computed: {
     actualDeck() {
-      return this.$store.getters.actualDeck;
+      return this.$store.state.actualDeck;
     },
   },
   mounted() {

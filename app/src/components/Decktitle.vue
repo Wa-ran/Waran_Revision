@@ -18,7 +18,7 @@ export default {
   name: "DeckTitle",
   computed: {
     actualDeck() {
-      return this.$store.getters.actualDeck;
+      return this.$store.state.actualDeck;
     },
   },
 };

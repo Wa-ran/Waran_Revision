@@ -16,7 +16,7 @@ export default {
     },
     optionsList() {
       return [
-        this.$store.getters.actualDeck.sequence
+        this.$store.state.actualDeck.sequence
           ? ""
           : {
               appKey: "allCardsShowCheck",
@@ -27,13 +27,22 @@ export default {
           desc: this.allCardsDeckCheck
             ? "Sélectionnez des cartes"
             : "Transférer des cartes dans un autre deck",
+          radio: true,
         },
         {
           appKey: "allCardsDropCheck",
           desc: this.allCardsDropCheck
             ? "Sélectionnez des cartes"
             : "Supprimer des cartes",
+          radio: true,
         },
+        this.$store.state.actualDeck.sequence
+          ? {
+              appKey: "sequenceListCheck",
+              desc: "Modifier l'ordre des cartes",
+              radio: true,
+            }
+          : "",
       ];
     },
   },

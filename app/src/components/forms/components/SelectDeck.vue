@@ -39,7 +39,7 @@ export default {
   mounted() {
     let select = document.querySelectorAll("select option");
     for (let option of select) {
-      if (option.value == this.$store.getters.actualDeck.id)
+      if (option.value == this.$store.state.actualDeck.id)
         return (option.selected = true);
     }
   },

@@ -60,7 +60,7 @@
       </div>
 
       <!-- Bouton supprimer -->
-      <div v-if="$store.getters.actualDeck" class="w-100">
+      <div v-if="$store.state.actualDeck" class="w-100">
         <DoubleCheckButton @checkedClick="deleteDeck" class="btn ms-auto py-1">
           <template v-slot:default>
             <font-awesome-icon :icon="['fas', 'trash-alt']" />
@@ -106,7 +106,7 @@ export default {
       });
     },
     async submitDeck() {
-      if (this.$store.getters.actualDeck) {
+      if (this.$store.state.actualDeck) {
         await this.$store.dispatch("putDeck", this.deck).then(() => {
           this.$router.push({ name: "DeckView" });
         });
@@ -124,8 +124,8 @@ export default {
     },
   },
   mounted() {
-    if (this.$store.getters.actualDeck)
-      this.deck = { ...this.$store.getters.actualDeck };
+    if (this.$store.state.actualDeck)
+      this.deck = { ...this.$store.state.actualDeck };
     this.origDeck = this.deck;
   },
   watch: {

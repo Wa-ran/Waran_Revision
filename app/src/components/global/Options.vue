@@ -20,6 +20,7 @@
           :key="index"
           :appKey="option.appKey"
           :desc="option.desc"
+          @click="handleRadio(option)"
           v-show="option"
         />
       </div>
@@ -43,6 +44,16 @@ export default {
     optionsList: {
       type: Array,
       default: () => [],
+    },
+  },
+  methods: {
+    handleRadio(option) {
+      if (this.$store.state.app[option.appKey] && option.radio) {
+        for (let opt of this.optionsList) {
+          if (opt.radio && opt.appKey !== option.appKey)
+            this.mutateApp(opt.appKey, false);
+        }
+      }
     },
   },
 };

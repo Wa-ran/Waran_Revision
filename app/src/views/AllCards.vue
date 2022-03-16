@@ -8,15 +8,38 @@
     </button>
 
     <div
-      v-if="$store.getters.actualDeck.sequence"
+      v-if="$store.state.actualDeck.sequence"
       class="d-flex flex-row justify-content-evenly flex-wrap w-100"
     >
       <div
-        v-for="(card, index) of $store.state.allCardsList"
-        :key="card.id"
+        v-for="(card, index) of list"
+        :key="index + listChange"
         class="position-relative w-fit h-fit m-3 shadow"
       >
         <div
+          v-if="$store.state.app.sequenceListCheck"
+          class="above position-absolute end-0 mt-n1 me-n1"
+        >
+          <select
+            @change="changeSequence($event)"
+            @focus="cardKey = index"
+            onmousedown="if (this.options.length > 8) this.size = 8"
+            class="form-select bg-dark text-primary"
+            aria-label="Default select example"
+          >
+            <option
+              v-for="(seqCard, seqIndex) of list"
+              :key="seqIndex + 1"
+              :value="seqIndex + 1"
+              :selected="seqIndex + 1 == index + 1"
+            >
+              {{ seqIndex + 1 }}
+            </option>
+          </select>
+        </div>
+
+        <div
+          v-else
           class="above position-absolute end-0 bg-body border border-primary rounded mt-n1 me-n1 px-2 py-1"
         >
           {{ index + 1 }}
@@ -32,7 +55,7 @@
                 <div
                   v-if="!card.recto_image"
                   v-html="card.recto"
-                  class="view"
+                  class="view pt-3"
                 ></div>
                 <CardImage v-else :card="card" :face="'recto'" />
               </div>
@@ -41,7 +64,7 @@
                 <div
                   v-if="!card.verso_image"
                   v-html="card.verso"
-                  class="view"
+                  class="view pt-3"
                 ></div>
                 <CardImage v-else :card="card" :face="'verso'" />
               </div>
@@ -112,6 +135,8 @@ export default {
       selectedList: null,
       isLoading: true,
       test: [],
+      cardKey: null,
+      listChange: 0,
     };
   },
   computed: {
@@ -125,7 +150,22 @@ export default {
       return this.$store.state.app.allCardsDropCheck;
     },
     list() {
-      return this.$store.state.allCardsList;
+      let list;
+      let seqList;
+      try {
+        seqList = JSON.parse(this.$store.state.actualDeck.sequence_list);
+      } catch (error) {
+        seqList = this.$store.state.actualDeck.sequence_list;
+      }
+      let cardList = [...this.$store.state.allCardsList];
+      if (!seqList || !seqList.length || !Array.isArray(seqList))
+        list = cardList;
+      else {
+        list = seqList.map((id) => {
+          return (id = { ...cardList.find((card) => card.id == id) });
+        });
+      }
+      return list;
     },
   },
   methods: {
@@ -165,19 +205,27 @@ export default {
         card.classList.remove("bg-danger");
       }
     },
+    changeSequence(event) {
+      event.target.size = 1;
+      let value = event.target.value - 1;
+      let list = [...this.list];
+      let card = list.splice(this.cardKey, 1)[0];
+      list.splice(value, 0, card);
+      list = list.map((card) => (card = card.id));
+      this.mutateKey("actualDeck", { sequence_list: JSON.stringify(list) });
+      this.cardKey = null;
+    },
   },
   async mounted() {
     await this.$store.dispatch("getAllDeckCards").then(() => {
-      if (this.$store.getters.actualDeck.sequence) {
-        setTimeout(() => {
-          let views = document.querySelectorAll(".card .view");
-          for (let view of views) {
-            if (view.scrollHeight < view.parentNode.scrollHeight + 30) {
-              view.style.marginTop =
-                (view.parentNode.scrollHeight - view.scrollHeight) / 2 + "px";
-            }
+      if (this.$store.state.actualDeck.sequence) {
+        if (!Array.isArray(this.$store.state.actualDeck.sequence_list)) {
+          let list = [];
+          for (let card of this.list) {
+            list.push(card.id);
           }
-        });
+          this.mutateKey("actualDeck", { sequence_list: list });
+        }
       } else {
         const int = setInterval(() => {
           if (this.list.length > 0) {
@@ -203,6 +251,7 @@ export default {
   unmounted() {
     this.mutateApp("allCardsDeckCheck", false);
     this.mutateApp("allCardsDropCheck", false);
+    this.mutateApp("sequenceListCheck", false);
     this.mutateKey("cardsReservedList", []);
   },
   watch: {
@@ -211,6 +260,9 @@ export default {
     },
     allCardsDropCheck() {
       this.dropSelected();
+    },
+    list() {
+      this.listChange++;
     },
   },
 };

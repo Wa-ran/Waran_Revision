@@ -26,6 +26,7 @@ export default createStore({
       darkMode: false,
       formVerif: true,
       randomCardPick: true,
+      sequenceListCheck: false,
       windowSize: null,
     },
 
@@ -53,6 +54,7 @@ export default createStore({
     },
 
     // deck
+    actualDeck: {},
     decksList: [],
 
     // user
@@ -148,11 +150,11 @@ export default createStore({
         data: "card/" + cardId,
       });
     },
-    async deleteDeck({ getters }) {
+    async deleteDeck() {
       await this.dispatch("APIRequest", {
         method: "DELETE",
         serverRoute: "/Deck",
-        data: "deck/" + getters.actualDeck.id,
+        data: "deck/" + this.state.actualDeck.id,
       });
     },
     async getAllUserDecks() {
@@ -163,11 +165,14 @@ export default createStore({
         mutate: "decksList",
       });
     },
-    async getAllDeckCards({ getters }) {
+    async getAllDeckCards() {
+      let deck = this.state.actualDeck.id
+        ? this.state.actualDeck
+        : this.getters.actualDeck;
       await this.dispatch("APIRequest", {
         method: "GET",
         serverRoute: "/AllDeckCards",
-        data: "deck/" + getters.actualDeck.id,
+        data: "deck/" + deck.id,
         mutate: "allCardsList",
       });
     },
@@ -180,11 +185,14 @@ export default createStore({
         mutate: "actualCard",
       });
     },
-    async getCardsToReviseOnDeck({ getters }) {
+    async getCardsToReviseOnDeck() {
+      let deck = this.state.actualDeck.id
+        ? this.state.actualDeck
+        : this.getters.actualDeck;
       await this.dispatch("APIRequest", {
         method: "GET",
         serverRoute: "/CardsToReviseOnDeck",
-        data: "deck/" + getters.actualDeck.id,
+        data: "deck/" + deck.id,
         mutate: "cardsToReviseBaseList",
       });
     },
@@ -240,11 +248,11 @@ export default createStore({
           };
       await this.dispatch("APIRequest", req);
     },
-    async putDeck({ getters }, deck) {
+    async putDeck(context, deck) {
       await this.dispatch("APIRequest", {
         method: "PUT",
         serverRoute: "/Deck",
-        data: { deck: Object.assign(getters.actualDeck, deck) },
+        data: { deck: Object.assign(this.state.actualDeck, deck) },
         mutate: "deckList",
       });
     },

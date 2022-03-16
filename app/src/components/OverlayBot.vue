@@ -14,7 +14,7 @@
           <button
             @click="
               mutateApp('allCardsDeckCheck', false);
-              annulation();
+              annulMassAction();
             "
             class="btn btn-primary ms-2"
           >
@@ -32,12 +32,33 @@
         <button
           @click="
             mutateApp('allCardsDropCheck', false);
-            annulation();
+            annulMassAction();
           "
           class="btn btn-primary ms-2"
         >
           Annuler
         </button>
+      </div>
+
+      <!-- AllCards Sequence -->
+      <div
+        v-if="$store.state.app.sequenceListCheck"
+        class="w-fit bg-dark border border-2 border-primary rounded mx-auto p-2 pt-0"
+      >
+        <div class="d-flex mt-2">
+          <button @click="sequence" class="flex-grow-1 btn btn-success">
+            Valider
+          </button>
+          <button
+            @click="
+              mutateApp('sequenceListCheck', false);
+              annulSequence();
+            "
+            class="btn btn-primary ms-2"
+          >
+            Annuler
+          </button>
+        </div>
       </div>
 
       <!-- scroll to top button  -->
@@ -67,20 +88,24 @@ export default {
       selectDeck: null,
       elemScroll: null,
       toTop: true,
+      sequenceList: [],
     };
   },
   methods: {
-    annulation() {
+    annulMassAction() {
       for (let card of document.querySelectorAll(".allCards .card")) {
         card.classList.remove("bg-success");
         card.classList.remove("bg-danger");
       }
       this.mutateKey("cardsReservedList", []);
     },
+    annulSequence() {
+      this.mutateKey("actualDeck", { sequence_list: this.sequenceList });
+    },
     async transfert() {
       if (
         this.selectDeck &&
-        this.selectDeck !== this.$store.getters.actualDeck.id
+        this.selectDeck !== this.$store.state.actualDeck.id
       ) {
         for (let card of this.$store.state.cardsReservedList) {
           if (this.$store.state.app.allCardsDeckCheck) {
@@ -106,6 +131,11 @@ export default {
         }
       }
     },
+    async sequence() {
+      await this.$store
+        .dispatch("putDeck")
+        .then(() => this.mutateApp("allCardsDropCheck", false));
+    },
     goTop() {
       this.elemScroll.scrollTo({
         top: 0,
@@ -124,6 +154,7 @@ export default {
       },
       { capture: true }
     );
+    this.sequenceList = this.$store.state.actualDeck.sequence;
   },
   mixins: [card],
 };

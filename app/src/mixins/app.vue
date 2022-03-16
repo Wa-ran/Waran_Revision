@@ -10,12 +10,6 @@ export default {
     actualCard() {
       return this.$store.state.actualCard;
     },
-    allCardsDeckCheck() {
-      return this.$store.state.app.allCardsDeckCheck;
-    },
-    allCardsDropCheck() {
-      return this.$store.state.app.allCardsDropCheck;
-    },
     cardChronoCheck() {
       return this.$store.state.app.cardChronoCheck;
     },
@@ -75,16 +69,6 @@ export default {
           this.$store.state.app.actualCardChange + 1
         );
     },
-    allCardsDeckCheck() {
-      if (this.allCardsDeckCheck) {
-        this.mutateApp("allCardsDropCheck", false);
-      }
-    },
-    allCardsDropCheck() {
-      if (this.allCardsDropCheck) {
-        this.mutateApp("allCardsDeckCheck", false);
-      }
-    },
     cardChronoCheck() {
       if (this.cardChronoCheck && !this.cardHideCheck)
         this.mutateApp("cardHideCheck", true);
@@ -117,9 +101,12 @@ export default {
       else document.documentElement.className = "light";
     },
     deckSelected() {
+      if (this.deckSelected)
+        this.mutateKey("actualDeck", this.$store.getters.actualDeck);
+      else this.mutateKey("actualDeck", {});
       this.mutateApp(
         "randomCardPick",
-        this.deckSelected ? !this.$store.getters.actualDeck.sequence : true
+        this.deckSelected ? !this.$store.state.actualDeck.sequence : true
       );
     },
     disconnect() {

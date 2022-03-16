@@ -60,7 +60,7 @@ DELIMITER ;
 
 CALL new_decks();
 
-ALTER TABLE decks MODIFY user_id BIGINT UNSIGNED NOT NULL, MODIFY sequence TEXT;
+ALTER TABLE decks MODIFY user_id BIGINT UNSIGNED NOT NULL, ADD sequence_list TEXT;
 
 ALTER TABLE cards ADD CONSTRAINT t_cards_t_decks_fk
 FOREIGN KEY (deck_id)
