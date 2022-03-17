@@ -5,7 +5,7 @@
       <input
         type="text"
         v-model="deck.title"
-        class="form-control border-primary text-center"
+        class="form-control border-primary text-center fw-bold"
         placeholder="Nouveau titre"
         id="DeckTitle"
       />
@@ -106,7 +106,7 @@ export default {
       });
     },
     async submitDeck() {
-      if (this.$store.state.actualDeck) {
+      if (this.$store.state.actualDeck && this.$store.state.actualDeck.id) {
         await this.$store.dispatch("putDeck", this.deck).then(() => {
           this.$router.push({ name: "DeckView" });
         });
@@ -124,7 +124,7 @@ export default {
     },
   },
   mounted() {
-    if (this.$store.state.actualDeck)
+    if (this.$store.state.actualDeck && this.$store.state.actualDeck.id)
       this.deck = { ...this.$store.state.actualDeck };
     this.origDeck = this.deck;
   },
