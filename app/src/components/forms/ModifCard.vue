@@ -40,7 +40,7 @@
           </label>
         </div>
 
-        <div class="form-check mt-2">
+        <!-- <div class="form-check mt-2">
           <input
             v-model="card.recto_formula"
             class="form-check-input"
@@ -51,7 +51,7 @@
           <label class="form-check-label italic" for="recto_formula">
             Ecrire une formule
           </label>
-        </div>
+        </div> -->
       </div>
     </div>
 
@@ -97,7 +97,7 @@
           </label>
         </div>
 
-        <div class="form-check mt-2">
+        <!-- <div class="form-check mt-2">
           <input
             v-model="card.verso_formula"
             class="form-check-input"
@@ -108,7 +108,7 @@
           <label class="form-check-label italic" for="verso_formula">
             Ecrire une formule
           </label>
-        </div>
+        </div> -->
       </div>
     </div>
 

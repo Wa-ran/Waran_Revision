@@ -5,7 +5,7 @@
   >
     <div class="w-fit mx-auto">
       <span class="text-primary">Profil de : </span>
-      <span class="bold fs-5">{{ user.pseudo }}</span>
+      <span class="bold fs-5 ms-1">{{ user.pseudo }}</span>
     </div>
 
     <cust-hr class="w-75 mx-auto" />
@@ -99,12 +99,30 @@
       <label class="form-check-label" for="dark_mode"> Sombre </label>
     </div>
 
+    <cust-hr class="w-25 me-auto" />
+
+    <span class="text-primary">Formulaires : </span>
+
+    <div class="form-check mt-2 ms-3">
+      <input
+        v-model="user.hide_form_modal"
+        class="form-check-input"
+        type="checkbox"
+        id="hide_form_modal"
+        @click="mutateApp('hideFormModal', $event)"
+      />
+      <label class="form-check-label" for="hide_form_modal">
+        Ne pas me prévenir de changements non validés avant de quitter un
+        formulaire
+      </label>
+    </div>
+
     <!-- Validation -->
-    <div class="w-fit ms-auto mt-3">
+    <div class="w-fit m-auto mt-3">
       <button
-        v-if="hasChanged"
         @click.prevent="submitUser"
-        class="btn btn-primary h-fit mb-2 mt-n5 p-1 px-3"
+        class="btn h-fit mb-1 p-1 px-3"
+        :class="hasChanged ? 'btn-primary' : 'btn-outline-primary disabled'"
       >
         Valider
       </button>
@@ -138,13 +156,19 @@ export default {
     stateUser() {
       return this.$store.state.user;
     },
+    userChange() {
+      return JSON.stringify(this.user);
+    },
   },
   methods: {
     async submitUser() {
       await this.$store
         .dispatch("putUser", this.user)
         .then(() => this.mutateKey("user", this.user))
-        .then(() => this.change++);
+        .then(() => {
+          this.change++;
+          this.hasChanged = false;
+        });
     },
     verifEmpty(event) {
       if (
@@ -172,13 +196,21 @@ export default {
   watch: {
     change() {
       this.mutateApp("darkMode", this.user.dark_mode);
-      if (JSON.stringify(this.user) !== JSON.stringify(this.stateUser))
-        this.hasChanged = true;
-      else this.hasChanged = false;
     },
     exit() {
       if (this.exit) this.beforeExit();
     },
+    userChange() {
+      if (JSON.stringify(this.user) !== JSON.stringify(this.stateUser))
+        this.hasChanged = true;
+      else this.hasChanged = false;
+    },
   },
 };
 </script>
+
+<style lang="scss" scoped>
+form {
+  max-width: 400px;
+}
+</style>

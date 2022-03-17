@@ -15,6 +15,7 @@ export default createStore({
       cardReviserCharged: false,
       deckSelected: false,
       decksCharged: false,
+      hideFormModal: false,
       isFormPage: false,
       loading: false,
       positionSaved: null,

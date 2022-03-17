@@ -126,6 +126,7 @@ export default {
           cardFastCheck: this.user.fast_mode,
           darkMode:
             this.user.dark_mode === null ? this.darkMode : this.user.dark_mode,
+          hideFormModal: this.user.hide_form_modal,
         });
       }
     },
