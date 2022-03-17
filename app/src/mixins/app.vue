@@ -80,7 +80,10 @@ export default {
         this.mutateApp("cardChronoCheck", false);
     },
     cardsListCharged() {
-      this.mutateKey("cardsReservedList", []);
+      if (!this.cardsListCharged) {
+        this.mutateKey("cardsReservedList", []);
+        this.mutateKey("cardsToReviseBaseList", []);
+      }
     },
     // cardReviserCharged() {
     //   this.mutateStore("mergeReservedCards");

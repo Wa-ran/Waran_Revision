@@ -188,7 +188,18 @@ exports.getCardsToRevise = async (req) => {
 
 exports.getCardsToReviseOnDeck = async (req) => {
   let resList = [];
-  await dtbFct.selectCardsToReviseOnDeck(req)
+  let objDeck;
+  await dtbFct.selectDeck(req)
+    .then((dtbDeck) => {
+      objDeck = createObj("deck", dtbDeck[0]);
+      return dtbFct.selectDeckInfos({ 'deck': objDeck });
+    })
+    .then((infos) => {
+      Object.assign(objDeck, infos[0]);
+      if (objDeck.sequence && objDeck.cards_to_revise > 0) {
+        return dtbFct.selectAllDeckCards(req)
+      } else return dtbFct.selectCardsToReviseOnDeck(req)
+    })
     .then((list) => {
       for (card of list) {
         let objCard = createObj("card", card);

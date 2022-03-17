@@ -385,6 +385,15 @@ export default createStore({
       if (state.app.randomCardPick) {
         let rand = Math.floor(Math.random() * list.length);
         pickCard = list[rand];
+      } else if (
+        state.actualDeck.sequence &&
+        JSON.parse(state.actualDeck.sequence_list.length) > 0
+      ) {
+        for (let id of JSON.parse(state.actualDeck.sequence_list)) {
+          pickCard = list.find((card) => card.id == id);
+          if (pickCard) return pickCard;
+        }
+        pickCard = list[0];
       } else {
         pickCard = list[0];
       }

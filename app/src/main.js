@@ -105,7 +105,12 @@ VueApp.mixin({
       });
     },
     mutateKey(sKey, body) {
-      if (typeof body === "object" && !Array.isArray(body) && body !== null) {
+      if (
+        typeof body === "object" &&
+        !Array.isArray(body) &&
+        body !== null &&
+        Object.keys(body).length !== 0
+      ) {
         let sObj = { ...this.$store.state[sKey] };
         body = Object.assign(sObj, body);
       }

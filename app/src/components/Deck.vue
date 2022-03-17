@@ -64,14 +64,13 @@
           <cust-hr class="mt-2 mb-1" />
 
           <span v-if="deck.cards_total_number == 0">Aucune carte</span>
-          <div v-else-if="deck.sequence">
-            <span class="fw-bold">{{ deck.cards_total_number }}</span> cartes
-          </div>
           <div v-else>
             <span v-if="deck.cards_to_revise == 0">Aucune carte à réviser</span>
             <span v-else>
-              <span class="fw-bold">{{ deck.cards_to_revise }}</span> cartes à
-              reviser
+              <span class="fw-bold">{{
+                deck.sequence ? deck.cards_total_number : deck.cards_to_revise
+              }}</span>
+              cartes à reviser
             </span>
           </div>
         </div>
