@@ -1,8 +1,8 @@
 <template>
   <div class="overlay w-100">
-    <div class="position-relative w-100 p-2">
+    <div class="position-relative w-100">
       <!-- Options -->
-      <div class="position-absolute top-0 container-fluid p-0">
+      <div class="position-absolute top-0 container-fluid px-2">
         <component :is="'Options' + $route.name" />
       </div>
     </div>

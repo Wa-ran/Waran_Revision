@@ -19,7 +19,7 @@
                 :to="{ name: 'DeckView', params: { deck: deck.id } }"
                 class="link-current text-decoration-none"
               >
-                {{ deck.title || "Votre Deck" }}
+                {{ deck.title || "Deck sans titre" }}
               </router-link>
             </h3>
             <!-- Description -->

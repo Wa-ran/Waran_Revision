@@ -199,7 +199,7 @@
     <cust-hr class="w-50 ms-n3 my-3" />
 
     <!-- Deck -->
-    <SelectDeck @changeDeck="card.deck_id = $event.target.value" />
+    <SelectDeck @change="card.deck_id = parseInt($event.target.value)" />
 
     <cust-hr class="w-50 ms-n3 my-3 mb-4" />
 

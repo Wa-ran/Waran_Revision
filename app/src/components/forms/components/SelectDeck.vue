@@ -5,14 +5,13 @@
       class="form-select form-select-sm w-fit h-fit bg-body m-0"
       aria-label="Transérer dans un autre deck"
       aria-describedby="selectDeckDesc"
-      @change="$emit('changeDeck', value)"
     >
       <option
         v-for="deck of $store.state.decksList"
         :key="deck.id"
         :value="deck.id"
       >
-        {{ deck.title }}
+        {{ deck.title || "Deck sans titre" }}
       </option>
       <option
         v-if="

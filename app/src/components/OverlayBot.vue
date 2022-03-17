@@ -103,6 +103,7 @@ export default {
       this.mutateKey("actualDeck", { sequence_list: this.sequenceList });
     },
     async transfert() {
+      let promises = [];
       if (
         this.selectDeck &&
         this.selectDeck !== this.$store.state.actualDeck.id
@@ -110,26 +111,31 @@ export default {
         for (let card of this.$store.state.cardsReservedList) {
           if (this.$store.state.app.allCardsDeckCheck) {
             card.deck_id = this.selectDeck;
-            await this.mixHandleSubmit(card);
-            this.$router.push({ name: "DeckView" });
-            setTimeout(() => {
-              this.$router.push({ name: "AllCards" });
-            });
+            promises.push(this.mixHandleSubmit(card));
           }
         }
-      }
-    },
-    async drop() {
-      for (let card of this.$store.state.cardsReservedList) {
-        if (this.$store.state.app.allCardsDropCheck) {
-          card.deck_id = this.selectDeck;
-          await this.$store.dispatch("deleteCard", { card });
+        await Promise.all(promises).then(() => {
           this.$router.push({ name: "DeckView" });
           setTimeout(() => {
             this.$router.push({ name: "AllCards" });
           });
+        });
+      }
+    },
+    async drop() {
+      let promises = [];
+      for (let card of this.$store.state.cardsReservedList) {
+        if (this.$store.state.app.allCardsDropCheck) {
+          card.deck_id = this.selectDeck;
+          promises.push(this.$store.dispatch("deleteCard", { card }));
         }
       }
+      await Promise.all(promises).then(() => {
+        this.$router.push({ name: "DeckView" });
+        setTimeout(() => {
+          this.$router.push({ name: "AllCards" });
+        });
+      });
     },
     async sequence() {
       await this.$store
@@ -155,6 +161,9 @@ export default {
       { capture: true }
     );
     this.sequenceList = this.$store.state.actualDeck.sequence;
+  },
+  unmounted() {
+    this.$store.dispatch("getDeck");
   },
   mixins: [card],
 };

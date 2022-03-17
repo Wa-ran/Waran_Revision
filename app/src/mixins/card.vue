@@ -100,9 +100,7 @@ export default {
               this.$store.state.decksList[
                 this.$store.state.decksList.length - 1
               ].id;
-          return this.mutateKey("actualCard", card);
-        })
-        .then(() => {
+          this.mutateKey("actualCard", { ...card });
           return this.$store.dispatch("submitCard");
         })
         .then(() => {
