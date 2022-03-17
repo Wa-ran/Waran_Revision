@@ -186,6 +186,15 @@ export default createStore({
         mutate: "actualCard",
       });
     },
+    async getDeck(context, payload) {
+      let deckId = payload ? payload.id : this.getters.actualDeck.id;
+      await this.dispatch("APIRequest", {
+        method: "GET",
+        serverRoute: "/Deck",
+        data: "deck/" + deckId,
+        mutate: "actualDeck",
+      });
+    },
     async getCardsToReviseOnDeck() {
       let deck = this.state.actualDeck.id
         ? this.state.actualDeck

@@ -97,8 +97,10 @@ exports.updateImgs = async (req) => {
 exports.getDeck = async (req) => {
   let resDeck;
   await dtbFct.selectDeck(req)
-    .then(dtbDeck => {
-      resDeck = createObj("deck", dtbDeck[0])
+    .then(async dtbDeck => {
+      resDeck = createObj("deck", dtbDeck[0]);
+      let infos = await dtbFct.selectDeckInfos({ 'deck': resDeck });
+      Object.assign(resDeck, infos[0]);
     })
   return resDeck
 };

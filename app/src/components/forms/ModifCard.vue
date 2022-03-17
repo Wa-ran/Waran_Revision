@@ -333,14 +333,18 @@ export default {
             if (newCard) return this.$store.dispatch("getLastUserCard");
             else return this.$store.dispatch("getCard");
           })
-          .then(() => this.$router.push({ name: "Library" }))
+          .then(() => {
+            this.$store.dispatch("getDeck");
+          })
           .then(() =>
-            this.$router.push({
-              name: "CardView",
-              params: {
-                card: this.$store.state.actualCard.id,
-                deck: this.$store.state.actualCard.deck_id,
-              },
+            setTimeout(() => {
+              this.$router.push({
+                name: "CardView",
+                params: {
+                  card: this.$store.state.actualCard.id,
+                  deck: this.$store.state.actualCard.deck_id,
+                },
+              });
             })
           )
           .then(() => {
@@ -355,21 +359,19 @@ export default {
       await this.$store
         .dispatch("deleteCard")
         .then(() => {
-          this.$router.push({ name: "Library" });
+          this.$store.dispatch("getDeck");
         })
         .then(() => {
-          setTimeout(() => {
-            if (
-              this.$store.state.app.positionSaved &&
-              this.$store.state.app.positionSaved.path
-            )
-              this.$router.push(this.$store.state.app.positionSaved.path);
-            else
-              this.$router.push({
-                name: "DeckView",
-                params: { deck: this.card.deck_id },
-              });
-          });
+          if (
+            this.$store.state.app.positionSaved &&
+            this.$store.state.app.positionSaved.path
+          )
+            this.$router.push(this.$store.state.app.positionSaved.path);
+          else
+            this.$router.push({
+              name: "DeckView",
+              params: { deck: this.card.deck_id },
+            });
         })
         .then(() => this.mutateApp("loading", false));
     },
@@ -387,7 +389,7 @@ export default {
     if (this.$route.name === "NewCard") {
       this.card = { ...this.$store.state.newCard };
       this.card.user_id = this.$store.state.user.id;
-      this.card.deck_id = this.$store.state.actualDeck.id;
+      this.card.deck_id = this.$store.getters.actualDeck.id;
       this.modif = false;
     }
     if (
