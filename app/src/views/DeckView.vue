@@ -39,9 +39,10 @@
       <div v-else class="summary">
         <cust-hr class="my-3 mx-auto w-50" />
 
-        <p class="text-center">
-          {{ actualDeck.text || "Pas de description." }}
-        </p>
+        <p
+          class="text-center"
+          v-html="actualDeck.text || 'Pas de description.'"
+        ></p>
 
         <cust-hr class="my-3 mx-auto" />
 
@@ -68,7 +69,7 @@
             </p>
 
             <div v-if="actualDeck.sequence" class="d-flex">
-              Deck séquencé
+              Deck ordonné
               <cust-tooltip
                 :text="'Les cartes sont liées et se révisent dans l\'ordre.'"
               />
@@ -140,6 +141,6 @@ export default {
 }
 .summary {
   min-width: 200px;
-  max-width: 200px;
+  max-width: 300px;
 }
 </style>

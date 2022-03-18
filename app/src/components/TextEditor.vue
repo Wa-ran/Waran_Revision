@@ -288,6 +288,7 @@ export default {
         this.contEdit.innerHTML = this.contEdit.innerHTML
           .replace(/&nbsp;/g, " ")
           .replace(/\s+/g, " ");
+        this.resetText();
       });
     });
   },
@@ -362,6 +363,7 @@ div[contenteditable="true"] {
   font-size: 1.1rem;
   height: fit-content !important;
   min-height: 100%;
+  max-width: 500px;
   margin: auto;
   outline: none;
   padding: 1.5rem 0.5rem 1rem 0.5rem;

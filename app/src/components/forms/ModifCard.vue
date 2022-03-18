@@ -137,7 +137,7 @@
           class="form-check-input"
           type="checkbox"
           id="reverse"
-          @click="card.reverse = $event"
+          @click="card.reverse = !card.reverse"
           aria-describedby="reverseDesc"
         />
         <label class="form-check-label italic ms-2" for="reverse">
@@ -226,7 +226,7 @@
             class="btn w-fit ms-2 py-1"
             :class="modif ? 'btn-outline-primary' : 'btn-primary'"
           >
-            Terminer
+            Quitter
           </button>
         </div>
         <!-- Bouton supprimer -->
@@ -334,22 +334,23 @@ export default {
             else return this.$store.dispatch("getCard");
           })
           .then(() => {
-            this.$store.dispatch("getDeck");
+            return this.$store.dispatch(
+              "getDeck",
+              this.$store.state.actualCard.deck_id
+            );
           })
-          .then(() =>
-            setTimeout(() => {
-              this.$router.push({
-                name: "CardView",
-                params: {
-                  card: this.$store.state.actualCard.id,
-                  deck: this.$store.state.actualCard.deck_id,
-                },
-              });
-            })
-          )
+          .then(() => {
+            return this.$router.push({
+              name: "CardView",
+              params: {
+                card: this.$store.state.actualCard.id,
+                deck: this.$store.state.actualCard.deck_id,
+              },
+            });
+          })
           .then(() => {
             if (newCard) this.mutateApp("positionSaved", { name: "NewCard" });
-            this.mutateApp("loading", false);
+            return this.mutateApp("loading", false);
           })
           .catch(() => (this.submitted = false));
       }
@@ -390,9 +391,11 @@ export default {
       this.card = { ...this.$store.state.newCard };
       this.card.user_id = this.$store.state.user.id;
       this.card.deck_id = this.$store.getters.actualDeck.id;
+      this.card.reverse = false;
       this.modif = false;
     }
     if (
+      this.$store.state.app.showFormOptions ||
       this.card.recto_image ||
       this.card.verso_image ||
       this.card.recto_formula ||

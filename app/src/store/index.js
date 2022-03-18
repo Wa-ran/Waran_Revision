@@ -16,6 +16,7 @@ export default createStore({
       deckSelected: false,
       decksCharged: false,
       hideFormModal: false,
+      showFormOptions: false,
       isFormPage: false,
       loading: false,
       positionSaved: null,
@@ -187,7 +188,7 @@ export default createStore({
       });
     },
     async getDeck(context, payload) {
-      let deckId = payload ? payload.id : this.getters.actualDeck.id;
+      let deckId = payload ? payload : this.getters.actualDeck.id;
       await this.dispatch("APIRequest", {
         method: "GET",
         serverRoute: "/Deck",
@@ -219,7 +220,7 @@ export default createStore({
         method: "GET",
         serverRoute: "/LastUserDeck",
         data: "user/" + this.state.user.id,
-        mutate: "decksList",
+        mutate: "actualDeck",
       });
     },
     async getUserByPseudo() {
@@ -270,7 +271,7 @@ export default createStore({
       await this.dispatch("APIRequest", {
         method: "PUT",
         serverRoute: "/User",
-        data: { user: payload },
+        data: { user: payload || this.state.user },
       });
     },
     async submitCard() {

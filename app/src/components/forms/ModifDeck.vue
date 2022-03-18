@@ -8,6 +8,7 @@
         class="form-control border-primary text-center fw-bold"
         placeholder="Nouveau titre"
         id="DeckTitle"
+        maxlength="20"
       />
     </div>
     <div class="mt-2">
@@ -17,6 +18,7 @@
         class="form-control border-primary text-center"
         placeholder="Description"
         id="DeckText"
+        maxlength="126"
       ></textarea>
     </div>
     <div class="d-flex flex-wrap">
@@ -36,10 +38,10 @@
             >Choisir entre aléatoire et séquencé</label
           >
         </div>
-        <div>Séquencé</div>
+        <div>Ordonné</div>
         <cust-tooltip
           id="CheckSequenceDesc"
-          :text="'<span class=\'bold\'>Aléatoire</span> <span class=\'italic\'>(défaut)</span> : les cartes seront révisées de manière aléatoire.</br><span class=\'bold\'>Séquencé</span> : les cartes seront révisées dans l\'ordre et auront le même niveau (utile pour apprendre un plan ou des suites d\'idées).'"
+          :text="'<span class=\'bold\'>Aléatoire</span> <span class=\'italic\'>(défaut)</span> : les cartes seront révisées de manière aléatoire.</br><span class=\'bold\'>Ordonné</span> : les cartes seront révisées dans l\'ordre et auront le même niveau (utile pour apprendre un plan ou des suites d\'idées).'"
         />
       </div>
       <div class="d-flex flex-row justify-content-end ms-auto my-2 me-2 w-100">
@@ -60,7 +62,7 @@
       </div>
 
       <!-- Bouton supprimer -->
-      <div v-if="$store.state.actualDeck" class="w-100">
+      <div v-if="actualDeck" class="w-100">
         <DoubleCheckButton @checkedClick="deleteDeck" class="btn ms-auto py-1">
           <template v-slot:default>
             <font-awesome-icon :icon="['fas', 'trash-alt']" />
@@ -95,6 +97,11 @@ export default {
   props: {
     exit: Boolean,
   },
+  computed: {
+    actualDeck() {
+      return this.$store.state.actualDeck;
+    },
+  },
   methods: {
     submitForm() {
       if (!this.deck.title) document.getElementById("DeckTitle").focus();
@@ -106,7 +113,7 @@ export default {
       });
     },
     async submitDeck() {
-      if (this.$store.state.actualDeck && this.$store.state.actualDeck.id) {
+      if (this.actualDeck && this.actualDeck.id) {
         await this.$store.dispatch("putDeck", this.deck).then(() => {
           this.$router.push({ name: "DeckView" });
         });
@@ -124,9 +131,17 @@ export default {
     },
   },
   mounted() {
-    if (this.$store.state.actualDeck && this.$store.state.actualDeck.id)
-      this.deck = { ...this.$store.state.actualDeck };
-    this.origDeck = this.deck;
+    const int = setInterval(() => {
+      if (this.actualDeck && this.actualDeck.id) {
+        this.deck = { ...this.actualDeck };
+        this.origDeck = this.deck;
+        clearInterval(int);
+      }
+    }, 200);
+    int;
+    setTimeout(() => {
+      clearInterval(int);
+    }, 500);
   },
   watch: {
     exit() {

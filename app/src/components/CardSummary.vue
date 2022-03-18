@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid">
-    <h3 class="fs-5 italic mt-2 mb-3">Aperçu :</h3>
+    <h3 class="fs-5 italic mt-2 mb-3">Résumé de la carte :</h3>
     <div class="position-relative w-100 p-0">
       <!-- Bouton modification -->
       <ButtonTopRight

@@ -53,6 +53,36 @@
 
     <cust-hr class="w-25 me-auto" />
 
+    <span class="text-primary">Création/modification : </span>
+
+    <div class="form-check mt-2 ms-3">
+      <input
+        v-model="user.show_form_options"
+        class="form-check-input"
+        type="checkbox"
+        id="show_form_options"
+        @click="mutateApp('showFormOptions', $event)"
+      />
+      <label class="form-check-label" for="show_form_options">
+        Toujours afficher les options supplémentaires
+      </label>
+    </div>
+
+    <div class="form-check mt-2 ms-3">
+      <input
+        v-model="user.hide_form_modal"
+        class="form-check-input"
+        type="checkbox"
+        id="hide_form_modal"
+        @click="mutateApp('hideFormModal', $event)"
+      />
+      <label class="form-check-label" for="hide_form_modal">
+        Ne pas me prévenir de changements non validés avant de quitter
+      </label>
+    </div>
+
+    <cust-hr class="w-25 me-auto" />
+
     <span class="text-primary">Thème du site : </span>
 
     <div class="form-check mt-2 ms-3">
@@ -97,24 +127,6 @@
         "
       />
       <label class="form-check-label" for="dark_mode"> Sombre </label>
-    </div>
-
-    <cust-hr class="w-25 me-auto" />
-
-    <span class="text-primary">Formulaires : </span>
-
-    <div class="form-check mt-2 ms-3">
-      <input
-        v-model="user.hide_form_modal"
-        class="form-check-input"
-        type="checkbox"
-        id="hide_form_modal"
-        @click="mutateApp('hideFormModal', $event)"
-      />
-      <label class="form-check-label" for="hide_form_modal">
-        Ne pas me prévenir de changements non validés avant de quitter un
-        formulaire
-      </label>
     </div>
 
     <!-- Validation -->

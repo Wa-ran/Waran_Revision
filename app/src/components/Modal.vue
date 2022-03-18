@@ -7,18 +7,24 @@
     aria-hidden="true"
   >
     <div class="modal-dialog">
-      <div class="modal-content bg-body border border-primary p-3">
+      <div
+        class="position-relative modal-content bg-body border border-primary p-3"
+      >
         <div class="modal-header border-primary pt-0">
           <h5 class="modal-title text-center w-100" id="modalTitle">
             {{ modalState.title }}
           </h5>
-          <button
-            @click="modalAnswer = false"
-            type="button"
-            class="btn-close mt-n4 me-n3 opacity-75"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
+          <div
+            class="position-absolute top-0 end-0 mt-n2 me-n2 bg-body border border-primary rounded closeCustom"
+          >
+            <button
+              @click="modalAnswer = false"
+              type="button"
+              class="position-absolute btn-close opacity-100 ms-n2"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
         </div>
 
         <div
@@ -49,6 +55,16 @@
             {{ modalState.button ? "Annuler" : "Fermer" }}
           </button>
         </div>
+
+        <div v-if="this.$store.state.user">
+          <button
+            @click="dontAskagain"
+            data-bs-dismiss="modal"
+            class="custom btn btn-outline-primary ms-auto mt-3 mb-n2 me-n2 py-0 fst-italic"
+          >
+            Ne plus me demander
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -68,7 +84,13 @@ export default {
     },
   },
   methods: {
-    close() {},
+    async dontAskagain() {
+      this.mutateApp("hideFormModal", true);
+      this.mutateKey("user", { hide_form_modal: true });
+      await this.$store
+        .dispatch("putUser", this.user)
+        .then(() => (this.modalAnswer = true));
+    },
   },
   mounted() {
     let modal = document.getElementById("modal");
@@ -84,3 +106,12 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.custom {
+  font-size: 0.9rem;
+}
+.closeCustom {
+  padding: 0.75rem;
+}
+</style>

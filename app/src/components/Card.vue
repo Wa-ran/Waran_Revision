@@ -15,7 +15,7 @@
         v-if="this.$slots.footer"
         class="card-footer bg-transparent border-0 d-flex flex-column w-100 mt-auto pt-0"
       >
-        <cust-hr class="mt-0 mb-1" />
+        <cust-hr class="my-1" />
         <slot name="footer"></slot>
       </div>
     </div>

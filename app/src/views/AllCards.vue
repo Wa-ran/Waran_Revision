@@ -1,14 +1,35 @@
 <template>
   <div class="allCards w-100 mt-3">
-    <button
-      @click="$router.push({ name: 'NewCard' })"
-      class="btn btn-outline-primary h-fit w-fit mx-auto px-3 py-0 mb-3"
-    >
-      Nouvelle carte
-    </button>
+    <div class="d-flex justify-content-center flex-wrap w-100 mb-3">
+      <button
+        @click="$router.push({ name: 'NewCard' })"
+        class="btn btn-outline-primary h-fit w-fit px-3 py-0 m-2 text-nowrap"
+      >
+        Nouvelle carte
+      </button>
+      <div class="w-100"></div>
+      <button
+        @click="
+          mutateApp('allCardsShowCheck', !$store.state.app.allCardsShowCheck)
+        "
+        class="btn h-fit w-fit px-3 py-0 m-2 text-nowrap"
+        :class="
+          $store.state.app.allCardsShowCheck
+            ? 'btn-primary'
+            : 'btn-outline-primary'
+        "
+      >
+        {{ $store.state.app.allCardsShowCheck ? "Cacher" : "Afficher" }} les
+        cartes à réviser
+      </button>
+    </div>
 
     <div
-      v-if="$store.state.actualDeck.sequence"
+      v-if="
+        $store.state.actualDeck.sequence &&
+        ($store.state.app.allCardsShowCheck ||
+          $store.state.actualDeck.cards_to_revise === 0)
+      "
       class="d-flex flex-row justify-content-evenly flex-wrap w-100"
     >
       <div
@@ -77,7 +98,7 @@
     <div
       v-else-if="
         (selectedList && selectedList.length > 0) ||
-        (allCardsShowCheck && allCardsList.length > 0)
+        (allCardsShowCheck && allCardsList && allCardsList.length > 0)
       "
       class="row justify-content-center"
       :key="allCardsShowCheck"
@@ -120,13 +141,7 @@
         />
       </div>
       <div v-else>
-        <div class="m-3 mt-5 fw-bold">Aucune carte à afficher.</div>
-        <button
-          @click="mutateApp('allCardsShowCheck', true)"
-          class="btn btn-outline-primary py-0"
-        >
-          Afficher les cartes à réviser
-        </button>
+        <div class="m-3 mt-5 fw-bold fs-5">Aucune carte à afficher.</div>
       </div>
     </div>
   </div>
@@ -228,36 +243,43 @@ export default {
     },
   },
   async mounted() {
-    await this.$store.dispatch("getAllDeckCards").then(() => {
-      if (this.$store.state.actualDeck.sequence) {
-        if (!Array.isArray(this.$store.state.actualDeck.sequence_list)) {
-          let list = [];
-          for (let card of this.list) {
-            list.push(card.id);
+    await this.$store
+      .dispatch("getAllDeckCards")
+      .then(() => {
+        if (this.$store.state.actualDeck.sequence) {
+          if (!Array.isArray(this.$store.state.actualDeck.sequence_list)) {
+            let list = [];
+            for (let card of this.list) {
+              list.push(card.id);
+            }
+            this.mutateKey("actualDeck", { sequence_list: list });
           }
-          this.mutateKey("actualDeck", { sequence_list: list });
+        } else {
+          const int = setInterval(() => {
+            if (this.list.length > 0) {
+              this.allCardsList = [...this.list];
+              this.selectedList = this.allCardsList.filter(
+                (card) => new Date() - new Date(card.next_revision) < 0
+              );
+              clearInterval(int);
+              this.isLoading = false;
+            }
+          }, 100);
+          int;
+          setTimeout(() => {
+            if (this.isLoading == true) {
+              clearInterval(int);
+              this.isLoading = false;
+            }
+          }, 2000);
         }
-      } else {
-        const int = setInterval(() => {
-          if (this.list.length > 0) {
-            this.allCardsList = [...this.list];
-            this.selectedList = this.allCardsList.filter(
-              (card) => new Date() - new Date(card.next_revision) > 0
-            );
-            clearInterval(int);
-            this.isLoading = false;
-          }
-        }, 100);
-        int;
+        return;
+      })
+      .then(() => {
         setTimeout(() => {
-          if (this.isLoading == true) {
-            clearInterval(int);
-            this.isLoading = false;
-          }
-        }, 1000);
-      }
-      return;
-    });
+          this.isLoading = false;
+        }, 1200);
+      });
   },
   unmounted() {
     this.mutateApp("allCardsDeckCheck", false);

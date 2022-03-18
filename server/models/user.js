@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 
 module.exports = class User extends revisionObj {
 
-  constructor(id, pseudo, password, hide_card, chrono_card, fast_mode, dark_mode, hide_form_modal) {
+  constructor(id, pseudo, password, hide_card, chrono_card, fast_mode, dark_mode, hide_form_modal, show_form_options) {
     super();
     this.id = this.tryParseInt(id);
     this.pseudo = pseudo;
@@ -13,6 +13,7 @@ module.exports = class User extends revisionObj {
     this.fast_mode = this.isBoolean(fast_mode);
     this.dark_mode = this.isBoolean(dark_mode, true);
     this.hide_form_modal = this.isBoolean(hide_form_modal);
+    this.show_form_options = this.isBoolean(show_form_options);
     this.parseToJS();
   };
 

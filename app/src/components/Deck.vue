@@ -10,11 +10,14 @@
 
       <template v-slot:body>
         <div
-          class="bg-body d-flex flex-column justify-content-center h-100 overflow-scroll pb-2"
+          class="bg-body d-flex flex-column justify-content-start h-100 overflow-scroll"
         >
           <div class="d-flex flex-column justify-content-center">
             <!-- Title -->
-            <h3 class="card-title h-fit mx-auto p-2 mt-3">
+            <h3
+              class="card-title h-fit mx-auto p-2"
+              :class="deck.text ? 'mt-3' : 'my-4 pt-4'"
+            >
               <router-link
                 :to="{ name: 'DeckView', params: { deck: deck.id } }"
                 class="link-current text-decoration-none"
@@ -23,9 +26,7 @@
               </router-link>
             </h3>
             <!-- Description -->
-            <p v-if="deck.text" class="card-text p-2">
-              {{ deck.text }}
-            </p>
+            <p v-if="deck.text" class="card-text p-2" v-html="deck.text"></p>
           </div>
         </div>
       </template>

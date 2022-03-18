@@ -45,7 +45,8 @@ export default {
   },
   methods: {
     async mixNewDeck(card) {
-      if (card.deck_id === "new") {
+      if (!card.deck_id || card.deck_id === "new") {
+        let deckId;
         if (
           this.$store.state.decksList[this.$store.state.decksList.length - 1]
             .title !== "Nouveau deck"
@@ -57,9 +58,12 @@ export default {
             })
             .then(() => {
               return this.$store.dispatch("getLastUserDeck");
+            })
+            .then(() => {
+              return (deckId = this.$store.state.actualDeck.id);
             });
         }
-        return true;
+        return deckId;
       } else return;
     },
     mixShowDeck(card) {
@@ -95,11 +99,7 @@ export default {
     async mixHandleSubmit(card) {
       await this.mixNewDeck(card)
         .then((res) => {
-          if (res)
-            card.deck_id =
-              this.$store.state.decksList[
-                this.$store.state.decksList.length - 1
-              ].id;
+          if (res) card.deck_id = res;
           this.mutateKey("actualCard", { ...card });
           return this.$store.dispatch("submitCard");
         })

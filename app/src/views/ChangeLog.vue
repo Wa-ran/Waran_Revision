@@ -25,6 +25,21 @@ export default {
     return {
       logs: [
         {
+          date: "18/03/22",
+          bugs: [],
+          improvements: [
+            '<span class="bold">C\'est la version 2 du site les amis !</span> <span class="fs-4">&#127881;</span><br/>Au programme :',
+            'Les cartes sont maintenant réunies par paquets (<span class="bold">decks</span>), bien plus simple pour organiser ses révisons.',
+            'Vous pouvez utiliser des <span class="bold">images</span> !',
+            "Le niveau des cartes s'adapte automatiquement si vous n'avez pas révisé depuis longtemps &#128521",
+            "Enfin un vrai menu de création/modification de carte...",
+            'Mise en place des decks "ordonnés" : un <span class="bold">exemple vous attend</span>...',
+            "Pas mal d'ajouts par-ci par-là, j'espère que ça vous plaiera !",
+            "Comme d'hab', n'hésitez pas à me faire des retours en cas de bugs ou d'idées d'ammélioration !",
+          ],
+          todos: [],
+        },
+        {
           date: "05/12/21",
           bugs: [
             "Bug au copier/coller lors de la création de carte.",

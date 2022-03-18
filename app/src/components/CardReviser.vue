@@ -13,7 +13,7 @@
     />
     <!-- Carte de révision -->
     <Card v-if="$store.state.cardsToReviseBaseList.length > 0">
-      <template v-slot:topRight>
+      <template #topRight>
         <ButtonTopRight
           v-if="$store.state.app.cardReveal"
           @click="
@@ -23,11 +23,11 @@
           "
           :title="flipped ? null : 'Voir la réponse'"
         >
-          <template v-slot:btnBody>
+          <template #btnBody>
             <font-awesome-icon :icon="['fas', 'share']" size="2x" /> </template
         ></ButtonTopRight>
       </template>
-      <template v-slot:body>
+      <template #body>
         <div
           v-if="$store.state.app.cardReviserCharged"
           class="w-100 h-100 bg-body overflow-scroll"
@@ -80,7 +80,7 @@
       </template>
 
       <!-- Footer -->
-      <template v-slot:footer v-if="!chrono && flipped">
+      <template #footer v-if="!chrono && flipped">
         <!-- Gagné/Perdu -->
         <div
           v-if="!winSetted"
