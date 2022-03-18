@@ -75,7 +75,10 @@
     </div>
 
     <div
-      v-else-if="selectedList && selectedList.length > 0"
+      v-else-if="
+        (selectedList && selectedList.length > 0) ||
+        (allCardsShowCheck && allCardsList.length > 0)
+      "
       class="row justify-content-center"
       :key="allCardsShowCheck"
     >
@@ -116,7 +119,15 @@
           "
         />
       </div>
-      <div v-else>Aucune carte à afficher.</div>
+      <div v-else>
+        <div class="m-3 mt-5 fw-bold">Aucune carte à afficher.</div>
+        <button
+          @click="mutateApp('allCardsShowCheck', true)"
+          class="btn btn-outline-primary py-0"
+        >
+          Afficher les cartes à réviser
+        </button>
+      </div>
     </div>
   </div>
 </template>

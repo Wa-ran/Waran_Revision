@@ -2,6 +2,7 @@
   <div class="w-fit mt-3 mx-auto">
     <!-- Carte pour cacher la carte de révision -->
     <CardHider
+      v-if="$store.state.cardsToReviseBaseList.length > 0"
       class="position-absolute"
       style="z-index: 1000"
       :style="
@@ -11,7 +12,7 @@
       "
     />
     <!-- Carte de révision -->
-    <Card>
+    <Card v-if="$store.state.cardsToReviseBaseList.length > 0">
       <template v-slot:topRight>
         <ButtonTopRight
           v-if="$store.state.app.cardReveal"
