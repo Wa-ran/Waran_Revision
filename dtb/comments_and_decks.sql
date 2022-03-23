@@ -12,11 +12,10 @@ ALTER TABLE users ADD hide_card TINYINT(1) DEFAULT '1', ADD chrono_card TINYINT(
 
 UPDATE cards SET comment = CONCAT(COALESCE(recto_comment, ''), '_', COALESCE(verso_comment, ''));
 UPDATE cards SET comment = NULL WHERE comment = '_';
-ALTER TABLE cards DROP recto_comment, DROP verso_comment;
+ALTER TABLE cards DROP recto_comment, DROP verso_comment, DROP has_image;
 
 SET SQL_SAFE_UPDATES = ON;
 
-#ALTER TABLE cards DROP recto_comment, DROP verso_comment, DROP has_image;
 ALTER TABLE cards RENAME COLUMN streak TO level;
 ALTER TABLE cards_revisions RENAME COLUMN new_streak TO new_level;
 

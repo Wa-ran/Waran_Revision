@@ -67,16 +67,21 @@ exports.connect = async (fctRequest) => {
       } catch (error) {
         session.rollback();
         session.close();
-        console.log(error);
-        throw 'Rollback...'
+        console.log("Rollback...")
+        throw error
       }
     })
     .catch((err) => {
       console.log(err)
-      throw 'Problème avec la BDR.'
+      console.log('Problème avec la BDR.')
+      throw err
     });
   // if (result.length == 1) result = result[0];
   return result
+};
+
+exports.makeReq = async (req) => {
+  return await this.connect(req);
 };
 
 exports.createCard = async (req) => {
@@ -144,12 +149,6 @@ exports.updateCard = async (req) => {
   let card = createObj("dtbCard", req.card);
   return await this.connect(this.updateRequest(card));
 };
-
-// have to use recto_image/verso_image !
-// exports.updateCardImage = async (req) => {
-//   let card = createObj("dtbCard", req.card);
-//   return await this.connect(`UPDATE cards_tags SET has_image = ${req.card.has_image} WHERE card_id = ${card.id};`);
-// };
 
 exports.updateDeck = async (req) => {
   let deck = createObj("dtbDeck", req.deck);

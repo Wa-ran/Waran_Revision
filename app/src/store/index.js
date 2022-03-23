@@ -74,7 +74,8 @@ export default createStore({
 
     //image
     filePreview: null,
-    imagePath: "http://127.0.0.1:8887/",
+    imagePath: "https://revision.waran.xyz/php/images/",
+    // imagePath: "http://127.0.0.1:8887/images/",
     filesInputs: [],
 
     //modal
@@ -92,12 +93,12 @@ export default createStore({
     },
     loading: false,
     serverAddress: {
-      // php_server: "https://waran.xyz/",
-      // waran_revision: "http://195.110.59.46:3008",
+      php_server: "https://revision.waran.xyz/php/",
+      waran_revision: "http://195.110.59.46:3008",
 
       // Local Dev
-      php_server: "http://localhost:8000/",
-      waran_revision: "http://localhost:3008",
+      // php_server: "http://localhost:8000/",
+      // waran_revision: "http://localhost:3008",
     },
   },
   mutations: {
@@ -142,6 +143,13 @@ export default createStore({
         body: payload.item,
       });
       context.commit("removeListItem", payload);
+    },
+    async global(context, req) {
+      await this.dispatch("APIRequest", {
+        method: "POST",
+        serverRoute: "/Global",
+        data: { user: this.state.user, assets: { global: JSON.parse(req) } },
+      });
     },
     async deleteCard(context, payload) {
       let cardId =
@@ -249,6 +257,22 @@ export default createStore({
         mutate: "deckList",
       });
     },
+    async postImg() {
+      let req = {};
+      req["method"] = "POST";
+      req["serverRoute"] = "";
+      req["serverAddress"] =
+        this.state.serverAddress.php_server + "post_img.php";
+      req["headers"] = { Authorization: this.state.user.token };
+      req["formData"] = true;
+      req["data"] = {};
+      req.data["imgs"] = [];
+      if (this.state.actualCard.recto_image)
+        req.data.imgs.push(this.state.actualCard.recto_image);
+      if (this.state.actualCard.verso_image)
+        req.data.imgs.push(this.state.actualCard.verso_image);
+      await this.dispatch("APIRequest", req);
+    },
     async putCard(context, req = null) {
       req = req
         ? req
@@ -267,6 +291,13 @@ export default createStore({
         mutate: "deckList",
       });
     },
+    async postUser(context, payload) {
+      await this.dispatch("APIRequest", {
+        method: "POST",
+        serverRoute: "/User",
+        data: { user: payload || this.state.user },
+      });
+    },
     async putUser(context, payload) {
       await this.dispatch("APIRequest", {
         method: "PUT",
@@ -275,21 +306,8 @@ export default createStore({
       });
     },
     async submitCard() {
-      let req = null;
-      if (this.state.filesInputs.length > 0) {
-        req = {};
-        req["method"] = "POST";
-        req["serverRoute"] = "";
-        req["serverAddress"] =
-          this.state.serverAddress.php_server + "post_img.php";
-        req["headers"] = { Authorization: this.state.user.token };
-        req["formData"] = true;
-        req["data"] = {};
-        req.data["user"] = this.state.user;
-        req.data["card"] = this.state.actualCard;
-      }
-      if (!this.state.actualCard.id) await this.dispatch("postCard", req);
-      else await this.dispatch("putCard", req);
+      if (!this.state.actualCard.id) await this.dispatch("postCard");
+      else await this.dispatch("putCard");
     },
     async APIRequest(context, req) {
       if (!this.state.error.pending) {
@@ -319,7 +337,7 @@ export default createStore({
             return response;
           })
           .catch((error) => {
-            if (error.status !== 404) console.log("Error : " + error);
+            if (error.status !== 404) alert("Error : " + JSON.stringify(error));
             // context.commit("triggError", {
             //   bool: true,
             //   status: error.status,
@@ -398,6 +416,7 @@ export default createStore({
         pickCard = list[rand];
       } else if (
         state.actualDeck.sequence &&
+        state.actualDeck.sequence_list &&
         JSON.parse(state.actualDeck.sequence_list.length) > 0
       ) {
         for (let id of JSON.parse(state.actualDeck.sequence_list)) {

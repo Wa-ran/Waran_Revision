@@ -19,14 +19,14 @@ echo $data;
 echo json_encode($data);
 echo $image1;
 echo $image2;
-if (file_exists($image1.'.webp')) {
-  unlink($image1.'.webp');
+if (file_exists('images/'.$image1.'.webp')) {
+  unlink('images/'.$image1.'.webp');
   echo "\nRecto deleted.";
 } else {
   echo "\nNothing to delete (recto).";
 };
-if(file_exists($image2.'.webp')) {
-  unlink($image2.'.webp');
+if(file_exists('images/'.$image2.'.webp')) {
+  unlink('images/'.$image2.'.webp');
   echo "\nVerso deleted.";
 }
 else {

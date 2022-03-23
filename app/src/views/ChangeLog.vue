@@ -37,7 +37,9 @@ export default {
             "Pas mal d'ajouts par-ci par-là, j'espère que ça vous plaiera !",
             "Comme d'hab', n'hésitez pas à me faire des retours en cas de bugs ou d'idées d'ammélioration !",
           ],
-          todos: [],
+          todos: [
+            "J'espère qu'il n'y en pas, mais je ne me fais pas d'illusions &#128517",
+          ],
         },
         {
           date: "05/12/21",

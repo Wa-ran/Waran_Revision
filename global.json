@@ -1,0 +1,109 @@
+{
+  "fctName": "commentUpdateAllCard"
+}
+
+{
+  "fctName": "textUpdateAllCard"
+}
+
+{
+  "fctName": "newUserDeck",
+  "data": {
+    "user": {
+      "pseudo": null
+    },
+    "deck": {
+      "cards_to_revise": 4,
+      "cards_total_number": 4,
+      "id": 15,
+      "min_level": 0,
+      "sequence": true,
+      "sequence_list": null,
+      "text": "Ce deck est \"ordonné\" : les cartes ont un ordre précis et se révisent toutes à chaque fois ! \nExemplaire gratuit ;-)",
+      "title": "Calculer 1914",
+      "user_id": 2
+    },
+    "cards": [
+      {
+        "adapt_level_down": 0,
+        "adapt_level_refused": false,
+        "adapt_level_up": 1,
+        "comment": "Les arbres dans les prophéties représentent souvent des royaumes.<br><br>Ce rêve prophétique de Nabuchodonosor a eu 2 accomplissements:<br>- le premier sur Nabuchodonosor lui-même, qui perdit la royauté temporairement ;<br> - le deuxième, plus important, concerne le royaume de Dieu.",
+        "decalage": 0,
+        "deck_id": 15,
+        "id": 502,
+        "level": null,
+        "next_revision": "2022-03-19T15:49:39.246Z",
+        "recto": "Dan. 4:10-16",
+        "recto_formula": false,
+        "recto_image": null,
+        "reverse": true,
+        "user_id": 2,
+        "verso": "Un arbre immense est <span class=\"bold\">abattu</span>, et on l'empêche de repousser pendant \"<span class=\"bold\">7 temps</span>\".<br><br>L'arbre représente la domination de Dieu.<br>En <span class=\"bold\">607 av. J.C.</span>, <span class=\"bold\">Jérusalem est détruite</span> et aucun roi ne représenterait Jehovah avant un certains temps...",
+        "verso_formula": false,
+        "verso_image": null,
+        "win": null
+      },
+      {
+        "adapt_level_down": 0,
+        "adapt_level_refused": false,
+        "adapt_level_up": 1,
+        "comment": "La vision en Révélation 12 concerne également le royaume de Dieu.<br><br>Pour savoir pourquoi \"des temps\" = 2 temps, voir <span class=\"italic\">https://wol.jw.org/fr/wol/d/r30/lp-f/1978251?q=rev+12%3A14&amp;p=par</span>",
+        "decalage": 0,
+        "deck_id": 15,
+        "id": 503,
+        "level": null,
+        "next_revision": "2022-03-19T15:49:39.247Z",
+        "recto": "Rév. 12:6, 14",
+        "recto_formula": false,
+        "recto_image": null,
+        "reverse": true,
+        "user_id": 2,
+        "verso": "La Bible dit que 3 temps et demi correspondent à 1 260 jours.<br>Donc <span class=\"bold\">7 temps = 2520 jours</span>.",
+        "verso_formula": false,
+        "verso_image": null,
+        "win": null
+      },
+      {
+        "adapt_level_down": 0,
+        "adapt_level_refused": false,
+        "adapt_level_up": 1,
+        "comment": "Cela concerne souvent les prophéties de condamnations.<br><br>De plus, Jésus a dit que Jérusalem serait « piétinée par les nations jusqu’à ce que le temps accordé aux nations soit accompli » (Luc 21:24), il parlait alors des « sept temps » .<br>Quand Jésus était sur la terre, les « sept temps » n’étaient donc pas finis.Il est donc logique de penser que la prophétie ne durerait pas 2520 jours \"réels\".<br><br>Concernant Nabuchodonosor, il semblerait que sa période de folie ait durée 7 ans (7 * 360 = 2520).<br><br>Au fait, pourquoi des années de 360 jours ? <span class=\"italic\">Voir https://wol.jw.org/fr/wol/d/r30/lp-f/1200000316#h=17:0-17:2095</span>",
+        "decalage": 0,
+        "deck_id": 15,
+        "id": 504,
+        "level": null,
+        "next_revision": "2022-03-19T15:49:39.248Z",
+        "recto": "Nb. 14:34 ; Ez. 4:6",
+        "recto_formula": false,
+        "recto_image": null,
+        "reverse": true,
+        "user_id": 2,
+        "verso": "Dans les prophéties, <span class=\"bold\">1 jour peut représenter 1 année</span>.",
+        "verso_formula": false,
+        "verso_image": null,
+        "win": null
+      },
+      {
+        "adapt_level_down": 0,
+        "adapt_level_refused": false,
+        "adapt_level_up": 1,
+        "comment": "Félicitation, si vous connaissez Daniel 4 et la date de la destruction de Jérusalem, en retenant 3 références bibliques vous pouvez recalculer la date 1914 !",
+        "decalage": 0,
+        "deck_id": 15,
+        "id": 505,
+        "level": null,
+        "next_revision": "2022-03-19T10:27:05.000Z",
+        "recto": "Si on compte 2 520 ans à partir de l’année 607 av. J.C., on arrive à <span class=\"bold\">1914 </span>(<span class=\"italic\">il n’y a pas d’année zéro</span>).",
+        "recto_formula": false,
+        "recto_image": null,
+        "reverse": false,
+        "user_id": 2,
+        "verso": "Il s'agit de l’année où Jéhovah a fait de Jésus Christ le Roi de son royaume au ciel.",
+        "verso_formula": false,
+        "verso_image": null,
+        "win": null
+      }
+    ]
+  }
+}

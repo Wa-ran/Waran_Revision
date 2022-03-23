@@ -86,6 +86,7 @@ export default {
   data() {
     return {
       deck: {
+        submitted: false,
         title: null,
         text: null,
         sequence: false,
@@ -113,6 +114,7 @@ export default {
       });
     },
     async submitDeck() {
+      this.submitted = true;
       if (this.actualDeck && this.actualDeck.id) {
         await this.$store.dispatch("putDeck", this.deck).then(() => {
           this.$router.push({ name: "DeckView" });
@@ -124,10 +126,11 @@ export default {
       }
     },
     beforeExit() {
-      this.mutateKey("formCompare", {
-        source: this.origDeck,
-        modified: this.deck,
-      });
+      if (!this.submitted)
+        this.mutateKey("formCompare", {
+          source: this.origDeck,
+          modified: this.deck,
+        });
     },
   },
   mounted() {

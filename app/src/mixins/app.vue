@@ -58,7 +58,12 @@ export default {
     this.windowSize();
     window.addEventListener("resize", this.windowSize());
     this.storeReset = { ...this.$store.state };
-    if (!this.user.id) this.$router.push({ name: "Home" });
+    if (
+      !this.user.id &&
+      document.URL.indexOf("/ninja") === -1 &&
+      document.URL.indexOf("/global") === -1
+    )
+      this.$router.push({ name: "Home" });
     this.mutateApp("darkMode", null);
   },
   watch: {

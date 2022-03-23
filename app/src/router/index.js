@@ -83,7 +83,19 @@ const routes = [
         meta: { desc: "Mon profil" },
         component: lazyLoad("views/Modification"),
       },
+      {
+        path: "global",
+        name: "Global",
+        meta: { desc: "Global" },
+        component: lazyLoad("views/Global"),
+      },
     ],
+  },
+  {
+    path: "/ninja",
+    name: "Ninja",
+    meta: { desc: "Inscription" },
+    component: lazyLoad("views/Inscription"),
   },
 ];
 

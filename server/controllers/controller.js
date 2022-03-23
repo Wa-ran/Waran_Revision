@@ -15,6 +15,10 @@ module.exports = async (req, res, next) => {
 
   const verifIdByToken = (obj) => {
     if (token && ((obj.user_id && obj.user_id !== token.tokenId) || (obj.pseudo && obj.id !== token.tokenId))) {
+      console.log(token);
+      console.log(obj.constructor.name);
+      console.log(obj.id || "Pas d'id");
+      console.log(obj.user_id || "Pas d'user_id");
       return false
     }
     else return true
@@ -72,8 +76,11 @@ module.exports = async (req, res, next) => {
       };
     };
   })
-    // .then(() => global.commentUpdateAllCard())
-    // .then(() => global.textUpdateAllCard())
+    .then(() => {
+      if (data.assets && data.assets.global && data.user.id === 2) {
+        return global[data.assets.global.fctName](data.assets.global.data || null)
+      }
+    })
     .then(() => requestFct[fctName](data))
     .then((response) => {
       if (response) {
@@ -81,9 +88,11 @@ module.exports = async (req, res, next) => {
         if (Array.isArray(response)) {
           result = [];
           for (obj of response) {
-            if (method === 'get' && !verifIdByToken(obj)) {
+            let i = 0;
+            if (method === 'get' && !verifIdByToken(obj) && i < 2) {
               throw 'Token invalide'
             };
+            i++;
             result.push(obj.beforeSend());
           };
         }

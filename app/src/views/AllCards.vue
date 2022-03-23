@@ -278,7 +278,7 @@ export default {
       .then(() => {
         setTimeout(() => {
           this.isLoading = false;
-        }, 1200);
+        }, 500);
       });
   },
   unmounted() {

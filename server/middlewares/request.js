@@ -61,10 +61,10 @@ exports.deleteImgs = async (req) => {
       del.push(dtbCard.recto_image);
       del.push(dtbCard.verso_image);
       del = JSON.stringify(del);
-      // php_server: "https://waran.xyz/",
+      // php_server: "https://revision.waran.xyz/php/",
       // local: "http://localhost:8000/",
       return axios
-      .delete('http://localhost:8000/delete_img.php/' + del)
+      .delete('https://revision.waran.xyz/php/delete_img.php/' + del)
     }
     else return
   })
@@ -251,6 +251,10 @@ exports.postUser = async (req) => {
     throw "Id déjà existant"
   } else {
     await req.user.cryptPassword().then(() => dtbFct.createUser(req))
+    .catch((error) => {
+      if (error.info.code === 1062) throw { custMsg: "Pseudo déjà utilisé" }
+      throw error
+    })
   }
 };
 

@@ -120,6 +120,13 @@ export default {
               value: { list: "cardsToReviseBaseList", item: this.actualCard },
             });
           }
+        })
+        .then(() => {
+          if (this.$store.state.filesInputs.length > 0) {
+            return this.$store.dispatch("getCard").then(() => {
+              return this.$store.dispatch("postImg");
+            });
+          } else return;
         });
     },
   },

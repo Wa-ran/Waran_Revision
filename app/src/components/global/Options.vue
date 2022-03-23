@@ -20,6 +20,7 @@
           :key="index"
           :appKey="option.appKey"
           :desc="option.desc"
+          :tooltipText="option.tooltipText"
           @click="handleRadio(option)"
           v-show="option"
         />

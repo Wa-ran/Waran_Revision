@@ -19,6 +19,7 @@ export default {
         {
           appKey: "cardFastCheck",
           desc: "Mode rapide",
+          tooltipText: "Les cartes s'enchaînent, pas de modification !",
         },
       ],
     };

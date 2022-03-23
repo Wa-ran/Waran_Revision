@@ -15,6 +15,13 @@
           class="nav-link"
         />
       </li>
+      <li v-if="$store.state.user.id === 2" class="nav-item">
+        <cust-a
+          :linkObj="{ name: 'Global' }"
+          :linkText="'Global'"
+          class="nav-link"
+        />
+      </li>
     </ul>
     <button
       type="button"

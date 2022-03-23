@@ -56,7 +56,7 @@
           </button>
         </div>
 
-        <div v-if="this.$store.state.user">
+        <div v-if="this.$store.state.user.id">
           <button
             @click="dontAskagain"
             data-bs-dismiss="modal"

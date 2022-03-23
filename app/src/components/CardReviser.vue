@@ -38,9 +38,11 @@
               class="flex-grow-1 d-flex flex-column justify-content-center align-items-center p-3"
             >
               <div
+                v-if="recto ? !actualCard.recto_image : !actualCard.verso_image"
                 v-html="recto ? actualCard.recto : actualCard.verso"
                 class="text-center w-100"
               ></div>
+              <CardImage v-else :card="actualCard" :face="recto ? 'recto' : 'verso'" class="custom-img" />
 
               <div v-if="displayComment" class="w-100">
                 <cust-hr class="w-75 mx-auto" />
@@ -125,6 +127,13 @@
         </div>
       </template>
     </Card>
+    <button
+    v-if="$store.state.app.cardHideCheck && !$store.state.app.cardReveal && $store.state.cardsToReviseBaseList.length > 0"
+      @click="passCard"
+      class="btn btn-outline-primary h-fit w-fit p-0 px-3 mx-auto mt-3"
+    >
+      Passer la carte
+    </button>
   </div>
 </template>
 
@@ -180,13 +189,16 @@ export default {
       let actualCard = this.actualCard;
       actualCard.win = win;
       this.mutateKey("actualCard", actualCard);
-      if (this.$store.state.app.fastMode) this.submitCard();
+      if (this.$store.state.app.cardFastCheck) this.submitCard();
       else this.winSetted = true;
     },
     async submitCard() {
       await this.mixHandleSubmit(this.actualCard).then(() =>
         this.$emit("submitted")
       );
+    },
+    passCard() {
+      this.$emit("submitted");
     },
   },
   async mounted() {
@@ -208,5 +220,12 @@ export default {
 <style lang="scss" scoped>
 .footer button {
   width: 30%;
+}
+.custom-img {
+  height: fit-content !important;
+  & > * {
+    height: fit-content !important;
+    margin: auto !important;
+  }
 }
 </style>

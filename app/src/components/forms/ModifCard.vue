@@ -8,7 +8,7 @@
       <ImageInput
         v-if="card.recto_image"
         @fileChange="
-          card.recto_image = !!$event ? $event : origCard.recto_image
+          card.recto_image = !!$event ? imgPath() : origCard.recto_image
         "
         :card="card"
         :face="'recto'"
@@ -65,7 +65,7 @@
       <ImageInput
         v-if="card.verso_image"
         @fileChange="
-          card.verso_image = !!$event ? $event : origCard.verso_image
+          card.verso_image = !!$event ? imgPath() : origCard.verso_image
         "
         :card="card"
         :face="'verso'"
@@ -177,7 +177,7 @@
           >&nbsp;&nbsp;(révision {{ mixShowRevision(card) }})</span
         >
       </div>
-      <div class="mt-2">
+      <div v-if="card.id" class="mt-2">
         Si vous venez de réviser, il est conseillé de passer la carte :
         <ul>
           <li>
@@ -297,6 +297,14 @@ export default {
       if (this.card.id) this.$router.push({ name: "CardView" });
       else this.$router.push({ name: "DeckView" });
     },
+    imgPath() {
+      let time = Date.now();
+      time += Math.floor(Math.random() * 1000);
+      time = time.toString().slice(-11);
+      let dir = time.toString().slice(-3);
+      let name = dir + "/" + time;
+      return name;
+    },
     async submitForm() {
       if (!this.card.recto && !this.card.recto_image) {
         document
@@ -391,7 +399,6 @@ export default {
       this.card = { ...this.$store.state.newCard };
       this.card.user_id = this.$store.state.user.id;
       this.card.deck_id = this.$store.getters.actualDeck.id;
-      this.card.reverse = false;
       this.modif = false;
     }
     if (

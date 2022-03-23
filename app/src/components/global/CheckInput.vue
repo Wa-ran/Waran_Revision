@@ -7,13 +7,16 @@
       id="checkInput"
       tabindex="1"
     />
-    <label
-      @click.prevent="check = !check"
-      class="form-check-label text-white"
-      for="checkInput"
-    >
-      {{ desc }}
-    </label>
+    <div class="d-flex w-fit">
+      <label
+        @click.prevent="check = !check"
+        class="form-check-label text-white"
+        for="checkInput"
+      >
+        {{ desc }}
+      </label>
+      <cust-tooltip v-if="tooltipText" :text="tooltipText" class="w-fit pt-1" />
+    </div>
   </div>
 </template>
 
@@ -26,6 +29,10 @@ export default {
       default: null,
     },
     desc: {
+      type: String,
+      default: null,
+    },
+    tooltipText: {
       type: String,
       default: null,
     },
