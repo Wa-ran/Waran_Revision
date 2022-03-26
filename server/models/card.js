@@ -61,19 +61,18 @@ module.exports = class Card extends revisionObj {
   };
 
   newLevel() {
-    if (this.win === null) return;
     let newLevel = this.level;
-    if (this.decalage < 24 || this.adapt_level_refused) {
-      if (this.win) newLevel++;
-      else if (!this.win) {
-        newLevel--;
-        if (newLevel % 2 === 0) newLevel--
+    if (this.win !== null) {
+      if (this.decalage < 24 || this.adapt_level_refused) {
+        if (this.win) newLevel++;
+        if (!this.win) newLevel -= 2;
+      }
+      else {
+        if (this.win) newLevel = this.adapt_level_up
+        if (!this.win) newLevel = this.adapt_level_down
       }
     }
-    else {
-      if (this.win) newLevel = this.adapt_level_up
-      else newLevel = this.adapt_level_down
-    }
+    if (newLevel % 2 === 0 && !this.win) newLevel--;
     if (newLevel < 0) newLevel = 0;
     this.level = newLevel
   }

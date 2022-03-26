@@ -128,7 +128,7 @@
       </template>
     </Card>
     <button
-    v-if="$store.state.app.cardHideCheck && !$store.state.app.cardReveal && $store.state.cardsToReviseBaseList.length > 0"
+    v-if="!($store.state.app.cardHideCheck && !$store.state.app.cardReveal) && $store.state.cardsToReviseBaseList.length > 0"
       @click="passCard"
       class="btn btn-outline-primary h-fit w-fit p-0 px-3 mx-auto mt-3"
     >
