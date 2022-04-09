@@ -160,7 +160,7 @@
           aria-label="Diminuer d'un niveau"
           class="has-icon"
         >
-          <font-awesome-icon :icon="['far', 'minus-square']" />
+          <font-awesome-icon :icon="['far', 'minus-square']" class="bg-body" />
         </button>
 
         <div class="level bold mx-1">{{ mixShowLevel(card.level) }}</div>
@@ -170,7 +170,7 @@
           aria-label="Augmenter d'un niveau"
           class="has-icon"
         >
-          <font-awesome-icon :icon="['far', 'plus-square']" />
+          <font-awesome-icon :icon="['far', 'plus-square']" class="bg-body" />
         </button>
 
         <span v-if="mixShowRevision(card)" class="italic"

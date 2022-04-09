@@ -1,5 +1,5 @@
 <template>
-  <Options :btnText="'Options de révisions'" :optionsList="optionsList" />
+  <Options :btnText="'Options'" :optionsList="optionsList" />
 </template>
 
 <script>

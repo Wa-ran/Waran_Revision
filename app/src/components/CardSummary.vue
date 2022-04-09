@@ -13,7 +13,7 @@
         :title="'Modifier la carte'"
       />
       <!-- Summary -->
-      <div class="border border-primary rounded px-3 py-2">
+      <div class="border border-primary rounded bg-body px-3 py-2">
         <span class="text-primary">{{
           actualCard.reverse ? "Recto :" : "Question"
         }}</span>

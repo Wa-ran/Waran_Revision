@@ -9,7 +9,11 @@
     @click="showing = !showing"
     @blur="dispose"
   >
-    <font-awesome-icon :icon="['far', 'question-circle']" size="sm" />
+    <font-awesome-icon
+      :icon="['far', 'question-circle']"
+      size="sm"
+      class="bg-body rounded-circle"
+    />
   </div>
 </template>
 

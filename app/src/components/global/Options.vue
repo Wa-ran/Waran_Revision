@@ -8,7 +8,10 @@
       aria-expanded="false"
       data-bs-auto-close="outside"
     >
-      {{ btnText }}
+      <span v-if="!['xs', 'sm'].includes($store.state.app.windowSize)">{{
+        btnText
+      }}</span>
+      <font-awesome-icon v-else :icon="['fas', 'cog']" size="lg" />
     </button>
     <div
       class="dropdown-menu dropdown-menu-dark bg-dark border border-primary mt-2 ms-3"
@@ -61,6 +64,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "@/styles/_variables.scss";
+
 button:not(:focus),
 button:focus-within {
   box-shadow: none !important;
@@ -71,5 +76,9 @@ button:focus-within {
 }
 .form-check {
   font-size: 0.9rem;
+}
+
+.dark .dropdown-toggle {
+  color: $primary;
 }
 </style>

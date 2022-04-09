@@ -4,25 +4,25 @@
       <div>
         <button
           @click.prevent="normalContent"
-          class="normal btn btn-outline-primary bg-body"
+          class="normal btn btn-outline-primary bg-body not-dark"
         >
           <span>N</span>
         </button>
         <button
           @click.prevent="editContent('<span class=\'bold\'>', '</span>')"
-          class="btn btn-outline-primary bg-body"
+          class="btn btn-outline-primary bg-body not-dark"
         >
           <font-awesome-icon :icon="['fas', 'bold']" />
         </button>
         <button
           @click.prevent="editContent('<span class=\'italic\'>', '</span>')"
-          class="btn btn-outline-primary bg-body"
+          class="btn btn-outline-primary bg-body not-dark"
         >
           <font-awesome-icon :icon="['fas', 'italic']" />
         </button>
         <button
           @click.prevent="editContent('<span class=\'underline\'>', '</span>')"
-          class="btn btn-outline-primary bg-body"
+          class="btn btn-outline-primary bg-body not-dark"
         >
           <font-awesome-icon :icon="['fas', 'underline']" />
         </button>
@@ -30,7 +30,7 @@
           @click.prevent="
             editContent('<span class=\'linethrough\'>', '</span>')
           "
-          class="btn btn-outline-primary bg-body"
+          class="btn btn-outline-primary bg-body not-dark"
         >
           <font-awesome-icon :icon="['fas', 'strikethrough']" />
         </button>
@@ -38,13 +38,13 @@
 
       <div>
         <button
-          class="color cust_red btn btn-outline-primary bg-body"
+          class="color cust_red btn btn-outline-primary bg-body not-dark"
           @click.prevent="editContent('<span class=\'cust_red\'>', '</span>')"
         >
           <font-awesome-icon :icon="['fas', 'tint']" />
         </button>
         <button
-          class="color cust_orange btn btn-outline-primary bg-body"
+          class="color cust_orange btn btn-outline-primary bg-body not-dark"
           @click.prevent="
             editContent('<span class=\'cust_orange\'>', '</span>')
           "
@@ -52,7 +52,7 @@
           <font-awesome-icon :icon="['fas', 'tint']" />
         </button>
         <button
-          class="color cust_yellow btn btn-outline-primary bg-body"
+          class="color cust_yellow btn btn-outline-primary bg-body not-dark"
           @click.prevent="
             editContent('<span class=\'cust_yellow\'>', '</span>')
           "
@@ -60,13 +60,13 @@
           <font-awesome-icon :icon="['fas', 'tint']" />
         </button>
         <button
-          class="color cust_green btn btn-outline-primary bg-body"
+          class="color cust_green btn btn-outline-primary bg-body not-dark"
           @click.prevent="editContent('<span class=\'cust_green\'>', '</span>')"
         >
           <font-awesome-icon :icon="['fas', 'tint']" />
         </button>
         <button
-          class="color cust_blue btn btn-outline-primary bg-body"
+          class="color cust_blue btn btn-outline-primary bg-body not-dark"
           @click.prevent="editContent('<span class=\'cust_blue\'>', '</span>')"
         >
           <font-awesome-icon :icon="['fas', 'tint']" />
@@ -76,7 +76,7 @@
 
     <div class="undo">
       <button
-        class="resetButton btn btn-outline-primary bg-body"
+        class="resetButton btn btn-outline-primary bg-body not-dark"
         @click.prevent="resetText"
       >
         <span>Reset</span>
@@ -85,7 +85,7 @@
       <button
         v-if="modifsHist.length > 0"
         @click.prevent="reverseChange"
-        class="btn btn-outline-primary bg-body"
+        class="btn btn-outline-primary bg-body not-dark"
       >
         <font-awesome-icon :icon="['fas', 'undo']" />
       </button>
@@ -233,6 +233,7 @@ export default {
         }
       }
       if (opti === "") opti = null;
+      opti += " ";
       return opti;
     },
     reverseChange() {

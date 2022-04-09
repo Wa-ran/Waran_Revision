@@ -84,7 +84,7 @@
       top: ${5 * sub}px;
       left: ${5 * sub}px;
       z-index: ${10 - sub}`"
-      class="position-absolute w-100 h-100 border border-primary bg-body sub-card"
+      class="position-absolute w-100 h-100 border border-primary bg-dark sub-card"
       :class="sub == 3 - 1 ? 'card shadow' : 'card'"
     ></div>
   </div>

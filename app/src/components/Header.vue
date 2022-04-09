@@ -1,6 +1,6 @@
 <template>
   <header
-    class="container-fluid bg-dark shadow"
+    class="container-fluid bg-dark shadow-sm"
     :class="darkMode ? 'dark' : 'light'"
   >
     <nav
@@ -134,6 +134,7 @@ header {
   }
 }
 .navbar-toggler {
+  border-color: $primary;
   @media (min-width: 992px) {
     display: none !important;
   }

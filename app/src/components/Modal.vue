@@ -8,14 +8,14 @@
   >
     <div class="modal-dialog">
       <div
-        class="position-relative modal-content bg-body border border-primary p-3"
+        class="position-relative modal-content bg-dark border border-primary p-3"
       >
         <div class="modal-header border-primary pt-0">
           <h5 class="modal-title text-center w-100" id="modalTitle">
             {{ modalState.title }}
           </h5>
           <div
-            class="position-absolute top-0 end-0 mt-n2 me-n2 bg-body border border-primary rounded closeCustom"
+            class="position-absolute top-0 end-0 mt-n2 me-n2 bg-dark border border-primary rounded closeCustom"
           >
             <button
               @click="modalAnswer = false"
@@ -108,10 +108,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "@/styles/_variables.scss";
+
 .custom {
   font-size: 0.9rem;
 }
 .closeCustom {
   padding: 0.75rem;
+  &:hover {
+    background-color: $white !important;
+  }
 }
 </style>

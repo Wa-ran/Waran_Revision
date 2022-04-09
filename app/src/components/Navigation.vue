@@ -51,6 +51,10 @@ export default {
 .dropdown a:focus {
   box-shadow: 0 0 0 0.25rem rgba($primary, 0.5);
 }
+.light .nav-link.text-primary {
+  color: $primary !important;
+}
+
 button {
   @media (min-width: 576px) {
     margin-top: 0 !important;

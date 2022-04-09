@@ -56,7 +56,9 @@ export default {
   },
   mounted() {
     this.windowSize();
-    window.addEventListener("resize", this.windowSize());
+    window.addEventListener("resize", () => {
+      this.windowSize();
+    });
     this.storeReset = { ...this.$store.state };
     if (
       !this.user.id &&

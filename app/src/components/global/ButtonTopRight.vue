@@ -5,7 +5,7 @@
         <button
           @click="link ? $router.push(link) : ''"
           aria-labelledby="modifCardButton"
-          class="position-relative btn btn-outline-primary h-fit w-fit p-1"
+          class="position-relative btn btn-outline-primary border-2 h-fit w-fit p-1"
         >
           <slot name="btnBody">
             <font-awesome-icon :icon="['fas', 'cog']" size="lg" />
@@ -27,6 +27,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.btn > * {
+  margin-left: 1px !important;
+}
 .position-absolute {
   z-index: 1500;
 }

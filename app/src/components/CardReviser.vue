@@ -42,7 +42,12 @@
                 v-html="recto ? actualCard.recto : actualCard.verso"
                 class="text-center w-100"
               ></div>
-              <CardImage v-else :card="actualCard" :face="recto ? 'recto' : 'verso'" class="custom-img" />
+              <CardImage
+                v-else
+                :card="actualCard"
+                :face="recto ? 'recto' : 'verso'"
+                class="custom-img"
+              />
 
               <div v-if="displayComment" class="w-100">
                 <cust-hr class="w-75 mx-auto" />
@@ -128,7 +133,10 @@
       </template>
     </Card>
     <button
-    v-if="!($store.state.app.cardHideCheck && !$store.state.app.cardReveal) && $store.state.cardsToReviseBaseList.length > 0"
+      v-if="
+        !($store.state.app.cardHideCheck && !$store.state.app.cardReveal) &&
+        $store.state.cardsToReviseBaseList.length > 0
+      "
       @click="passCard"
       class="btn btn-outline-primary h-fit w-fit p-0 px-3 mx-auto mt-3"
     >

@@ -25,6 +25,14 @@ export default {
     return {
       logs: [
         {
+          date: "09/04/22",
+          bugs: [
+            "Mauvais enregistrement des textes <span class=\"italic\">lorsqu'ils n'étaient composés que de caractères numériques</span> (oui c'est très précis...)",
+          ],
+          improvements: ["Quelques ajustements graphiques."],
+          todos: [],
+        },
+        {
           date: "18/03/22",
           bugs: [],
           improvements: [
