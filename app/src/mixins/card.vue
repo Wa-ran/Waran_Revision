@@ -110,10 +110,12 @@ export default {
             this.actualCard.level === 0 ||
             (!this.actualCard.win && this.actualCard.adapt_level_down === 0)
           ) {
-            return this.$store.dispatch("reserveCard", {
-              list: "cardsToReviseBaseList",
-              item: this.actualCard,
-            });
+            if (this.$store.state.cardsToReviseBaseList.length > 1) {
+              return this.$store.dispatch("reserveCard", {
+                list: "cardsToReviseBaseList",
+                item: this.actualCard,
+              });
+            } else return;
           } else {
             return this.$store.dispatch("mutateStore", {
               fct: "removeListItem",

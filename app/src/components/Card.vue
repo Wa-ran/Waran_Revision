@@ -46,7 +46,7 @@ export default {
   border-radius: 0.5rem !important;
 
   width: 18rem;
-  height: 27rem;
+  height: 28rem;
 }
 .card-body {
   max-width: calc(100% - 0.2rem);

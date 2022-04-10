@@ -135,7 +135,7 @@
     <button
       v-if="
         !($store.state.app.cardHideCheck && !$store.state.app.cardReveal) &&
-        $store.state.cardsToReviseBaseList.length > 0
+        $store.state.cardsToReviseBaseList.length > 1
       "
       @click="passCard"
       class="btn btn-outline-primary h-fit w-fit p-0 px-3 mx-auto mt-3"
@@ -206,6 +206,12 @@ export default {
       );
     },
     passCard() {
+      if (this.$store.state.cardsToReviseBaseList.length > 1) {
+        this.$store.dispatch("reserveCard", {
+          list: "cardsToReviseBaseList",
+          item: this.actualCard,
+        });
+      }
       this.$emit("submitted");
     },
   },
