@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h2>Changelogs :</h2>
+    <h2 class="mt-3">Changelogs :</h2>
     <BetaMajInfo
       v-for="(log, index) in logs"
       :key="index"

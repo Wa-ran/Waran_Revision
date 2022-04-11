@@ -233,7 +233,7 @@ export default {
         }
       }
       if (opti === "") opti = null;
-      opti += " ";
+      if (opti) opti += " ";
       return opti;
     },
     reverseChange() {

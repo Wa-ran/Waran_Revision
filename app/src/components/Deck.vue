@@ -12,11 +12,13 @@
         <div
           class="bg-body d-flex flex-column justify-content-start h-100 overflow-scroll"
         >
-          <div class="d-flex flex-column justify-content-center">
+          <div
+            class="d-flex flex-column justify-content-center align-items-center h-100"
+          >
             <!-- Title -->
             <h3
               class="card-title h-fit mx-auto p-2"
-              :class="deck.text ? 'mt-3' : 'my-4 pt-4'"
+              :class="deck.text ? 'mt-5 pt-5' : ''"
             >
               <router-link
                 :to="{ name: 'DeckView', params: { deck: deck.id } }"

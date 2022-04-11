@@ -48,19 +48,49 @@
 
         <div class="d-flex">
           <div class="w-100">
-            <p class="text-center">
+            <p class="text-center pb-2">
               <span :class="actualDeck.cards_to_revise ? 'fw-bold' : ''">{{
                 actualDeck.cards_to_revise || "Pas de"
               }}</span>
               carte{{ actualDeck.cards_to_revise > 1 ? "s" : "" }} à réviser
             </p>
+
+            <div
+              v-if="!actualDeck.sequence && actualDeck.new_cards > 0"
+              class="d-flex my-3 mt-4"
+            >
+              {{ actualDeck.new_cards || 0 }} nouvelle{{
+                actualDeck.new_cards > 1 ? "s" : ""
+              }}
+              carte{{ actualDeck.new_cards > 1 ? "s" : "" }}
+              <cust-tooltip
+                :text="'De niveau 3 ou moins, à réviser chaque jour.'"
+              />
+            </div>
+
+            <div
+              v-if="!actualDeck.sequence && actualDeck.high_level_cards > 0"
+              class="d-flex my-3"
+            >
+              {{ actualDeck.high_level_cards || 0 }} carte{{
+                actualDeck.high_level_cards > 1 ? "s" : ""
+              }}
+              apprise{{ actualDeck.high_level_cards > 1 ? "s" : "" }}
+              <cust-tooltip
+                :text="'De niveau 10 ou plus. <br />Vous les connaissez par cœur, <span class=\'bold\'>félicitations</span> !'"
+              />
+            </div>
+
             <p v-if="!actualDeck.sequence">
               Total : {{ actualDeck.cards_total_number || 0 }} carte{{
                 actualDeck.cards_total_number > 1 ? "s" : ""
               }}
             </p>
             <p v-else>
-              Niveau : <span class="fw-bold">{{ actualDeck.min_level }}</span>
+              Niveau :
+              <span class="fw-bold">{{
+                mixShowLevel(actualDeck.min_level)
+              }}</span>
               <br />
               (<span class="fst-italic"
                 >révision

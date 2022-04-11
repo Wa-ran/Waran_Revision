@@ -139,7 +139,7 @@ exports.selectDeck = async (req) => {
 };
 
 exports.selectDeckInfos = async (req) => {
-  let res = await this.connect("SELECT JSON_OBJECT('cards_total_number', COUNT(*), 'cards_to_revise', SUM(CASE WHEN next_revision < NOW() THEN 1 WHEN next_revision IS NULL THEN 1 ELSE 0 END)) FROM cards WHERE deck_id = " + req.deck.id + ";");
+  let res = await this.connect("SELECT JSON_OBJECT('cards_total_number', COUNT(*), 'cards_to_revise', SUM(CASE WHEN next_revision < NOW() THEN 1 WHEN next_revision IS NULL THEN 1 ELSE 0 END), 'high_level_cards', SUM(level > 19),'new_cards', SUM(CASE WHEN level < 7 THEN 1 WHEN level IS NULL THEN 1 ELSE 0 END)) FROM cards WHERE deck_id = " + req.deck.id + ";");
   let min_level = await this.connect("SELECT MIN(IFNULL(level, 0)) FROM cards WHERE deck_id = " + req.deck.id + ";");
   res[0]['min_level'] = min_level[0];
   return res
