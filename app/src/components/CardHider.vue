@@ -121,11 +121,10 @@ button:focus {
     color: currentColor !important;
   }
 }
+.porthole:not(.isLoading):focus-within {
+  box-shadow: inset 0 0 1rem $primary !important;
+}
 .porthole.isLoading:hover {
   border-color: $primary !important;
 }
-
-// .porthole:not(.isLoading):focus-within {
-//   box-shadow: 0 0 0 0.25rem rgba($primary, 0.5) !important;
-// }
 </style>

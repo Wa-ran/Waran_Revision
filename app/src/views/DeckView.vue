@@ -25,7 +25,7 @@
               params: { deck: $route.params.deck },
             }"
             :linkText="actualDeck.title || 'Votre deck'"
-            class="btn btn-link fs-2 py-0 text-decoration-none"
+            class="btn btn-link fs-2 py-0 text-decoration-none shadow-none"
           />
         </h2>
       </div>

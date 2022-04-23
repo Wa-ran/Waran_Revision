@@ -2,7 +2,7 @@
   <div
     type="button"
     v-tooltip="text"
-    class="text-primary mt-n2 mx-1"
+    class="tooltip-btn text-primary mt-n2 mx-1"
     data-bs-toggle="tooltip"
     data-bs-html="true"
     tabindex="0"

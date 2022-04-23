@@ -25,6 +25,16 @@ export default {
     return {
       logs: [
         {
+          date: "23/04/22",
+          bugs: [
+            "Indexation correcte des éléments cliquables (pour les ceux qui naviguent au clavier et les lecteurs d'écran)(vous êtes aucun je sais)",
+          ],
+          improvements: [
+            "Quelques ajustements graphiques, sur les liens notamment.",
+          ],
+          todos: [],
+        },
+        {
           date: "09/04/22",
           bugs: [
             "Mauvais enregistrement des textes <span class=\"italic\">lorsqu'ils n'étaient composés que de caractères numériques</span> (oui c'est très précis...)",

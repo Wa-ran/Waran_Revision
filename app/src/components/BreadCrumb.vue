@@ -62,6 +62,9 @@ export default {
   &:last-child {
     font-style: italic;
   }
+  &:focus {
+    text-decoration: underline !important;
+  }
 }
 #breadCrumb > div > a:not(:last-child)::after {
   content: "";

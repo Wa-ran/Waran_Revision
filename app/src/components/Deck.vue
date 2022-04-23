@@ -20,12 +20,14 @@
               class="card-title h-fit mx-auto p-2"
               :class="deck.text ? 'mt-5 pt-5' : ''"
             >
-              <router-link
-                :to="{ name: 'DeckView', params: { deck: deck.id } }"
-                class="link-current text-decoration-none"
-              >
-                {{ deck.title || "Deck sans titre" }}
-              </router-link>
+              <cust-a
+                :linkObj="{
+                  name: 'DeckView',
+                  params: { deck: deck.id },
+                }"
+                :linkText="deck.title || 'Deck sans titre'"
+                class="link-current text-decoration-none shadow-none"
+              />
             </h3>
             <!-- Description -->
             <p v-if="deck.text" class="card-text p-2" v-html="deck.text"></p>

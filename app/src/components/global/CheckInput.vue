@@ -5,7 +5,7 @@
       class="form-check-input"
       type="checkbox"
       id="checkInput"
-      tabindex="1"
+      tabindex="0"
     />
     <div class="d-flex w-fit">
       <label

@@ -166,6 +166,7 @@ export default {
       this.contEdit.innerHTML = this.contEdit.innerHTML
         .replace("{1}" + this.randomNum, wrapStart)
         .replace("{2}" + this.randomNum, wrapEnd);
+      this.contEdit.focus();
     },
     normalContent() {
       this.wrapContent();

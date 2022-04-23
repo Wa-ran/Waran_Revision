@@ -2,7 +2,7 @@
   <div class="overlay w-100">
     <div class="position-relative w-100">
       <!-- Options -->
-      <div class="position-absolute top-0 container-fluid px-2">
+      <div class="position-absolute top-0 container-fluid px-2 w-fit">
         <component :is="'Options' + $route.name" />
       </div>
     </div>
