@@ -15,8 +15,11 @@ if ($method == "OPTIONS") {
 $imgs = $_POST["imgs"];
 $imgs = json_decode($imgs, true);
 
-if (count($_FILES['files']['name']) == 1 && count($imgs) == 2) {
-  if (file_exists('images/'.$imgs[0].'.webp')) unlink('images/'.$imgs[0].'.webp');
+$del = $_POST["del"];
+$del = json_decode($del, true);
+
+foreach ($del as &$value) {
+    if (file_exists('images/'.$value.'.webp')) unlink('images/'.$value.'.webp');
 }
 
 function writeImg($img_path, $pos) {
@@ -39,4 +42,4 @@ function writeImg($img_path, $pos) {
 writeImg($imgs[0], 0);
 if (count($_FILES['files']['name']) == 2) writeImg(writeImg($imgs[1], 1));
 die();
-?>
+?>	

@@ -2,7 +2,7 @@
   <div class="h-100 w-100">
     <div
       v-if="path && !error"
-      class="custom overflow-scroll rounded h-100 custom border border-primary"
+      class="custom overflow-scroll rounded h-100 custom border border-primary bg-white"
     >
       <img
         @error="error = true"

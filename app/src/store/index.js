@@ -77,6 +77,7 @@ export default createStore({
     imagePath: "https://revision.waran.xyz/php/images/",
     // imagePath: "http://127.0.0.1:8887/images/",
     filesInputs: [],
+    delImages: [],
 
     //modal
     modal: {
@@ -271,7 +272,14 @@ export default createStore({
         req.data.imgs.push(this.state.actualCard.recto_image);
       if (this.state.actualCard.verso_image)
         req.data.imgs.push(this.state.actualCard.verso_image);
-      await this.dispatch("APIRequest", req);
+      req.data["del"] = this.state.delImages;
+      await this.dispatch("APIRequest", req)
+      .then(() => {
+        return this.dispatch("mutateStore", {
+          fct: "mutateKey",
+          value: { sKey: "delImages", body: [] },
+        });
+      })
     },
     async putCard(context, req = null) {
       req = req

@@ -25,6 +25,16 @@ export default {
     return {
       logs: [
         {
+          date: "26/04/22",
+          bugs: [
+            "Bug sur le remplacement des images lors de la modification de carte.",
+          ],
+          improvements: [
+            "Fond blanc sur les images avec transparence.",
+          ],
+          todos: [],
+        },
+        {
           date: "23/04/22",
           bugs: [
             "Indexation correcte des éléments cliquables (pour les ceux qui naviguent au clavier et les lecteurs d'écran)(vous êtes aucun je sais)",

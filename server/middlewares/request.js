@@ -83,10 +83,10 @@ exports.updateImgs = async (req) => {
         if (dtbCard.recto_image !== req.card.recto_image && dtbCard.recto_image !== req.card.verso_image) del.push(dtbCard.recto_image);
         if (dtbCard.verso_image !== req.card.recto_image && dtbCard.verso_image !== req.card.verso_image) del.push(dtbCard.verso_image);
         del = JSON.stringify(del);
-        // php_server: "https://waran.xyz/",
+        // php_server: "https://revision.waran.xyz/php/",
         // local: "http://localhost:8000/",
         return axios
-        .delete('http://localhost:8000/delete_img.php/' + del)
+        .delete('https://revision.waran.xyz/php/delete_img.php/' + del)
       }
       else return
     })
@@ -126,10 +126,10 @@ exports.deleteDeck = async (req) => {
         del.push(card.recto_image);
         del.push(card.verso_image);
         del = JSON.stringify(del);
-        // php_server: "https://waran.xyz/",
+        // php_server: "https://revision.waran.xyz/php/",
         // local: "http://localhost:8000/",
         await axios
-        .delete('http://localhost:8000/delete_img.php/' + del)
+        .delete('https://revision.waran.xyz/php/delete_img.php/' + del)
       }
       else continue
     }

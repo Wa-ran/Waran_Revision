@@ -216,7 +216,7 @@ $colors: (
   }
   aside, main, .overlay {
     & .bg-body, & .card.bg-body, & .btn.btn-outline-primary:not(:hover):not(:focus), & .border, & input, & .doodle {
-      &:not(.border-0):not(.not-dark):not(.bg-success):not(.bg-danger) {
+      &:not(.border-0):not(.not-dark):not(.bg-success):not(.bg-danger):not(.bg-white) {
         background-color: rgba(249, 246, 243, 1) !important; // lighter than dark
       }
     }
@@ -260,7 +260,7 @@ $colors: (
   }
   aside, main, .overlay {
     & .bg-body, & .card.bg-body, & .btn.btn-outline-primary:not(:hover):not(:focus), & .border, & input, & .doodle {
-      &:not(.border-0):not(.not-dark):not(.bg-success):not(.bg-danger) {
+      &:not(.border-0):not(.not-dark):not(.bg-success):not(.bg-danger):not(.bg-white) {
         background-color: rgba(28, 24, 20, 1) !important; // between dark and black
       }
     }
