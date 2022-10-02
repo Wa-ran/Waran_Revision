@@ -67,12 +67,11 @@ exports.connect = async (fctRequest) => {
       } catch (error) {
         session.rollback();
         session.close();
-        console.log("Rollback...")
+        console.log("Rollback done")
         throw error
       }
     })
     .catch((err) => {
-      console.log(err)
       console.log('Problème avec la BDR.')
       throw err
     });
@@ -158,7 +157,7 @@ exports.updateDeck = async (req) => {
 exports.updateUser = async (req) => {
   let user = createObj("dtbUser", req.user);
   // not the password
-  return await this.connect(`UPDATE users SET hide_card = ${user.hide_card}, chrono_card = ${user.chrono_card}, fast_mode = ${user.fast_mode}, dark_mode = ${user.dark_mode}, hide_form_modal = ${user.hide_form_modal} WHERE users.id = ${user.id};`);
+  return await this.connect(`UPDATE users SET hide_card = ${user.hide_card}, chrono_card = ${user.chrono_card}, fast_mode = ${user.fast_mode}, dark_mode = ${user.dark_mode}, hide_form_modal = ${user.hide_form_modal}, show_form_options = ${user.show_form_options} WHERE users.id = ${user.id};`);
 };
 
 exports.deleteCard = async (req) => {

@@ -19,7 +19,7 @@ $del = $_POST["del"];
 $del = json_decode($del, true);
 
 foreach ($del as &$value) {
-    if (file_exists('images/'.$value.'.webp')) unlink('images/'.$value.'.webp');
+  if (file_exists('images/'.$value.'.webp')) unlink('images/'.$value.'.webp');
 }
 
 function writeImg($img_path, $pos) {
@@ -28,7 +28,8 @@ function writeImg($img_path, $pos) {
     mkdir("images/".$dir);
     $iMagick = new imagick();
     $iMagick->readImage($_FILES['files']['tmp_name'][$pos]);
-    $iMagick->scaleImage(500, 0);
+    if ($iMagick->getImageWidth() > 500) $iMagick->scaleImage(500, 0);
+    if ($iMagick->getImageHeigth() > 500) $iMagick->scaleImage(0, 500);
     $iMagick->stripImage();
     $iMagick->writeImage('images/'.$img_path.".webp");
     echo "\nAll good !";
@@ -42,4 +43,4 @@ function writeImg($img_path, $pos) {
 writeImg($imgs[0], 0);
 if (count($_FILES['files']['name']) == 2) writeImg(writeImg($imgs[1], 1));
 die();
-?>	
+?>

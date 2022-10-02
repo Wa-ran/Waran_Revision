@@ -25,13 +25,21 @@ export default {
     return {
       logs: [
         {
+          date: "27/04/22",
+          bugs: [
+            "Bug le stockage des caractères spéciaux (exemples: 'é', 'ㅊ').",
+          ],
+          improvements: [
+            "Optimisation de la taille des images et de leur stockage.",
+          ],
+          todos: [],
+        },
+        {
           date: "26/04/22",
           bugs: [
             "Bug sur le remplacement des images lors de la modification de carte.",
           ],
-          improvements: [
-            "Fond blanc sur les images avec transparence.",
-          ],
+          improvements: ["Fond blanc sur les images avec transparence."],
           todos: [],
         },
         {

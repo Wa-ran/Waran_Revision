@@ -2,11 +2,11 @@
   <div class="h-100 w-100">
     <div
       v-if="path && !error"
-      class="custom overflow-scroll rounded h-100 custom border border-primary bg-white"
+      class="custom overflow-scroll rounded d-flex justify-content-center align-items-center h-100 w-fit custom border border-primary bg-white"
     >
       <img
         @error="error = true"
-        class="m-auto w-100"
+        class="m-auto mw-100 w-fit"
         :src="path"
         :id="card.id + face"
       />

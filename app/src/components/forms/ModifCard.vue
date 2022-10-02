@@ -334,9 +334,11 @@ export default {
         if (this.card.recto_image) this.card.recto = "";
         if (this.card.verso_image) this.card.verso = "";
         let delImages = [];
-        if (this.card.recto_image !== this.origCard.recto_image) delImages.push(this.origCard.recto_image);
-        if (this.card.verso_image !== this.origCard.verso_image) delImages.push(this.origCard.verso_image);
-        this.mutateKey('delImages', delImages);
+        if (this.card.recto_image !== this.origCard.recto_image)
+          delImages.push(this.origCard.recto_image);
+        if (this.card.verso_image !== this.origCard.verso_image)
+          delImages.push(this.origCard.verso_image);
+        this.mutateKey("delImages", delImages);
         this.mutateKey("actualCard", this.card);
         this.mutateApp("loading", true);
         this.submitted = true;

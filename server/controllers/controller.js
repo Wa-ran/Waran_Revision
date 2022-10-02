@@ -110,8 +110,16 @@ module.exports = async (req, res, next) => {
     .catch((error) => {
       console.log(fctName);
       console.log(new Date(Date.now()).toString());
+      console.log(new Date(Date.now()).toLocaleDateString('fr', {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric'
+      }));
       console.log(error);
-      console.log('_________________________________________')
+      console.log('_________________________________________');
       res.status(500).json(error.custMsg)
     })
 };

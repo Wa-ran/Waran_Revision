@@ -13,13 +13,10 @@
           class="bg-body d-flex flex-column justify-content-start h-100 overflow-scroll"
         >
           <div
-            class="d-flex flex-column justify-content-center align-items-center h-100"
+            class="d-flex flex-column justify-content-center align-items-center h-fit my-auto"
           >
             <!-- Title -->
-            <h3
-              class="card-title h-fit mx-auto p-2"
-              :class="deck.text ? 'mt-5 pt-5' : ''"
-            >
+            <h3 class="card-title h-fit mx-auto p-2">
               <cust-a
                 :linkObj="{
                   name: 'DeckView',

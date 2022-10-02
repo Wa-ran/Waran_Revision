@@ -2,7 +2,7 @@ const dtbFct = require('./dtb');
 const createObj = require('./createObj');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const axios = require('axios')
+const axios = require('axios');
 
 exports.getCard = async (req) => {
   let resCard;
@@ -58,13 +58,18 @@ exports.deleteImgs = async (req) => {
   .then((dtbCard) => {
     if (dtbCard.recto_image || dtbCard.verso_image) {
       let del = [];
-      del.push(dtbCard.recto_image);
-      del.push(dtbCard.verso_image);
+      if (dtbCard.recto_image) del.push(dtbCard.recto_image);
+      if (dtbCard.verso_image) del.push(dtbCard.verso_image);
       del = JSON.stringify(del);
       // php_server: "https://revision.waran.xyz/php/",
       // local: "http://localhost:8000/",
-      return axios
-      .delete('https://revision.waran.xyz/php/delete_img.php/' + del)
+      return axios({
+        method: 'delete',
+        url: 'http://revision.waran.xyz/php/delete_img.php/' + del,
+        timeout: 2000 // only wait for 2s
+      })
+      .then(data => console.log(data))
+      .catch((error) => { throw error })
     }
     else return
   })
@@ -80,13 +85,18 @@ exports.updateImgs = async (req) => {
     .then((dtbCard) => {
       if (dtbCard.recto_image || dtbCard.verso_image) {
         let del = [];
-        if (dtbCard.recto_image !== req.card.recto_image && dtbCard.recto_image !== req.card.verso_image) del.push(dtbCard.recto_image);
-        if (dtbCard.verso_image !== req.card.recto_image && dtbCard.verso_image !== req.card.verso_image) del.push(dtbCard.verso_image);
+        if (dtbCard.recto_image && dtbCard.recto_image !== req.card.recto_image && dtbCard.recto_image !== req.card.verso_image) del.push(dtbCard.recto_image);
+        if (dtbCard.verso_image && dtbCard.verso_image !== req.card.recto_image && dtbCard.verso_image !== req.card.verso_image) del.push(dtbCard.verso_image);
         del = JSON.stringify(del);
         // php_server: "https://revision.waran.xyz/php/",
         // local: "http://localhost:8000/",
-        return axios
-        .delete('https://revision.waran.xyz/php/delete_img.php/' + del)
+        return axios({
+          method: 'delete',
+          url: 'http://revision.waran.xyz/php/delete_img.php/' + del,
+          timeout: 2000 // only wait for 2s
+        })
+        .then(data => console.log(data))
+        .catch((error) => { throw error })
       }
       else return
     })
@@ -123,13 +133,18 @@ exports.deleteDeck = async (req) => {
     for (let card of res) {
       if (card.recto_image || card.verso_image) {
         let del = [];
-        del.push(card.recto_image);
-        del.push(card.verso_image);
+        if (card.recto_image) del.push(card.recto_image);
+        if (card.verso_image) del.push(card.verso_image);
         del = JSON.stringify(del);
         // php_server: "https://revision.waran.xyz/php/",
         // local: "http://localhost:8000/",
-        await axios
-        .delete('https://revision.waran.xyz/php/delete_img.php/' + del)
+        await axios({
+          method: 'get',
+          url: 'http://revision.waran.xyz/php/info.php/',
+          timeout: 2000 // only wait for 2s
+        })
+        .then(data => console.log(data))
+        .catch((error) => { throw error.toJSON() })
       }
       else continue
     }
